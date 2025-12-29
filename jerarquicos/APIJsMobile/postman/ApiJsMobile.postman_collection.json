@@ -1,0 +1,1483 @@
+{
+	"info": {
+		"_postman_id": "apijsmobile-collection-v1",
+		"name": "ApiJsMobile - Suite de Pruebas de Integración",
+		"description": "Colección completa de endpoints de ApiJsMobile para pruebas de integración.\n\n## Uso\n1. Importar esta colección en Postman\n2. Importar el archivo de environment correspondiente\n3. Ejecutar 'Auth > Login' primero para obtener token\n4. Los endpoints protegidos usarán el token automáticamente\n\n## Estructura\n- **Auth**: Autenticación y validación de tokens\n- **Cartilla**: Operaciones de cartilla médica\n  - Emergencias\n  - Instituciones\n  - Profesionales\n  - Favoritos\n\n## Variables requeridas\n- `baseUrl`: URL base de la API\n- `token`: Token JWT (se actualiza automáticamente en Login)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "apiVersion",
+			"value": "1.0",
+			"type": "string"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"description": "Endpoints de autenticación y validación de tokens JWT",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verificar respuesta exitosa",
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has token', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('token');",
+									"    pm.expect(jsonData.token).to.be.a('string');",
+									"    pm.expect(jsonData.token.length).to.be.greaterThan(0);",
+									"});",
+									"",
+									"pm.test('Token type is Bearer', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.tokenType).to.equal('Bearer');",
+									"});",
+									"",
+									"// Guardar token para uso posterior",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('token', jsonData.token);",
+									"    console.log('Token guardado exitosamente');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v{{apiVersion}}/Auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v{{apiVersion}}",
+								"Auth",
+								"login"
+							]
+						},
+						"description": "Autentica un usuario y retorna un token JWT.\n\n**Importante**: El token se guarda automáticamente en la variable `token` para uso en endpoints protegidos."
+					},
+					"response": [
+						{
+							"name": "Login Exitoso",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"usuario_test\",\n    \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"tokenType\": \"Bearer\",\n    \"expiresIn\": 3600,\n    \"expiresAt\": \"2024-12-27T15:00:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Validate Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Token is valid', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.valid).to.be.true;",
+									"});",
+									"",
+									"pm.test('Response has username', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('username');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v{{apiVersion}}/Auth/validate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v{{apiVersion}}",
+								"Auth",
+								"validate"
+							]
+						},
+						"description": "Verifica si el token JWT actual es válido.\n\n**Requiere autenticación**: Sí"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cartilla",
+			"description": "Endpoints de Cartilla Médica - Búsqueda de prestadores de salud",
+			"item": [
+				{
+					"name": "Emergencias",
+					"description": "Búsqueda de servicios de emergencia",
+					"item": [
+						{
+							"name": "Get Emergencias (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Emergencias/:localidad/:radio",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Emergencias",
+										":localidad",
+										":radio"
+									],
+									"variable": [
+										{
+											"key": "localidad",
+											"value": "1",
+											"description": "ID de localidad (requerido, > 0)"
+										},
+										{
+											"key": "radio",
+											"value": "10",
+											"description": "Radio de búsqueda en km (requerido, > 0)"
+										}
+									]
+								},
+								"description": "Obtiene servicios de emergencia cercanos a una localidad sin autenticación.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Emergencias (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Emergencias/:localidad/:radio/:idPersona",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Emergencias",
+										":localidad",
+										":radio",
+										":idPersona"
+									],
+									"variable": [
+										{
+											"key": "localidad",
+											"value": "1",
+											"description": "ID de localidad (requerido, > 0)"
+										},
+										{
+											"key": "radio",
+											"value": "10",
+											"description": "Radio de búsqueda en km (requerido, > 0)"
+										},
+										{
+											"key": "idPersona",
+											"value": "12345",
+											"description": "ID de persona (requerido, > 0)"
+										}
+									]
+								},
+								"description": "Obtiene servicios de emergencia con marcadores de favoritos personalizados.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Instituciones",
+					"description": "Búsqueda de instituciones de salud",
+					"item": [
+						{
+							"name": "Get Tipos de Institución",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/TiposInstitucion",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"TiposInstitucion"
+									]
+								},
+								"description": "Obtiene lista de tipos de institución de salud disponibles.\n\n**Requiere autenticación**: No\n\n**Nota**: Endpoint pendiente de implementación completa."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Cerca De Mi (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/CercaDeMi?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"CercaDeMi"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene instituciones de salud cercanas a coordenadas geográficas.\n\n**Requiere autenticación**: No\n\n**Coordenadas de ejemplo**: Buenos Aires, Argentina"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Cerca De Mi (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/CercaDeMiProtegido?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"CercaDeMiProtegido"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene instituciones cercanas con marcadores de favoritos personalizados.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Radio N (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/RadioN?IdLocalidad=1&Radio=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"RadioN"
+									],
+									"query": [
+										{
+											"key": "IdLocalidad",
+											"value": "1",
+											"description": "ID de localidad (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "10",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene instituciones dentro del radio especificado desde una localidad.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Radio N (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/RadioNProtegido?IdLocalidad=1&Radio=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"RadioNProtegido"
+									],
+									"query": [
+										{
+											"key": "IdLocalidad",
+											"value": "1",
+											"description": "ID de localidad (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "10",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene instituciones dentro del radio con marcadores de favoritos.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Cerca De Mi - Mapa (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/CercaDeMi/Mapa?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"CercaDeMi",
+										"Mapa"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene datos simplificados de instituciones optimizados para marcadores de mapa.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Instituciones Cerca De Mi - Mapa (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Instituciones/CercaDeMi/MapaProtegido?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Instituciones",
+										"CercaDeMi",
+										"MapaProtegido"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdTipoInstitucion",
+											"value": "1",
+											"description": "Filtro opcional por tipo de institución",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene datos de instituciones para mapa con marcadores de favoritos.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Profesionales",
+					"description": "Búsqueda de profesionales médicos",
+					"item": [
+						{
+							"name": "Get Especialidades Médicas",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/EspecialidadesMedicas",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"EspecialidadesMedicas"
+									]
+								},
+								"description": "Obtiene lista de especialidades médicas disponibles.\n\n**Requiere autenticación**: No\n\n**Nota**: Endpoint pendiente de implementación completa."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Radio N (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/RadioN?IdLocalidad=1&Radio=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"RadioN"
+									],
+									"query": [
+										{
+											"key": "IdLocalidad",
+											"value": "1",
+											"description": "ID de localidad (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "10",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene profesionales médicos dentro del radio desde una localidad.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Radio N (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/RadioNProtegido?IdLocalidad=1&Radio=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"RadioNProtegido"
+									],
+									"query": [
+										{
+											"key": "IdLocalidad",
+											"value": "1",
+											"description": "ID de localidad (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "10",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene profesionales médicos con marcadores de favoritos.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Cerca De Mi (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/CercaDeMi?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"CercaDeMi"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene profesionales médicos cercanos a coordenadas geográficas.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Cerca De Mi (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/CercaDeMiProtegido?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"CercaDeMiProtegido"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene profesionales médicos cercanos con marcadores de favoritos.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Cerca De Mi - Mapa (Público)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/CercaDeMi/Mapa?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"CercaDeMi",
+										"Mapa"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene datos simplificados de profesionales optimizados para mapa.\n\n**Requiere autenticación**: No"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Profesionales Cerca De Mi - Mapa (Protegido)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is array', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an('array');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/Profesionales/CercaDeMi/MapaProtegido?Latitud=-34.6037&Longitud=-58.3816&Radio=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"Profesionales",
+										"CercaDeMi",
+										"MapaProtegido"
+									],
+									"query": [
+										{
+											"key": "Latitud",
+											"value": "-34.6037",
+											"description": "Latitud [-90, 90] (requerido)"
+										},
+										{
+											"key": "Longitud",
+											"value": "-58.3816",
+											"description": "Longitud [-180, 180] (requerido)"
+										},
+										{
+											"key": "Radio",
+											"value": "5",
+											"description": "Radio en km [0.1, 100] (requerido)"
+										},
+										{
+											"key": "IdEspecialidad",
+											"value": "1",
+											"description": "Filtro opcional por especialidad médica",
+											"disabled": true
+										},
+										{
+											"key": "IdPersona",
+											"value": "12345",
+											"description": "ID de persona para marcadores de favoritos",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Obtiene datos de profesionales para mapa con marcadores de favoritos.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Favoritos",
+					"description": "Gestión de prestadores favoritos",
+					"item": [
+						{
+							"name": "Agregar Favorito",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is boolean', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.a('boolean');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"idPersona\": 12345,\n    \"idPrestador\": 100,\n    \"tipoPrestador\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/AgregarFavorito",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"AgregarFavorito"
+									]
+								},
+								"description": "Agrega un prestador a favoritos de una persona.\n\n**Requiere autenticación**: Sí\n\n**TipoPrestador valores**:\n- 1 = Institución\n- 2 = Profesional\n- 3 = Emergencia\n\n**Nota**: Endpoint pendiente de implementación completa."
+							},
+							"response": []
+						},
+						{
+							"name": "Quitar Favorito",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});",
+											"",
+											"pm.test('Data is boolean', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.a('boolean');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"idPersona\": 12345,\n    \"idPrestador\": 100,\n    \"tipoPrestador\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/QuitarFavorito",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"QuitarFavorito"
+									]
+								},
+								"description": "Quita un prestador de favoritos de una persona.\n\n**Requiere autenticación**: Sí\n\n**TipoPrestador valores**:\n- 1 = Institución\n- 2 = Profesional\n- 3 = Emergencia\n\n**Nota**: Endpoint pendiente de implementación completa."
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Favoritos",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test('Response is valid CartillaResponseDto', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property('success');",
+											"    pm.expect(jsonData).to.have.property('data');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v{{apiVersion}}/Cartilla/BuscarFavoritos/:idPersona",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v{{apiVersion}}",
+										"Cartilla",
+										"BuscarFavoritos",
+										":idPersona"
+									],
+									"variable": [
+										{
+											"key": "idPersona",
+											"value": "12345",
+											"description": "ID de persona (requerido, > 0)"
+										}
+									]
+								},
+								"description": "Busca todos los prestadores favoritos de una persona, organizados por tipo.\n\n**Requiere autenticación**: Sí"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"description": "Verificación de estado del servicio",
+			"item": [
+				{
+					"name": "Health Check - Swagger",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Swagger is accessible', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger/index.html",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger",
+								"index.html"
+							]
+						},
+						"description": "Verifica que Swagger UI esté accesible."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
