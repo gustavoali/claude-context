@@ -66,7 +66,49 @@ RuleFor(x => x.Page)
 
 ---
 
-### 1.2 Usar mensajes de validacion centralizados
+### 1.2 Unificar RuleFor duplicados para el mismo campo
+
+**Fecha:** 2024-12-29
+**Reviewer:** Natalia Belen Mignola
+**Archivo:** `FindNearbyRequestDtoBaseValidator.cs`
+
+#### Incorrecto
+
+```csharp
+// Dos RuleFor separados para el mismo campo
+RuleFor(x => x.Latitud)
+    .NotNull()
+    .WithMessage(Validation.Required);
+
+RuleFor(x => x.Latitud)              // ← DUPLICADO
+    .InclusiveBetween(-90, 90)
+    .WithMessage(Validation.Between);
+```
+
+#### Correcto
+
+```csharp
+// Un solo RuleFor con validadores encadenados
+RuleFor(x => x.Latitud)
+    .NotNull()
+    .WithMessage(Validation.Required)
+    .InclusiveBetween(-90, 90)
+    .WithMessage(Validation.Between);
+```
+
+#### Explicacion
+
+En FluentValidation, se pueden encadenar multiples validadores en un solo `RuleFor()`. Cada `.WithMessage()` aplica al validador inmediatamente anterior.
+
+**Ventajas:**
+- Codigo mas conciso y legible
+- Menor duplicacion
+- Mas facil de mantener
+- Claridad de que todas las validaciones son para el mismo campo
+
+---
+
+### 1.3 Usar mensajes de validacion centralizados
 
 **Referencia:** Project CLAUDE.md
 
@@ -220,6 +262,7 @@ Antes de crear un PR, verificar:
 | 2024-12-29 | `ProfesionalFindFavoritesRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
 | 2024-12-29 | `ProfesionalFindByFiltersRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
 | 2024-12-29 | `FindNearbyRequestDtoBaseValidator.cs` | Remover `.When(HasValue)` en Latitud, Longitud, Page, PageSize | (detectado en busqueda) |
+| 2024-12-29 | `FindNearbyRequestDtoBaseValidator.cs` | Unificar RuleFor duplicados para Latitud y Longitud | Natalia Mignola |
 
 ---
 
