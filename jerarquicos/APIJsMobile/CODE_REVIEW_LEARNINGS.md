@@ -215,6 +215,11 @@ Antes de crear un PR, verificar:
 |-------|---------|------------|----------|
 | 2024-12-29 | `HandlerExceptionMiddleware.cs` | Indexacion → Spread operator | Natalia Mignola |
 | 2024-12-29 | `EntidadSaludFindByFiltersRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | Natalia Mignola |
+| 2024-12-29 | `EntidadSaludFindFavoritesRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | Natalia Mignola |
+| 2024-12-29 | `PaginationValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
+| 2024-12-29 | `ProfesionalFindFavoritesRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
+| 2024-12-29 | `ProfesionalFindByFiltersRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
+| 2024-12-29 | `FindNearbyRequestDtoBaseValidator.cs` | Remover `.When(HasValue)` en Latitud, Longitud, Page, PageSize | (detectado en busqueda) |
 
 ---
 
