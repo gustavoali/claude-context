@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "pro-028",
+		"name": "28 - Provincias",
+		"description": "Endpoints del controller ProvinciasController - Lista de provincias",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Provincias",
+			"item": [
+				{
+					"name": "Provincias por Pais",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Provincias/{{idPais}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Provincias", "{{idPais}}"]
+						},
+						"description": "Obtiene provincias de un país"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

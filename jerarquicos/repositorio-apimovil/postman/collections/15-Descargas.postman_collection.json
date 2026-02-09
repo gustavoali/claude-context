@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "des-015",
+		"name": "15 - Descargas",
+		"description": "Endpoints del controller DescargasController - Descarga de archivos disponibles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Descargas",
+			"item": [
+				{
+					"name": "Lista Archivos Disponibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/descargas/listaArchivosDisponibles",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "descargas", "listaArchivosDisponibles"]
+						},
+						"description": "Obtiene lista de archivos disponibles para descarga"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Archivo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/descargas/descargarArchivo/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "descargas", "descargarArchivo", "1"]
+						},
+						"description": "Descarga un archivo por su ID"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

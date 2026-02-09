@@ -1,0 +1,848 @@
+{
+	"info": {
+		"_postman_id": "actualizardomicilios-test-collection",
+		"name": "ActualizarDomicilios - Test Collection",
+		"description": "Coleccion de pruebas para el endpoint POST api/DatosPersonales/ActualizarDomicilios\n\nCasos de uso cubiertos:\n- Validaciones de entrada\n- Operaciones con domicilios existentes\n- Operaciones con domicilios nuevos\n- Operaciones mixtas\n- Casos de error",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://srvappdevelop.jerarquicossalud.com.ar",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "{{token}}",
+			"type": "string"
+		},
+		{
+			"key": "idPersona",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "numeroSocio",
+			"value": "67890",
+			"type": "string"
+		},
+		{
+			"key": "idDomicilioExistente",
+			"value": "100",
+			"type": "string"
+		},
+		{
+			"key": "idLocalidad",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Validaciones de Entrada",
+			"item": [
+				{
+					"name": "1.1 Modelo null - Debe fallar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "null"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 IdPersona = 0 - Debe fallar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": 0,\n    \"Domicilios\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 IdPersona negativo - Debe fallar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": -1,\n    \"Domicilios\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.4 Categoria invalida (Id=3) - Debe fallar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdPersona\": {{idPersona}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 3,\n                \"Descripcion\": \"Categoria Invalida\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.5 Categoria invalida (Id=5) - Debe fallar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdPersona\": {{idPersona}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 5,\n                \"Descripcion\": \"Otra Categoria Invalida\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.6 Sin token - Debe retornar null",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Modificar Domicilios Existentes",
+			"item": [
+				{
+					"name": "2.1 Modificar calle y numero",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Santa Fe\",\n            \"Numero\": 5678,\n            \"Piso\": \"3\",\n            \"Departamento\": \"A\",\n            \"Edificio\": \"\",\n            \"Observaciones\": \"Timbre 3A\",\n            \"EnvioCorreo\": true,\n            \"Latitud\": \"-34.5957\",\n            \"Longitud\": \"-58.3917\",\n            \"Entrecalle1\": \"Callao\",\n            \"Entrecalle2\": \"Rodriguez Pena\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\",\n                \"NombreCodigoPostal\": \"CABA\",\n                \"CodigoPostal\": \"1425\"\n            },\n            \"Provincia\": {\n                \"Id\": 1,\n                \"Nombre\": \"Buenos Aires\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 Cambiar categoria domicilio (1 a 2)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.3 Cambiar categoria domicilio a 4",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 4,\n                \"Descripcion\": \"Otro\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.4 Actualizar geolocalizacion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Latitud\": \"-34.6037\",\n            \"Longitud\": \"-58.3816\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.5 Actualizar entrecalles",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Entrecalle1\": \"Uruguay\",\n            \"Entrecalle2\": \"Talcahuano\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.6 Cambiar envio de correspondencia",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"EnvioCorreo\": true,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.7 Cambiar localidad",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Rivadavia\",\n            \"Numero\": 9999,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": 2,\n                \"Nombre\": \"Lomas de Zamora\",\n                \"NombreCodigoPostal\": \"Lomas de Zamora\",\n                \"CodigoPostal\": \"1832\"\n            },\n            \"Provincia\": {\n                \"Id\": 1,\n                \"Nombre\": \"Buenos Aires\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.8 Modificar multiples domicilios",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": 100,\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes MODIFICADA\",\n            \"Numero\": 1111,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        },\n        {\n            \"EsDomicilioTitular\": false,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": 101,\n            \"IdDomicilio\": 201,\n            \"Calle\": \"Av. Santa Fe MODIFICADA\",\n            \"Numero\": 2222,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Eliminar Domicilios",
+			"item": [
+				{
+					"name": "3.1 Eliminar un domicilio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Av. Corrientes\",\n            \"Numero\": 1234,\n            \"Eliminar\": true,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 Eliminar multiples domicilios",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 100,\n            \"IdDomicilio\": 200,\n            \"Eliminar\": true,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        },\n        {\n            \"Id\": 101,\n            \"IdDomicilio\": 201,\n            \"Eliminar\": true,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Agregar Domicilios Nuevos",
+			"item": [
+				{
+					"name": "4.1 Agregar domicilio nuevo (campos minimos)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": false,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Nueva Calle\",\n            \"Numero\": 100,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 Agregar domicilio nuevo (campos completos)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"EsDomicilioTitular\": false,\n            \"IdPersona\": {{idPersona}},\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Av. Belgrano\",\n            \"Numero\": 4567,\n            \"Piso\": \"10\",\n            \"Departamento\": \"B\",\n            \"Edificio\": \"Torre Norte\",\n            \"Observaciones\": \"Oficina principal\",\n            \"EnvioCorreo\": false,\n            \"Latitud\": \"-34.6118\",\n            \"Longitud\": \"-58.3960\",\n            \"Entrecalle1\": \"Bolivar\",\n            \"Entrecalle2\": \"Defensa\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\",\n                \"NombreCodigoPostal\": \"CABA\",\n                \"CodigoPostal\": \"1092\"\n            },\n            \"Provincia\": {\n                \"Id\": 1,\n                \"Nombre\": \"Buenos Aires\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.3 Agregar multiples domicilios nuevos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Domicilio Nuevo 1\",\n            \"Numero\": 111,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        },\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Domicilio Nuevo 2\",\n            \"Numero\": 222,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        },\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Domicilio Nuevo 3\",\n            \"Numero\": 333,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 4,\n                \"Descripcion\": \"Otro\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.4 Agregar domicilio sin numero (solo calle)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Ruta Provincial 5 Km 23\",\n            \"Numero\": null,\n            \"Observaciones\": \"Casa de campo sin numeracion\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 4,\n                \"Descripcion\": \"Otro\"\n            },\n            \"Localidad\": {\n                \"Id\": 5,\n                \"Nombre\": \"Mercedes\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Operaciones Mixtas",
+			"item": [
+				{
+					"name": "5.1 Modificar existente + agregar nuevo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Calle Modificada\",\n            \"Numero\": 9999,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        },\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Calle Nueva\",\n            \"Numero\": 1000,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.2 Eliminar existente + agregar nuevo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Calle a Eliminar\",\n            \"Numero\": 1234,\n            \"Eliminar\": true,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        },\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Calle Nueva Reemplazo\",\n            \"Numero\": 5678,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}},\n                \"Nombre\": \"Capital Federal\"\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.3 Modificar + eliminar + agregar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 100,\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Domicilio Modificado\",\n            \"Numero\": 1111,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        },\n        {\n            \"Id\": 101,\n            \"IdDomicilio\": 201,\n            \"Calle\": \"Domicilio a Eliminar\",\n            \"Numero\": 2222,\n            \"Eliminar\": true,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        },\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Domicilio Nuevo\",\n            \"Numero\": 3333,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 4\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.4 Sin cambios (lista vacia)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Casos Edge",
+			"item": [
+				{
+					"name": "6.1 Calle con espacios en blanco",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"   Av. Corrientes   \",\n            \"Numero\": 1234,\n            \"Piso\": \"  3  \",\n            \"Departamento\": \"  A  \",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.2 Campos opcionales null",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Calle Simple\",\n            \"Numero\": 100,\n            \"Piso\": null,\n            \"Departamento\": null,\n            \"Edificio\": null,\n            \"Observaciones\": null,\n            \"Latitud\": null,\n            \"Longitud\": null,\n            \"Entrecalle1\": null,\n            \"Entrecalle2\": null,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.3 Coordenadas limite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Calle con coordenadas extremas\",\n            \"Numero\": 1,\n            \"Latitud\": \"-90.0000000\",\n            \"Longitud\": \"-180.0000000\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.4 Numero muy grande",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": 0,\n            \"IdDomicilio\": 0,\n            \"Calle\": \"Av. General Paz\",\n            \"Numero\": 99999,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.5 Categoria null (usar existente)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Calle Modificada\",\n            \"Numero\": 9999,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": null,\n            \"Localidad\": {\n                \"Id\": {{idLocalidad}}\n            }\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.6 Localidad null (usar existente)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"IdPersona\": {{idPersona}},\n    \"Domicilios\": [\n        {\n            \"Id\": {{idDomicilioExistente}},\n            \"IdDomicilio\": 200,\n            \"Calle\": \"Calle Modificada\",\n            \"Numero\": 8888,\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1\n            },\n            \"Localidad\": null\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

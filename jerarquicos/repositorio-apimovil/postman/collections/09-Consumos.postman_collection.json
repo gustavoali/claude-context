@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "con-009",
+		"name": "09 - Consumos",
+		"description": "Endpoints del controller ConsumosController - Consulta de consumos médicos y topes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Consumos",
+			"item": [
+				{
+					"name": "Socios Activos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Consumos/SociosActivos/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Consumos", "SociosActivos", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene lista de socios activos del grupo familiar"
+					},
+					"response": []
+				},
+				{
+					"name": "Consumos del Socio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Consumos/ConsumosSocio/{{idPersona}}/{{numeroSocio}}/{{ordenSocio}}/{{tamanioPagina}}/{{paginaActual}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Consumos", "ConsumosSocio", "{{idPersona}}", "{{numeroSocio}}", "{{ordenSocio}}", "{{tamanioPagina}}", "{{paginaActual}}"]
+						},
+						"description": "Obtiene historial de consumos médicos del socio con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Topes del Socio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Consumos/TopesSocio/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Consumos", "TopesSocio", "{{idPersona}}"]
+						},
+						"description": "Obtiene información de topes de cobertura del socio"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

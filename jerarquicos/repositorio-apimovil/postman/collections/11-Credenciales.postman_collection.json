@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "cre-011",
+		"name": "11 - Credenciales",
+		"description": "Endpoints del controller CredencialesController - Gestión de credenciales, denuncias y provisorios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Credenciales",
+			"item": [
+				{
+					"name": "Credenciales por Socio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene información de credenciales del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Credencial Virtual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/Virtual/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "Virtual", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene la credencial virtual del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Token Consulta Profesional",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/GetTokenConsultaProfesional/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "GetTokenConsultaProfesional", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene token para consulta de profesional"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Info Denuncia Credencial",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/obtenerInfoDenunciaCredencial",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "obtenerInfoDenunciaCredencial"]
+						},
+						"description": "Obtiene información para realizar denuncia de credencial"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Info Impresion Credencial",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/obtenerInfoImpresionCredencial",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "obtenerInfoImpresionCredencial"]
+						},
+						"description": "Obtiene información para solicitar impresión de credencial"
+					},
+					"response": []
+				},
+				{
+					"name": "Denunciar Credencial",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"OrdenSocio\": {{ordenSocio}},\n    \"MotivoDenuncia\": \"Extravío\",\n    \"Observaciones\": \"Se perdió la credencial\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/denunciar",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "denunciar"]
+						},
+						"description": "Realiza denuncia de credencial por pérdida o robo"
+					},
+					"response": []
+				},
+				{
+					"name": "Solicitar Impresion",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"OrdenSocio\": {{ordenSocio}},\n    \"DireccionEnvio\": \"Calle 123, Córdoba\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/solicitarImpresion",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "solicitarImpresion"]
+						},
+						"description": "Solicita impresión de nueva credencial"
+					},
+					"response": []
+				},
+				{
+					"name": "Generar Provisorio",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"OrdenSocio\": {{ordenSocio}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/generarprovisorio",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "generarprovisorio"]
+						},
+						"description": "Genera un certificado provisorio"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Provisorio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/DescargarProvisorio/{{numeroSocio}}/{{idCertificado}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "DescargarProvisorio", "{{numeroSocio}}", "{{idCertificado}}"]
+						},
+						"description": "Descarga PDF del certificado provisorio"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Informacion Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/ObtenerInformacionToken",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "ObtenerInformacionToken"]
+						},
+						"description": "Obtiene información del token de autenticación"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

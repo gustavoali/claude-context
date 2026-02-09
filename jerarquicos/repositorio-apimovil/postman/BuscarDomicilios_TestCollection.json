@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "buscardomicilios-test-collection",
+		"name": "BuscarDomicilios - Test Collection",
+		"description": "Coleccion de pruebas para el endpoint GET api/DatosPersonales/Domicilios/{idPersona}\n\nCasos de uso cubiertos:\n- Autenticacion y autorizacion\n- Busqueda exitosa de domicilios\n- Validaciones de parametros\n- Casos de error",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://srvappdevelop.jerarquicossalud.com.ar",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": "Bearer token obtenido del login"
+		},
+		{
+			"key": "idPersonaValido",
+			"value": "12345",
+			"type": "string",
+			"description": "ID de persona valido para pruebas"
+		},
+		{
+			"key": "idPersonaOtroUsuario",
+			"value": "99999",
+			"type": "string",
+			"description": "ID de persona de otro usuario (no autorizado)"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Obtener Token (Login)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/token",
+					"host": ["{{baseUrl}}"],
+					"path": ["token"]
+				},
+				"description": "Obtiene el token de autenticacion. Guardar el access_token en la variable 'token'."
+			},
+			"response": []
+		},
+		{
+			"name": "1. Autenticacion y Autorizacion",
+			"item": [
+				{
+					"name": "1.1 Sin token - Debe retornar 401",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Intento de buscar domicilios sin token de autenticacion.\n\nRespuesta esperada:\n- HTTP 401 Unauthorized"
+					},
+					"response": [
+						{
+							"name": "Sin Token",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/12345",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "12345"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Message\": \"Authorization has been denied for this request.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "1.2 Token invalido - Debe retornar 401",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer token_invalido_o_expirado",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Intento de buscar domicilios con token invalido o expirado.\n\nRespuesta esperada:\n- HTTP 401 Unauthorized"
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 Token valido pero idPersona de otro usuario - Debe retornar null",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaOtroUsuario}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaOtroUsuario}}"]
+						},
+						"description": "Intento de buscar domicilios de otra persona (no autorizado por TokenValido).\n\nRespuesta esperada:\n- HTTP 200 con body null (segun el codigo retorna null cuando el token no es valido para ese idPersona)"
+					},
+					"response": [
+						{
+							"name": "Token no valido para idPersona",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/99999",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "99999"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"body": "null"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Busqueda Exitosa",
+			"item": [
+				{
+					"name": "2.1 Buscar domicilios - Usuario con domicilios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Busca los domicilios de un usuario autenticado.\n\nRespuesta esperada:\n- Exito: true\n- Modelo: Array de DomicilioSocioModel"
+					},
+					"response": [
+						{
+							"name": "Respuesta Exitosa con Domicilios",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/12345",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "12345"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Exito\": true,\n    \"Mensaje\": null,\n    \"Modelo\": [\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": 12345,\n            \"Id\": 100,\n            \"Calle\": \"Av. Corrientes\",\n            \"Departamento\": \"A\",\n            \"Edificio\": \"\",\n            \"IdDomicilio\": 200,\n            \"Numero\": 1234,\n            \"Observaciones\": \"Timbre 5\",\n            \"Piso\": \"3\",\n            \"Provincia\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Buenos Aires\"\n            },\n            \"Localidad\": {\n                \"Id\": 5001,\n                \"Descripcion\": \"CABA\",\n                \"CodigoPostal\": \"1043\"\n            },\n            \"EnvioCorreo\": true,\n            \"Latitud\": \"-34.603722\",\n            \"Longitud\": \"-58.381592\",\n            \"Entrecalle1\": \"Talcahuano\",\n            \"Entrecalle2\": \"Libertad\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Particular\"\n            }\n        },\n        {\n            \"EsDomicilioTitular\": true,\n            \"IdPersona\": 12345,\n            \"Id\": 101,\n            \"Calle\": \"Av. Santa Fe\",\n            \"Departamento\": \"B\",\n            \"Edificio\": \"Torre Norte\",\n            \"IdDomicilio\": 201,\n            \"Numero\": 2500,\n            \"Observaciones\": \"\",\n            \"Piso\": \"10\",\n            \"Provincia\": {\n                \"Id\": 1,\n                \"Descripcion\": \"Buenos Aires\"\n            },\n            \"Localidad\": {\n                \"Id\": 5002,\n                \"Descripcion\": \"CABA\",\n                \"CodigoPostal\": \"1123\"\n            },\n            \"EnvioCorreo\": false,\n            \"Latitud\": \"-34.595983\",\n            \"Longitud\": \"-58.399868\",\n            \"Entrecalle1\": \"\",\n            \"Entrecalle2\": \"\",\n            \"Eliminar\": false,\n            \"CategoriaDomicilio\": {\n                \"Id\": 2,\n                \"Descripcion\": \"Laboral\"\n            }\n        }\n    ],\n    \"Notificacion\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "2.2 Buscar domicilios - Usuario sin domicilios",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Busca domicilios de un usuario que no tiene domicilios cargados.\n\nRespuesta esperada:\n- Exito: true\n- Modelo: Array vacio []"
+					},
+					"response": [
+						{
+							"name": "Respuesta Exitosa Sin Domicilios",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/12345",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "12345"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Exito\": true,\n    \"Mensaje\": null,\n    \"Modelo\": [],\n    \"Notificacion\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Validacion de Parametros",
+			"item": [
+				{
+					"name": "3.1 idPersona = 0",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "0"]
+						},
+						"description": "Buscar domicilios con idPersona = 0.\n\nRespuesta esperada:\n- HTTP 200 con null (falla validacion TokenValido)"
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 idPersona negativo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/-1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "-1"]
+						},
+						"description": "Buscar domicilios con idPersona negativo.\n\nRespuesta esperada:\n- HTTP 200 con null (falla validacion TokenValido)"
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 idPersona no numerico",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/abc",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "abc"]
+						},
+						"description": "Buscar domicilios con idPersona no numerico.\n\nRespuesta esperada:\n- HTTP 400 Bad Request o 404 Not Found (segun routing)"
+					},
+					"response": [
+						{
+							"name": "idPersona no numerico",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/abc",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "abc"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Message\": \"The request is invalid.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3.4 idPersona muy grande",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/999999999",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "999999999"]
+						},
+						"description": "Buscar domicilios con idPersona inexistente (muy grande).\n\nRespuesta esperada:\n- HTTP 200 con null (falla validacion TokenValido) o lista vacia"
+					},
+					"response": []
+				},
+				{
+					"name": "3.5 Sin idPersona en la URL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", ""]
+						},
+						"description": "Buscar domicilios sin especificar idPersona.\n\nRespuesta esperada:\n- HTTP 404 Not Found (ruta no existe)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Casos de Error del Servicio",
+			"item": [
+				{
+					"name": "4.1 Error en API Personas (timeout simulado)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Este caso solo se puede probar si el servicio API Personas esta caido o con timeout.\n\nRespuesta esperada si hay error:\n- HTTP 500 Internal Server Error o\n- Exito: false con mensaje de error"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Verificacion de Estructura de Respuesta",
+			"item": [
+				{
+					"name": "5.1 Verificar campos obligatorios en respuesta",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has Exito field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('Exito');",
+									"});",
+									"",
+									"pm.test(\"Response has Modelo field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('Modelo');",
+									"});",
+									"",
+									"pm.test(\"Exito is true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Exito).to.eql(true);",
+									"});",
+									"",
+									"pm.test(\"Modelo is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.Modelo).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"If domicilios exist, verify structure\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.Modelo && jsonData.Modelo.length > 0) {",
+									"        var domicilio = jsonData.Modelo[0];",
+									"        pm.expect(domicilio).to.have.property('Id');",
+									"        pm.expect(domicilio).to.have.property('IdPersona');",
+									"        pm.expect(domicilio).to.have.property('Calle');",
+									"        pm.expect(domicilio).to.have.property('Numero');",
+									"        pm.expect(domicilio).to.have.property('Localidad');",
+									"        pm.expect(domicilio).to.have.property('Provincia');",
+									"        pm.expect(domicilio).to.have.property('CategoriaDomicilio');",
+									"        pm.expect(domicilio).to.have.property('EnvioCorreo');",
+									"        pm.expect(domicilio).to.have.property('EsDomicilioTitular');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Verifica que la respuesta tenga la estructura correcta con tests automaticos de Postman.\n\nTests incluidos:\n- Status code 200\n- Campo Exito presente y true\n- Campo Modelo es un array\n- Si hay domicilios, verificar estructura de cada uno"
+					},
+					"response": []
+				},
+				{
+					"name": "5.2 Verificar campos de Localidad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Localidad has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.Modelo && jsonData.Modelo.length > 0 && jsonData.Modelo[0].Localidad) {",
+									"        var localidad = jsonData.Modelo[0].Localidad;",
+									"        pm.expect(localidad).to.have.property('Id');",
+									"        pm.expect(localidad).to.have.property('Descripcion');",
+									"        pm.expect(localidad).to.have.property('CodigoPostal');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Verifica que el objeto Localidad tenga Id, Descripcion y CodigoPostal."
+					},
+					"response": []
+				},
+				{
+					"name": "5.3 Verificar campos de CategoriaDomicilio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"CategoriaDomicilio has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.Modelo && jsonData.Modelo.length > 0 && jsonData.Modelo[0].CategoriaDomicilio) {",
+									"        var categoria = jsonData.Modelo[0].CategoriaDomicilio;",
+									"        pm.expect(categoria).to.have.property('Id');",
+									"        pm.expect(categoria).to.have.property('Descripcion');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersonaValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "DatosPersonales", "Domicilios", "{{idPersonaValido}}"]
+						},
+						"description": "Verifica que el objeto CategoriaDomicilio tenga Id y Descripcion."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

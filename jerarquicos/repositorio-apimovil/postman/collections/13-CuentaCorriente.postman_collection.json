@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "cc-013",
+		"name": "13 - Cuenta Corriente",
+		"description": "Endpoints del controller CuentaCorrienteController - Gestión de cuenta corriente y resúmenes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "CuentaCorriente",
+			"item": [
+				{
+					"name": "Cuenta Corriente por Persona",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "{{idPersona}}"]
+						},
+						"description": "Obtiene información de cuenta corriente de una persona"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Datos Cuenta Corriente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/obtenerDatosCuentaCorriente/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "obtenerDatosCuentaCorriente", "{{idPersona}}"]
+						},
+						"description": "Obtiene datos detallados de la cuenta corriente"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Resumen",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarResumen/{{idComprobante}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarResumen", "{{idComprobante}}"]
+						},
+						"description": "Descarga PDF del resumen de cuenta corriente"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Detalle Cuenta Corriente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/obtenerDetalleCuentaCorriente/{{idPersona}}/{{anio}}/{{mes}}/{{idFormaPago}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "obtenerDetalleCuentaCorriente", "{{idPersona}}", "{{anio}}", "{{mes}}", "{{idFormaPago}}"]
+						},
+						"description": "Obtiene detalle de cuenta corriente filtrado por período"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Predescuento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarPredescuento/{{idComprobante}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarPredescuento", "{{idComprobante}}"]
+						},
+						"description": "Descarga PDF del predescuento"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Gastos de Salud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarGastosDeSalud/{{numeroSocio}}/{{anio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarGastosDeSalud", "{{numeroSocio}}", "{{anio}}"]
+						},
+						"description": "Descarga PDF de gastos de salud anuales"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Resumen Tarjeta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarResumenTarjeta/{{idComprobante}}/{{idTipoComprobante}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarResumenTarjeta", "{{idComprobante}}", "{{idTipoComprobante}}"]
+						},
+						"description": "Descarga PDF del resumen de tarjeta"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar PDF Cuenta Corriente Salud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarPdfCcteSalud/{{idCuentaCorriente}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarPdfCcteSalud", "{{idCuentaCorriente}}"]
+						},
+						"description": "Descarga PDF de cuenta corriente de salud"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

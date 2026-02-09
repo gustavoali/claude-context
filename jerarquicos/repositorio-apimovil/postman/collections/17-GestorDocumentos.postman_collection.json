@@ -1,0 +1,57 @@
+{
+	"info": {
+		"_postman_id": "gd-017",
+		"name": "17 - Gestor Documentos",
+		"description": "Endpoints del controller GestorDocumentosController - Carga y previsualización de documentos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "GestorDocumentos",
+			"item": [
+				{
+					"name": "Subir Archivo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gestorDocumentos/subirArchivo/{{idTipoDocumentacion}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "gestorDocumentos", "subirArchivo", "{{idTipoDocumentacion}}"]
+						},
+						"description": "Sube un archivo al gestor de documentos"
+					},
+					"response": []
+				},
+				{
+					"name": "Preview Archivo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gestorDocumentos/preview/nombre-archivo.pdf/",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "gestorDocumentos", "preview", "nombre-archivo.pdf", ""]
+						},
+						"description": "Previsualiza un archivo subido"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

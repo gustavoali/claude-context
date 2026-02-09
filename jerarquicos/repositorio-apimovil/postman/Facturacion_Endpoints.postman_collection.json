@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "facturacion-endpoints-collection",
+		"name": "Facturacion - Comprobantes Electronicos",
+		"description": "Coleccion de endpoints para consulta y descarga de comprobantes electronicos (facturas).\n\nHistorias:\n- 179610: Listado de comprobantes\n- 178134: Descarga de comprobante PDF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://srvappdevelop.jerarquicossalud.com.ar/ApiMovil",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": "Bearer token obtenido del login"
+		},
+		{
+			"key": "idComprobanteValido",
+			"value": "12345",
+			"type": "string",
+			"description": "ID de un comprobante existente para pruebas"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Obtener Token (Login)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/token",
+					"host": ["{{baseUrl}}"],
+					"path": ["token"]
+				},
+				"description": "Obtiene el token de autenticacion. Guardar el access_token en la variable 'token'."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Listar Comprobantes Electronicos",
+			"item": [
+				{
+					"name": "2.1 Listar - Con autenticacion (Exito)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "comprobantesElectronicos"]
+						},
+						"description": "Obtiene la lista de comprobantes electronicos del usuario autenticado.\n\nRespuesta esperada:\n- Exito: true\n- Modelo: Array de comprobantes con Id, Fecha, Tipo, Numero, Importe"
+					},
+					"response": [
+						{
+							"name": "Respuesta Exitosa",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "comprobantesElectronicos"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Exito\": true,\n    \"Mensaje\": \"Comprobantes obtenidos correctamente\",\n    \"Modelo\": [\n        {\n            \"Id\": 12345,\n            \"Fecha\": \"2024-01-15T00:00:00\",\n            \"Tipo\": \"B\",\n            \"Numero\": \"0057-10371787\",\n            \"Importe\": 15000.50\n        },\n        {\n            \"Id\": 12344,\n            \"Fecha\": \"2024-01-01T00:00:00\",\n            \"Tipo\": \"B\",\n            \"Numero\": \"0057-10371700\",\n            \"Importe\": 12500.00\n        }\n    ],\n    \"Notificacion\": {\n        \"Mensaje\": \"\",\n        \"Tipo\": 0\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "2.2 Listar - Sin autenticacion (Error)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "comprobantesElectronicos"]
+						},
+						"description": "Intento de obtener comprobantes sin token de autenticacion.\n\nRespuesta esperada:\n- HTTP 401 Unauthorized"
+					},
+					"response": [
+						{
+							"name": "Respuesta Sin Autenticacion",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "comprobantesElectronicos"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Message\": \"Authorization has been denied for this request.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "2.3 Listar - Token expirado (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer token_expirado_o_invalido",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "comprobantesElectronicos"]
+						},
+						"description": "Intento de obtener comprobantes con token expirado o invalido.\n\nRespuesta esperada:\n- HTTP 401 Unauthorized"
+					},
+					"response": []
+				},
+				{
+					"name": "2.4 Listar - Usuario sin comprobantes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "comprobantesElectronicos"]
+						},
+						"description": "Usuario autenticado que no tiene comprobantes electronicos.\n\nRespuesta esperada:\n- Exito: true\n- Modelo: Array vacio []"
+					},
+					"response": [
+						{
+							"name": "Respuesta Lista Vacia",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "comprobantesElectronicos"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Exito\": true,\n    \"Mensaje\": \"Comprobantes obtenidos correctamente\",\n    \"Modelo\": [],\n    \"Notificacion\": {\n        \"Mensaje\": \"\",\n        \"Tipo\": 0\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Descargar Comprobante PDF",
+			"item": [
+				{
+					"name": "3.1 Descargar - ID valido (Exito)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/{{idComprobanteValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "{{idComprobanteValido}}"]
+						},
+						"description": "Descarga el PDF de un comprobante electronico existente.\n\nRespuesta esperada:\n- HTTP 200 OK\n- Content-Type: application/pdf\n- Content-Disposition: attachment; filename=Comprobante_{id}.pdf\n- Body: Bytes del PDF"
+					},
+					"response": [
+						{
+							"name": "Respuesta Exitosa (PDF)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/12345",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "descargarComprobante", "12345"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/octet-stream"
+								},
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=Comprobante_12345.pdf"
+								}
+							],
+							"_postman_previewlanguage": "text",
+							"body": "[PDF Binary Content]"
+						}
+					]
+				},
+				{
+					"name": "3.2 Descargar - Sin autenticacion (Error)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/{{idComprobanteValido}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "{{idComprobanteValido}}"]
+						},
+						"description": "Intento de descargar comprobante sin token de autenticacion.\n\nRespuesta esperada:\n- HTTP 401 Unauthorized"
+					},
+					"response": [
+						{
+							"name": "Respuesta Sin Autenticacion",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/12345",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "descargarComprobante", "12345"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Message\": \"Authorization has been denied for this request.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3.3 Descargar - ID inexistente (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/999999999",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "999999999"]
+						},
+						"description": "Intento de descargar un comprobante con ID que no existe o no tiene documento generado.\n\nRespuesta esperada:\n- HTTP 400 Bad Request (Sin documentos)"
+					},
+					"response": [
+						{
+							"name": "Respuesta Sin Documentos",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/999999999",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "descargarComprobante", "999999999"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"body": "",
+							"header": [
+								{
+									"key": "ReasonPhrase",
+									"value": "Sin documentos"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "3.4 Descargar - ID invalido (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/abc",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "abc"]
+						},
+						"description": "Intento de descargar con un ID que no es numerico.\n\nRespuesta esperada:\n- HTTP 400 Bad Request o 404 Not Found (dependiendo del routing)"
+					},
+					"response": [
+						{
+							"name": "Respuesta ID Invalido",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/abc",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "facturacion", "descargarComprobante", "abc"]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"body": "{\n    \"Message\": \"The request is invalid.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3.5 Descargar - ID negativo (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/-1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "-1"]
+						},
+						"description": "Intento de descargar con un ID negativo.\n\nRespuesta esperada:\n- HTTP 404 Not Found (comprobante no existe)"
+					},
+					"response": []
+				},
+				{
+					"name": "3.6 Descargar - ID cero (Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "0"]
+						},
+						"description": "Intento de descargar con ID cero.\n\nRespuesta esperada:\n- HTTP 404 Not Found (comprobante no existe)"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

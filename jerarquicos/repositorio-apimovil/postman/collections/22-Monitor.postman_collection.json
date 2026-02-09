@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "mon-022",
+		"name": "22 - Monitor",
+		"description": "Endpoints del controller MonitorController - Monitoreo de servicios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Monitor",
+			"item": [
+				{
+					"name": "Verificar Servicios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/monitor/verificarServicios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "monitor", "verificarServicios"]
+						},
+						"description": "Verifica el estado de los servicios del sistema"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

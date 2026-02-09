@@ -1,0 +1,75 @@
+{
+	"info": {
+		"_postman_id": "not-023",
+		"name": "23 - Notificaciones",
+		"description": "Endpoints del controller NotificacionesController - Consulta de notificaciones push",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Notificaciones",
+			"item": [
+				{
+					"name": "Notificaciones iOS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Notificaciones/NotificacionesIOS",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Notificaciones", "NotificacionesIOS"]
+						},
+						"description": "Obtiene notificaciones para iOS"
+					},
+					"response": []
+				},
+				{
+					"name": "Notificaciones Recientes iOS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Notificaciones/NotificacionesRecientesIOS",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Notificaciones", "NotificacionesRecientesIOS"]
+						},
+						"description": "Obtiene notificaciones recientes para iOS"
+					},
+					"response": []
+				},
+				{
+					"name": "Notificaciones Android",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Notificaciones/NotificacionesAndroid",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Notificaciones", "NotificacionesAndroid"]
+						},
+						"description": "Obtiene notificaciones para Android"
+					},
+					"response": []
+				},
+				{
+					"name": "Notificaciones Recientes Android",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Notificaciones/NotificacionesRecientesAndroid",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Notificaciones", "NotificacionesRecientesAndroid"]
+						},
+						"description": "Obtiene notificaciones recientes para Android"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

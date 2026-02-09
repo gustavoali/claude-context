@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "car-006",
+		"name": "06 - Cartilla",
+		"description": "Endpoints del controller CartillaController - Búsqueda de instituciones, profesionales y emergencias",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Cartilla",
+			"item": [
+				{
+					"name": "Emergencias",
+					"item": [
+						{
+							"name": "Emergencias por Localidad y Radio",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Emergencias/{{localidad}}/{{radio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}"]
+								},
+								"description": "Busca servicios de emergencia por localidad y radio"
+							},
+							"response": []
+						},
+						{
+							"name": "Emergencias por Localidad Radio y Persona",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Emergencias/{{localidad}}/{{radio}}/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}", "{{idPersona}}"]
+								},
+								"description": "Busca servicios de emergencia para una persona específica"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Instituciones",
+					"item": [
+						{
+							"name": "Tipos de Institucion",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/TiposInstitucion",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "TiposInstitucion"]
+								},
+								"description": "Obtiene tipos de instituciones disponibles"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Cerca De Mi",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdTipoInstitucion\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/CercaDeMi",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "CercaDeMi"]
+								},
+								"description": "Busca instituciones cercanas a una ubicación (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Cerca De Mi Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdTipoInstitucion\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/CercaDeMiProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "CercaDeMiProtegido"]
+								},
+								"description": "Busca instituciones cercanas (requiere autenticación)"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Radio N",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Localidad\": \"{{localidad}}\",\n    \"Radio\": {{radio}},\n    \"IdTipoInstitucion\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/RadioN",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "RadioN"]
+								},
+								"description": "Busca instituciones en radio N de una localidad (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Radio N Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Localidad\": \"{{localidad}}\",\n    \"Radio\": {{radio}},\n    \"IdTipoInstitucion\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/RadioNProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "RadioNProtegido"]
+								},
+								"description": "Busca instituciones en radio N (requiere autenticación)"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Cerca De Mi Mapa",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/CercaDeMi/Mapa",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "CercaDeMi", "Mapa"]
+								},
+								"description": "Obtiene instituciones para mostrar en mapa (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Instituciones Cerca De Mi Mapa Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Instituciones/CercaDeMi/MapaProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Instituciones", "CercaDeMi", "MapaProtegido"]
+								},
+								"description": "Obtiene instituciones para mapa (autenticado)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Profesionales",
+					"item": [
+						{
+							"name": "Especialidades Medicas",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/EspecialidadesMedicas",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "EspecialidadesMedicas"]
+								},
+								"description": "Obtiene lista de especialidades médicas"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Radio N",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Localidad\": \"{{localidad}}\",\n    \"Radio\": {{radio}},\n    \"IdEspecialidad\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/RadioN",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "RadioN"]
+								},
+								"description": "Busca profesionales en radio N (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Radio N Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Localidad\": \"{{localidad}}\",\n    \"Radio\": {{radio}},\n    \"IdEspecialidad\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/RadioNProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "RadioNProtegido"]
+								},
+								"description": "Busca profesionales en radio N (autenticado)"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Cerca De Mi",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdEspecialidad\": 1\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/CercaDeMi",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "CercaDeMi"]
+								},
+								"description": "Busca profesionales cercanos (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Cerca De Mi Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdEspecialidad\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/CercaDeMiProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "CercaDeMiProtegido"]
+								},
+								"description": "Busca profesionales cercanos (autenticado)"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Cerca De Mi Mapa",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/CercaDeMi/Mapa",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "CercaDeMi", "Mapa"]
+								},
+								"description": "Profesionales para mapa (público)"
+							},
+							"response": []
+						},
+						{
+							"name": "Profesionales Cerca De Mi Mapa Protegido",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdPersona\": {{idPersona}}\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/Profesionales/CercaDeMi/MapaProtegido",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "Profesionales", "CercaDeMi", "MapaProtegido"]
+								},
+								"description": "Profesionales para mapa (autenticado)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Favoritos",
+					"item": [
+						{
+							"name": "Agregar Favorito",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"IdPrestador\": 1,\n    \"TipoPrestador\": \"Profesional\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/AgregarFavorito",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "AgregarFavorito"]
+								},
+								"description": "Agrega un prestador a favoritos"
+							},
+							"response": []
+						},
+						{
+							"name": "Quitar Favorito",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"IdPrestador\": 1,\n    \"TipoPrestador\": \"Profesional\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/QuitarFavorito",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "QuitarFavorito"]
+								},
+								"description": "Quita un prestador de favoritos"
+							},
+							"response": []
+						},
+						{
+							"name": "Buscar Favoritos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Cartilla/BuscarFavoritos/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Cartilla", "BuscarFavoritos", "{{idPersona}}"]
+								},
+								"description": "Obtiene lista de prestadores favoritos"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

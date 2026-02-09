@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "ps-026",
+		"name": "26 - Perfil Socio",
+		"description": "Endpoints del controller PerfilSocioController - Gestión del perfil del socio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "PerfilSocio",
+			"item": [
+				{
+					"name": "Perfil por Socio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene el perfil completo del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Ultimas Compras",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/UltimasCompras/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "UltimasCompras", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene las últimas compras del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Contador Autorizaciones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/ContadorAutorizaciones/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "ContadorAutorizaciones", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene contador de autorizaciones pendientes"
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Foto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/BorrarFoto/{{idPersona}}/{{idTipoFotoPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "BorrarFoto", "{{idPersona}}", "{{idTipoFotoPersona}}"]
+						},
+						"description": "Borra la foto de perfil del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Editar Foto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "foto",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/AgregarEditarFoto/{{idPersona}}/{{idTipoFotoPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "AgregarEditarFoto", "{{idPersona}}", "{{idTipoFotoPersona}}"]
+						},
+						"description": "Agrega o edita la foto de perfil"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar Editar Foto Swift",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"IdTipoFotoPersona\": {{idTipoFotoPersona}},\n    \"FotoBase64\": \"data:image/jpeg;base64,...\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/AgregarEditarFotoSwift",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "AgregarEditarFotoSwift"]
+						},
+						"description": "Agrega o edita foto desde iOS (base64)"
+					},
+					"response": []
+				},
+				{
+					"name": "Marcar Mensaje Compras Leido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/MarcarMensajeComprasLeido/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "MarcarMensajeComprasLeido", "{{idPersona}}"]
+						},
+						"description": "Marca el mensaje de compras como leído"
+					},
+					"response": []
+				},
+				{
+					"name": "Marcar Mensaje Datos Personales Leido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/MarcarMensajeDatosPersonalesLeido/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "MarcarMensajeDatosPersonalesLeido", "{{idPersona}}"]
+						},
+						"description": "Marca el mensaje de datos personales como leído"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Terminos Y Condiciones",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Acepto\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/GuardarTerminosYCondiciones",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "GuardarTerminosYCondiciones"]
+						},
+						"description": "Guarda la aceptación de términos y condiciones"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Terminos Y Condiciones iOS",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Acepto\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PerfilSocio/GuardarTerminosYCondicionesIOS",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PerfilSocio", "GuardarTerminosYCondicionesIOS"]
+						},
+						"description": "Guarda términos y condiciones desde iOS"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

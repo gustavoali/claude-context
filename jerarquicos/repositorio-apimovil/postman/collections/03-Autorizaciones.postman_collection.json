@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "aut-003",
+		"name": "03 - Autorizaciones",
+		"description": "Endpoints del controller AutorizacionesController - Gestión de autorizaciones médicas y solicitudes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Autorizaciones",
+			"item": [
+				{
+					"name": "Obtener Detalle Solicitud Autorizacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerDetalleSolicitudAutorizacion/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerDetalleSolicitudAutorizacion", "{{idSolicitud}}"]
+						},
+						"description": "Obtiene el detalle de una solicitud de autorización específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Servicios de Salud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerServicioSalud",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerServicioSalud"]
+						},
+						"description": "Obtiene lista de servicios de salud disponibles para autorización"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Categorias de Salud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerCategoriasSalud",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerCategoriasSalud"]
+						},
+						"description": "Obtiene lista de categorías de servicios de salud"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Socios para Autorizacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerSociosAutorizacion",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerSociosAutorizacion"]
+						},
+						"description": "Obtiene lista de socios del grupo familiar para realizar autorizaciones"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Solicitudes de Autorizaciones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerSolicitudAutorizaciones",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerSolicitudAutorizaciones"]
+						},
+						"description": "Obtiene listado de solicitudes de autorizaciones del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Anular Solicitud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/anularSolicitud/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "anularSolicitud", "{{idSolicitud}}"]
+						},
+						"description": "Anula una solicitud de autorización existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Grabar Solicitud Autorizacion",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdServicio\": 1,\n    \"IdSocio\": 1,\n    \"Observaciones\": \"Observaciones de la solicitud\",\n    \"Archivos\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/grabarSolicitudAutorizacion",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "grabarSolicitudAutorizacion"]
+						},
+						"description": "Crea una nueva solicitud de autorización médica"
+					},
+					"response": []
+				},
+				{
+					"name": "Enviar Documentacion Complementaria",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdSolicitud\": 1,\n    \"Archivos\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/enviarDocumentacionComplementaria",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "enviarDocumentacionComplementaria"]
+						},
+						"description": "Envía documentación adicional para una solicitud existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Autorizacion Con Expediente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarAutorizacionConExpediente/{{idExpediente}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarAutorizacionConExpediente", "{{idExpediente}}"]
+						},
+						"description": "Descarga PDF de autorización con expediente"
+					},
+					"response": []
+				},
+				{
+					"name": "Detalles FTP Pedido Medicamento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/detallesFtpPedidoMedicamento/{{idExpediente}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "detallesFtpPedidoMedicamento", "{{idExpediente}}"]
+						},
+						"description": "Obtiene detalles del FTP de pedido de medicamentos"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Documentos Solicitud",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerDocumentosSolicitud/{{idSolicitud}}/{{idServicio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerDocumentosSolicitud", "{{idSolicitud}}", "{{idServicio}}"]
+						},
+						"description": "Obtiene documentos asociados a una solicitud"
+					},
+					"response": []
+				},
+				{
+					"name": "Es Socio Valido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/esSocioValido/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "esSocioValido", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Valida si un socio existe y está activo"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar PDF Documentacion Requerida",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarPdfDocumentacionRequerida/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarPdfDocumentacionRequerida", "1"]
+						},
+						"description": "Descarga PDF con documentación requerida"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Reporte Documentacion Faltante",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarReporteDocumentacionFaltante/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarReporteDocumentacionFaltante", "{{idSolicitud}}"]
+						},
+						"description": "Descarga reporte de documentación faltante"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Autorizacion Sin Expediente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarAutorizacionSinExpediente/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarAutorizacionSinExpediente", "{{idSolicitud}}"]
+						},
+						"description": "Descarga PDF de autorización sin expediente"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar PDF Autorizacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarPdfAutorizacion/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarPdfAutorizacion", "{{idSolicitud}}"]
+						},
+						"description": "Descarga PDF de autorización"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar PDF Autorizacion por Estado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarPdfAutorizacion/{{idSolicitud}}/{{idEstado}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarPdfAutorizacion", "{{idSolicitud}}", "{{idEstado}}"]
+						},
+						"description": "Descarga PDF de autorización filtrado por estado"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

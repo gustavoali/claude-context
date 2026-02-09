@@ -1,0 +1,192 @@
+{
+	"info": {
+		"_postman_id": "acc-002",
+		"name": "02 - Account",
+		"description": "Endpoints del controller AccountController - Autenticación y gestión de cuenta (OAuth)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get User Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/UserInfo",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "UserInfo"]
+						},
+						"description": "Obtiene información del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/Logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "Logout"]
+						},
+						"description": "Cierra la sesión del usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manage Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/ManageInfo?returnUrl=/&generateState=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "ManageInfo"],
+							"query": [
+								{"key": "returnUrl", "value": "/"},
+								{"key": "generateState", "value": "true"}
+							]
+						},
+						"description": "Obtiene información de gestión de cuenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"OldPassword\": \"oldPassword123\",\n    \"NewPassword\": \"newPassword123\",\n    \"ConfirmPassword\": \"newPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/ChangePassword",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "ChangePassword"]
+						},
+						"description": "Cambia la contraseña del usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NewPassword\": \"newPassword123\",\n    \"ConfirmPassword\": \"newPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/SetPassword",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "SetPassword"]
+						},
+						"description": "Establece una contraseña (para usuarios sin contraseña local)"
+					},
+					"response": []
+				},
+				{
+					"name": "Add External Login",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ExternalAccessToken\": \"token\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/AddExternalLogin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "AddExternalLogin"]
+						},
+						"description": "Agrega un login externo a la cuenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Login",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"LoginProvider\": \"provider\",\n    \"ProviderKey\": \"key\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/RemoveLogin",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "RemoveLogin"]
+						},
+						"description": "Elimina un login de la cuenta"
+					},
+					"response": []
+				},
+				{
+					"name": "Get External Logins",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/ExternalLogins?returnUrl=/&generateState=true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "ExternalLogins"],
+							"query": [
+								{"key": "returnUrl", "value": "/"},
+								{"key": "generateState", "value": "true"}
+							]
+						},
+						"description": "Obtiene lista de proveedores de login externo disponibles"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\": \"usuario@email.com\",\n    \"Password\": \"Password123!\",\n    \"ConfirmPassword\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/Register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "Register"]
+						},
+						"description": "Registra un nuevo usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Register External",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\": \"usuario@email.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Account/RegisterExternal",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Account", "RegisterExternal"]
+						},
+						"description": "Registra un usuario mediante proveedor externo"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

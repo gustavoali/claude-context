@@ -1,0 +1,33 @@
+{
+	"info": {
+		"_postman_id": "log-021",
+		"name": "21 - Log Aplicacion Movil",
+		"description": "Endpoints del controller LogAplicacionMovilController - Registro de logs desde app móvil",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LogAplicacionMovil",
+			"item": [
+				{
+					"name": "Insertar Registros Log",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Timestamp\": \"2024-01-01T12:00:00Z\",\n        \"Nivel\": \"INFO\",\n        \"Mensaje\": \"App iniciada\",\n        \"Dispositivo\": \"Android\",\n        \"Version\": \"1.0.0\"\n    }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/LogAplicacionMovil/insertarRegistros",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "LogAplicacionMovil", "insertarRegistros"]
+						},
+						"description": "Inserta registros de log desde la aplicación móvil"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

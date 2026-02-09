@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "cue-012",
+		"name": "12 - Cuenta",
+		"description": "Endpoints del controller CuentaController - Registro, login y gestión de cuenta de usuario",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cuenta",
+			"item": [
+				{
+					"name": "Registro No Socios",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\": \"usuario@email.com\",\n    \"Password\": \"Password123!\",\n    \"Nombre\": \"Juan\",\n    \"Apellido\": \"Pérez\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/nosocios",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "nosocios"]
+						},
+						"description": "Registra un usuario que no es socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro Socio Orden",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"NumeroSocio\": {{numeroSocio}},\n    \"OrdenSocio\": {{ordenSocio}},\n    \"Email\": \"socio@email.com\",\n    \"Password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/registrosocioorden",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "registrosocioorden"]
+						},
+						"description": "Registra un socio con número y orden"
+					},
+					"response": []
+				},
+				{
+					"name": "Restablecer Contrasenia",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\": \"usuario@email.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/restablecercontrasenia",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "restablecercontrasenia"]
+						},
+						"description": "Solicita restablecimiento de contraseña"
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Contrasenia",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ContraseniaActual\": \"OldPassword123!\",\n    \"ContraseniaNueva\": \"NewPassword123!\",\n    \"ConfirmarContrasenia\": \"NewPassword123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/cambiarcontrasenia",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "cambiarcontrasenia"]
+						},
+						"description": "Cambia la contraseña del usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro APNS (iOS)",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"DeviceToken\": \"token-apns-ios\",\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/registroapns",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "registroapns"]
+						},
+						"description": "Registra token de push notifications para iOS (APNS)"
+					},
+					"response": []
+				},
+				{
+					"name": "Registro GCM (Android)",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"RegistrationId\": \"token-gcm-android\",\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/registrogcm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "registrogcm"]
+						},
+						"description": "Registra token de push notifications para Android (GCM/FCM)"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Registro GCM",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"RegistrationId\": \"{{registrationId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/eliminarRegistrogcm",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "eliminarRegistrogcm"]
+						},
+						"description": "Elimina registro de push notifications Android"
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar Sesion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Cuenta/cerrarsesion/{{registrationId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Cuenta", "cerrarsesion", "{{registrationId}}"]
+						},
+						"description": "Cierra la sesión y elimina el registro de push"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

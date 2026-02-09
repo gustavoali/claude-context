@@ -1,0 +1,51 @@
+{
+	"info": {
+		"_postman_id": "sug-033",
+		"name": "33 - Sugerencias",
+		"description": "Endpoints del controller SugerenciasController - Envío de sugerencias y quejas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Sugerencias",
+			"item": [
+				{
+					"name": "Obtener Motivos Sugerencia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sugerencias/motivossugerencia",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "sugerencias", "motivossugerencia"]
+						},
+						"description": "Obtiene la lista de motivos disponibles para sugerencias/quejas"
+					},
+					"response": []
+				},
+				{
+					"name": "Enviar Sugerencia",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdMotivo\": 1,\n    \"Descripcion\": \"Descripción de la sugerencia o queja\",\n    \"Email\": \"usuario@ejemplo.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/sugerencias/sugerencia",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "sugerencias", "sugerencia"]
+						},
+						"description": "Envía una nueva sugerencia o queja"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

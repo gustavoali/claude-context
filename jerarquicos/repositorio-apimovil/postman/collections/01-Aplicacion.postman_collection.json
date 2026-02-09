@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "app-001",
+		"name": "01 - Aplicacion",
+		"description": "Endpoints del controller AplicacionController - Información de la aplicación y acuse de notificaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Aplicacion",
+			"item": [
+				{
+					"name": "Get Aplicacion Info",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion"]
+						},
+						"description": "Obtiene información de la aplicación: versión, nombre, novedades, URLs"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Online Status",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion/CheckOnlineStatus/ping",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion", "CheckOnlineStatus", "ping"]
+						},
+						"description": "Verifica si el servidor está online"
+					},
+					"response": []
+				},
+				{
+					"name": "Acusar Notificacion Individual",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion/acusarnotificacion/{{idComunicacion}}/{{numeroSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion", "acusarnotificacion", "{{idComunicacion}}", "{{numeroSocio}}"]
+						},
+						"description": "Acusa recibo de una notificación individual. Requiere autenticación."
+					},
+					"response": []
+				},
+				{
+					"name": "Acusar Notificaciones Masivo",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    1,\n    2,\n    3\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion/acusarnotificaciones",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion", "acusarnotificaciones"]
+						},
+						"description": "Acusa recibo de múltiples notificaciones en lote. Requiere autenticación."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

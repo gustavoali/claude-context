@@ -1,0 +1,169 @@
+{
+	"info": {
+		"_postman_id": "hs-019",
+		"name": "19 - Historial Salud",
+		"description": "Endpoints del controller HistorialSaludController - Gestión del historial clínico digital",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "HistorialSalud",
+			"item": [
+				{
+					"name": "Solicitar Espacio",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/SolicitarEspacio",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "SolicitarEspacio"]
+						},
+						"description": "Solicita espacio para historial de salud"
+					},
+					"response": []
+				},
+				{
+					"name": "Historial por Socio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}"]
+						},
+						"description": "Obtiene historial de salud del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Tiene Permiso",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/TienePermiso/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "TienePermiso", "{{idPersona}}"]
+						},
+						"description": "Verifica si tiene permiso para acceder al historial"
+					},
+					"response": []
+				},
+				{
+					"name": "Enviar Historial Salud",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Archivos\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/EnviarHistorialSalud",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "EnviarHistorialSalud"]
+						},
+						"description": "Envía documentos al historial de salud"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Documento",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdDocumento\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/EliminarDocumento",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "EliminarDocumento"]
+						},
+						"description": "Elimina un documento del historial"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Indice",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdIndice\": 1,\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/EliminarIndice",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "EliminarIndice"]
+						},
+						"description": "Elimina un índice del historial"
+					},
+					"response": []
+				},
+				{
+					"name": "Compartir Indice",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdIndice\": 1,\n    \"IdPersona\": {{idPersona}},\n    \"EmailDestino\": \"medico@email.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/CompartirIndice",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "CompartirIndice"]
+						},
+						"description": "Comparte un índice con otro usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "Documentos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/documentos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "documentos"]
+						},
+						"description": "Obtiene lista de documentos del historial"
+					},
+					"response": []
+				},
+				{
+					"name": "Bloquear Historia Clinica",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Bloquear\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/HistorialSalud/BloquearHistoriaClinica",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HistorialSalud", "BloquearHistoriaClinica"]
+						},
+						"description": "Bloquea o desbloquea la historia clínica"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

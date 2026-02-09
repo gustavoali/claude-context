@@ -1,0 +1,37 @@
+{
+	"info": {
+		"_postman_id": "pag-024",
+		"name": "24 - Pagos",
+		"description": "Endpoints del controller PagosController - Procesamiento de pagos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Pagos",
+			"item": [
+				{
+					"name": "Pagar",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Monto\": 1000,\n    \"IdFormaPago\": 1,\n    \"Detalle\": \"Pago de cuota\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Pagos/pagar",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Pagos", "pagar"]
+						},
+						"description": "Procesa un pago"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

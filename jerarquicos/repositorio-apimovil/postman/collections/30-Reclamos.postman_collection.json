@@ -1,0 +1,79 @@
+{
+	"info": {
+		"_postman_id": "rec-030",
+		"name": "30 - Reclamos",
+		"description": "Endpoints del controller ReclamosController - Gestión de reclamos de consumos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Reclamos",
+			"item": [
+				{
+					"name": "Reclamos por Persona",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reclamos/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reclamos", "{{idPersona}}"]
+						},
+						"description": "Obtiene reclamos de una persona"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Reclamo Consumo",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"IdConsumo\": 1,\n    \"Motivo\": \"Descripción del reclamo\",\n    \"IdPregunta\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Reclamos/ReclamoConsumo",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reclamos", "ReclamoConsumo"]
+						},
+						"description": "Crea un reclamo sobre un consumo"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Archivo Consulta Reclamo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reclamos/DescargarArchivoConsultaReclamo/{{numeroSocio}}/{{idConsultaReclamo}}/{{idArchivo}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reclamos", "DescargarArchivoConsultaReclamo", "{{numeroSocio}}", "{{idConsultaReclamo}}", "{{idArchivo}}"]
+						},
+						"description": "Descarga archivo adjunto de consulta de reclamo"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Preguntas de Reclamos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reclamos/ObtenerPreguntasDeReclamos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reclamos", "ObtenerPreguntasDeReclamos"]
+						},
+						"description": "Obtiene preguntas predefinidas para reclamos"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

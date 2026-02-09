@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "rei-031",
+		"name": "31 - Reintegros",
+		"description": "Endpoints del controller ReintegrosController - Gestión de solicitudes de reintegro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Reintegros",
+			"item": [
+				{
+					"name": "Consultas",
+					"item": [
+						{
+							"name": "Reintegros por Socio",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}"]
+								},
+								"description": "Obtiene lista de reintegros del socio"
+							},
+							"response": []
+						},
+						{
+							"name": "Nueva Solicitud",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/NuevaSolicitud",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "NuevaSolicitud"]
+								},
+								"description": "Obtiene información para crear nueva solicitud de reintegro"
+							},
+							"response": []
+						},
+						{
+							"name": "Solicitud por Socio",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/Solicitud/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "Solicitud", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}"]
+								},
+								"description": "Obtiene solicitud de reintegro del socio"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Periodos Resumen Anual",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/obtenerPeriodosResumenAnual",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "obtenerPeriodosResumenAnual"]
+								},
+								"description": "Obtiene períodos disponibles para resumen anual"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Solicitudes",
+					"item": [
+						{
+							"name": "Envio Documentacion Faltante",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdReintegro\": {{idReintegro}},\n    \"Archivos\": []\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/enviodocumentacion",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "enviodocumentacion"]
+								},
+								"description": "Envía documentación faltante para un reintegro"
+							},
+							"response": []
+						},
+						{
+							"name": "Enviar Solicitud",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"TipoReintegro\": 1,\n    \"Descripcion\": \"Descripción del reintegro\",\n    \"Archivos\": []\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/EnviarSolicitud",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "EnviarSolicitud"]
+								},
+								"description": "Envía nueva solicitud de reintegro"
+							},
+							"response": []
+						},
+						{
+							"name": "Enviar Solicitud Comprobante",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"NumeroComprobante\": \"0001-00001234\",\n    \"FechaComprobante\": \"2024-01-15\",\n    \"Monto\": 5000\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/EnviarSolicitudComprobante",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "EnviarSolicitudComprobante"]
+								},
+								"description": "Envía solicitud de reintegro con comprobante"
+							},
+							"response": []
+						},
+						{
+							"name": "Comprobar Duplicidad Comprobante",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"NumeroComprobante\": \"0001-00001234\",\n    \"CuitPrestador\": \"20123456789\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/ComprobarDuplicidadComprobante",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "ComprobarDuplicidadComprobante"]
+								},
+								"description": "Verifica si un comprobante ya fue presentado"
+							},
+							"response": []
+						},
+						{
+							"name": "Subir Archivo",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": ""
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/subirarchivo",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "subirarchivo"]
+								},
+								"description": "Sube archivo para solicitud de reintegro"
+							},
+							"response": []
+						},
+						{
+							"name": "Enviar Mail Consulta Reintegro",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdReintegro\": {{idReintegro}},\n    \"Mensaje\": \"Consulta sobre el estado del reintegro\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/enviarmailconsultareintegro",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "enviarmailconsultareintegro"]
+								},
+								"description": "Envía mail de consulta sobre un reintegro"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Descargas",
+					"item": [
+						{
+							"name": "Descargar Resumen Anual",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/descargaresumenanual/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{anio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "descargaresumenanual", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}", "{{anio}}"]
+								},
+								"description": "Descarga resumen anual de reintegros"
+							},
+							"response": []
+						},
+						{
+							"name": "Descargar Reclamo",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/descargareclamo/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{idReintegro}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "descargareclamo", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}", "{{idReintegro}}"]
+								},
+								"description": "Descarga PDF del reclamo"
+							},
+							"response": []
+						},
+						{
+							"name": "Descargar Reintegro",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reintegros/descargareintegro/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{idReintegro}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "Reintegros", "descargareintegro", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}", "{{idReintegro}}"]
+								},
+								"description": "Descarga PDF del reintegro"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

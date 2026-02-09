@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "sol-032",
+		"name": "32 - Solicitud (Gestion Solicitudes)",
+		"description": "Endpoints del controller SolicitudController - Gestión de solicitudes de servicios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Solicitud",
+			"item": [
+				{
+					"name": "Consultas",
+					"item": [
+						{
+							"name": "Obtener Informacion Solicitudes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/obtenerInformacionSolicitudes",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "obtenerInformacionSolicitudes"]
+								},
+								"description": "Obtiene información general de solicitudes del socio"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Historial Estado Solicitud",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/obtenerHistorialEstadoSolicitud/{{idSolicitud}}/{{idServicio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "obtenerHistorialEstadoSolicitud", "{{idSolicitud}}", "{{idServicio}}"]
+								},
+								"description": "Obtiene el historial de estados de una solicitud específica"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener Domicilio y Planes Region",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/obtenerDomicilioYPlanesRegion",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "obtenerDomicilioYPlanesRegion"]
+								},
+								"description": "Obtiene domicilio y planes de la región del socio"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Gestion de Solicitudes",
+					"item": [
+						{
+							"name": "Guardar Solicitud",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdServicio\": 1,\n    \"IdPlan\": {{idPlan}},\n    \"Descripcion\": \"Descripción de la solicitud\",\n    \"Archivos\": []\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/guardarSolicitud",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "guardarSolicitud"]
+								},
+								"description": "Guarda una nueva solicitud de servicio"
+							},
+							"response": []
+						},
+						{
+							"name": "Anular Solicitud",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/anularSolicitud/{{idSolicitud}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "anularSolicitud", "{{idSolicitud}}"]
+								},
+								"description": "Anula una solicitud existente"
+							},
+							"response": []
+						},
+						{
+							"name": "Guardar Documentacion Faltante",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdSolicitud\": {{idSolicitud}},\n    \"Archivos\": []\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/guardarDocumentacionFaltante",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "guardarDocumentacionFaltante"]
+								},
+								"description": "Guarda documentación faltante para una solicitud"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Descargas",
+					"item": [
+						{
+							"name": "Descargar PDF Documentacion Requerida",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarPdfDocumentacionRequerida/{{idServicio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "descargarPdfDocumentacionRequerida", "{{idServicio}}"]
+								},
+								"description": "Descarga PDF con documentación requerida para un servicio"
+							},
+							"response": []
+						},
+						{
+							"name": "Descargar Reporte Documentacion Faltante",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarReporteDocumentacionFaltante/{{idSolicitud}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "descargarReporteDocumentacionFaltante", "{{idSolicitud}}"]
+								},
+								"description": "Descarga reporte de documentación faltante de una solicitud"
+							},
+							"response": []
+						},
+						{
+							"name": "Descargar Reporte Solicitud Servicio Resolucion",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarReporteSolicitudServicioResolucion/{{idSolicitud}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "descargarReporteSolicitudServicioResolucion", "{{idSolicitud}}"]
+								},
+								"description": "Descarga reporte de resolución de solicitud de servicio"
+							},
+							"response": []
+						},
+						{
+							"name": "Descargar PDF Solicitud",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarPdfSolicitud/{{idSolicitud}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "gestionSolicitudes", "descargarPdfSolicitud", "{{idSolicitud}}"]
+								},
+								"description": "Descarga PDF de una solicitud"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "pl-027",
+		"name": "27 - Practicas Liberadas",
+		"description": "Endpoints del controller PracticasLiberadasController - Consulta de prácticas liberadas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "PracticasLiberadas",
+			"item": [
+				{
+					"name": "Grupos Capitulos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/GruposCapitulos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "GruposCapitulos"]
+						},
+						"description": "Obtiene grupos de capítulos de prácticas"
+					},
+					"response": []
+				},
+				{
+					"name": "Practicas por Grupo Capitulos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/{{grupoCapitulos}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "{{grupoCapitulos}}"]
+						},
+						"description": "Obtiene prácticas de un grupo de capítulos"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Comprobante",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/descargarcomprobante/{{codigoPractica}}/{{idPlan}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "descargarcomprobante", "{{codigoPractica}}", "{{idPlan}}"]
+						},
+						"description": "Descarga comprobante de práctica liberada"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscador Practica",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Texto\": \"consulta\",\n    \"IdPlan\": {{idPlan}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/buscadorPractica",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "buscadorPractica"]
+						},
+						"description": "Busca prácticas por texto"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Practica",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/obtenerPractica/{{codigoPractica}}/{{idPlan}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "obtenerPractica", "{{codigoPractica}}", "{{idPlan}}"]
+						},
+						"description": "Obtiene detalle de una práctica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Planes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/obtenerPlanes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "obtenerPlanes"]
+						},
+						"description": "Obtiene lista de planes disponibles"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

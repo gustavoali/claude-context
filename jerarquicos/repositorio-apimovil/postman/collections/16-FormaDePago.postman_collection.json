@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "fdp-016",
+		"name": "16 - Forma De Pago",
+		"description": "Endpoints del controller FormaDePagoController - Gestión de medios y formas de pago",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "FormaDePago",
+			"item": [
+				{
+					"name": "Forma Pago por Persona",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/FormaPagoPersona/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "FormaPagoPersona", "{{idPersona}}"]
+						},
+						"description": "Obtiene formas de pago de una persona"
+					},
+					"response": []
+				},
+				{
+					"name": "Consulta CBU",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/ConsultaCbu/{{cbu}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "ConsultaCbu", "{{cbu}}"]
+						},
+						"description": "Consulta información de un CBU"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Medio Pago Tarjeta",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"NumeroTarjeta\": \"4111111111111111\",\n    \"FechaVencimiento\": \"12/25\",\n    \"Titular\": \"JUAN PEREZ\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/GuardarMedioPagoTarjeta",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "GuardarMedioPagoTarjeta"]
+						},
+						"description": "Guarda una tarjeta como medio de pago"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Medio Pago CBU",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Cbu\": \"{{cbu}}\",\n    \"Alias\": \"mi-cuenta\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/GuardarMedioPagoCbu",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "GuardarMedioPagoCbu"]
+						},
+						"description": "Guarda un CBU como medio de pago"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Forma Pago",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"IdFormaPago\": 1,\n    \"Datos\": {}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/GuardarFormaPago",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "GuardarFormaPago"]
+						},
+						"description": "Guarda una forma de pago"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Medios Pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/FormaDePago/ObtenerMediosPago",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "FormaDePago", "ObtenerMediosPago"]
+						},
+						"description": "Obtiene lista de medios de pago disponibles"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

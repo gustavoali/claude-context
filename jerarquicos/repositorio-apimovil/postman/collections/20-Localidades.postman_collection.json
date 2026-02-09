@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "loc-020",
+		"name": "20 - Localidades",
+		"description": "Endpoints del controller LocalidadesController - Búsqueda de localidades",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Localidades",
+			"item": [
+				{
+					"name": "Localidades por Provincia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades/LocalidadesXProvincia/{{idProvincia}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades", "LocalidadesXProvincia", "{{idProvincia}}"]
+						},
+						"description": "Obtiene localidades de una provincia"
+					},
+					"response": []
+				},
+				{
+					"name": "Localidades por Provincia Filtrado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades/LocalidadesXProvinciaFiltrado/{{idProvincia}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades", "LocalidadesXProvinciaFiltrado", "{{idProvincia}}"]
+						},
+						"description": "Obtiene localidades filtradas de una provincia"
+					},
+					"response": []
+				},
+				{
+					"name": "Localidades por Provincia Sin Filtrar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades/LocalidadesXProvinciaSinFiltrar/{{idProvincia}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades", "LocalidadesXProvinciaSinFiltrar", "{{idProvincia}}"]
+						},
+						"description": "Obtiene todas las localidades de una provincia sin filtrar"
+					},
+					"response": []
+				},
+				{
+					"name": "Provincia Localidad por Coordenadas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades/ProvinciaLocalidad/{{latitud}}/{{longitud}}/",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades", "ProvinciaLocalidad", "{{latitud}}", "{{longitud}}", ""]
+						},
+						"description": "Obtiene provincia y localidad a partir de coordenadas"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

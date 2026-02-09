@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "api-reportes-migration-tests",
+		"name": "API Reportes - Migration Tests",
+		"description": "Coleccion para probar los endpoints migrados de WCF/Legacy a API Reportes REST.\n\nEndpoints migrados:\n- Comprobante Electronico (Facturacion)\n- Resumen Tarjeta JS (Compras Comercios)\n- Resumen Tarjeta JS (Cuenta Corriente)\n- Certificado Pago Servicios Salud\n- Detalle Plan Salud",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Facturacion",
+			"item": [
+				{
+					"name": "Descargar Comprobante Electronico",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/facturacion/descargarComprobanteElectronico/{{id_comprobante}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"facturacion",
+								"descargarComprobanteElectronico",
+								"{{id_comprobante}}"
+							]
+						},
+						"description": "Descarga el PDF de un comprobante electronico.\n\nReporte: ReporteComprobanteElectronico\nParametros:\n- @idCuentaCorriente: ID del comprobante\n- PathQRFacturacionElectronica: Recurso para QR (pendiente implementacion)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Facturacion"
+		},
+		{
+			"name": "Compras Comercios",
+			"item": [
+				{
+					"name": "Descargar Resumen Tarjeta (Comercios)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/comprascomercios/descargarResumenTarjeta/{{id_resumen_tarjeta}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"comprascomercios",
+								"descargarResumenTarjeta",
+								"{{id_resumen_tarjeta}}"
+							]
+						},
+						"description": "Descarga el PDF del resumen de tarjeta JS desde el modulo de comercios.\n\nReporte: ReporteResumenTarjetaJS\nParametros:\n- @idResumen: ID del resumen de tarjeta\n- @idPersona: ID de la persona (obtenido del token)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Compras Comercios"
+		},
+		{
+			"name": "Cuenta Corriente",
+			"item": [
+				{
+					"name": "Descargar Gastos de Salud (Certificado)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarGastosDeSalud/{{numero_socio}}/{{anio}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"CuentaCorriente",
+								"descargarGastosDeSalud",
+								"{{numero_socio}}",
+								"{{anio}}"
+							]
+						},
+						"description": "Descarga el certificado de pago de servicios de salud para un socio y anio especifico.\n\nReporte: ReporteCertificadoPagoServiciosSalud\nParametros:\n- @NumeroSocio: Numero de socio\n- @Anio: Anio del certificado\n- RutaEncabezado: MembreteJSMutual (recurso)"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Resumen Tarjeta (Cuenta Corriente)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarResumenTarjeta/{{id_comprobante}}/{{id_tipo_comprobante}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"CuentaCorriente",
+								"descargarResumenTarjeta",
+								"{{id_comprobante}}",
+								"{{id_tipo_comprobante}}"
+							]
+						},
+						"description": "Descarga el PDF del resumen de tarjeta JS desde cuenta corriente.\n\nReporte: ReporteResumenTarjetaJS\nParametros:\n- @idResumen: ID del comprobante (idCcResumenTarjeta)\n- @idPersona: ID de la persona (obtenido del token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar PDF Cuenta Corriente Salud",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarPdfCcteSalud/{{id_cuenta_corriente}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"CuentaCorriente",
+								"descargarPdfCcteSalud",
+								"{{id_cuenta_corriente}}"
+							]
+						},
+						"description": "Descarga el PDF con el detalle del plan de salud.\n\nReporte: ReporteDetallePlanSalud\nParametros:\n- @idPersona: ID de la persona (obtenido del token)\n- @idCuentaCorriente: ID de la cuenta corriente"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Cuenta Corriente"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test comun para todos los endpoints de descarga de PDF",
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Response is a PDF or octet-stream\", function () {",
+					"    var contentType = pm.response.headers.get(\"Content-Type\");",
+					"    pm.expect(contentType).to.satisfy(function(ct) {",
+					"        return ct.includes(\"application/pdf\") || ct.includes(\"application/octet-stream\");",
+					"    });",
+					"});",
+					"",
+					"pm.test(\"Content-Disposition header is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Disposition\");",
+					"});",
+					"",
+					"pm.test(\"Response body is not empty\", function () {",
+					"    pm.expect(pm.response.text().length).to.be.above(0);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "YOUR_ACCESS_TOKEN_HERE",
+			"type": "string"
+		},
+		{
+			"key": "id_comprobante",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "id_resumen_tarjeta",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "numero_socio",
+			"value": "123456",
+			"type": "string"
+		},
+		{
+			"key": "anio",
+			"value": "2025",
+			"type": "string"
+		},
+		{
+			"key": "id_tipo_comprobante",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "id_cuenta_corriente",
+			"value": "12345",
+			"type": "string"
+		}
+	]
+}

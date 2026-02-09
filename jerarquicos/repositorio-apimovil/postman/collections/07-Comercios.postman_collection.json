@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "com-007",
+		"name": "07 - Comercios",
+		"description": "Endpoints del controller ComerciosController - Búsqueda de comercios adheridos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "Comercios",
+			"item": [
+				{
+					"name": "Rubros",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/Rubros",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "Rubros"]
+						},
+						"description": "Obtiene lista de rubros de comercios"
+					},
+					"response": []
+				},
+				{
+					"name": "Comercios Radio N",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Localidad\": \"{{localidad}}\",\n    \"Radio\": {{radio}},\n    \"IdRubro\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/RadioN",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "RadioN"]
+						},
+						"description": "Busca comercios en radio N de una localidad"
+					},
+					"response": []
+				},
+				{
+					"name": "Comercios Cerca Mio",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}},\n    \"IdRubro\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/CercaMio",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "CercaMio"]
+						},
+						"description": "Busca comercios cercanos a una ubicación"
+					},
+					"response": []
+				},
+				{
+					"name": "Comercio por Hash",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/hashComercio/{{hash}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "hashComercio", "{{hash}}"]
+						},
+						"description": "Obtiene información de un comercio por su hash"
+					},
+					"response": []
+				},
+				{
+					"name": "Comercio por Hash y CUIT",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/hashComercio/{{hash}}/{{cuit}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "hashComercio", "{{hash}}", "{{cuit}}"]
+						},
+						"description": "Obtiene información de un comercio por hash y CUIT"
+					},
+					"response": []
+				},
+				{
+					"name": "Comercios Cerca Mio Mapa",
+					"request": {
+						"auth": {"type": "noauth"},
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Latitud\": {{latitud}},\n    \"Longitud\": {{longitud}},\n    \"Radio\": {{radio}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/Comercios/CercaMio/Mapa",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Comercios", "CercaMio", "Mapa"]
+						},
+						"description": "Obtiene comercios para mostrar en mapa"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

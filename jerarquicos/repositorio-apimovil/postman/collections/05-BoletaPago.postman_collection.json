@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "bol-005",
+		"name": "05 - Boleta Pago",
+		"description": "Endpoints del controller BoletaPagoController - Gestión de boletas de pago y deudas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "BoletaPago",
+			"item": [
+				{
+					"name": "Obtener Estado Moroso",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/obtenerEstadoMoroso",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "obtenerEstadoMoroso"]
+						},
+						"description": "Obtiene el estado de morosidad del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Boletas de Pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/obtenerBoletasPago/true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "obtenerBoletasPago", "true"]
+						},
+						"description": "Obtiene boletas de pago. Parámetro: true=solo no vencidas, false=todas"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Conceptos Deuda CC",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/obtenerConceptosDeudaCC",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "obtenerConceptosDeudaCC"]
+						},
+						"description": "Obtiene los conceptos de deuda en cuenta corriente"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Boleta de Pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/descargarBoletaPago/{{idBoletaPago}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "descargarBoletaPago", "{{idBoletaPago}}"]
+						},
+						"description": "Descarga PDF de una boleta de pago"
+					},
+					"response": []
+				},
+				{
+					"name": "Calcular Intereses Registros CC",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdsRegistros\": [1, 2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/calcularInteresesRegistrosCC",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "calcularInteresesRegistrosCC"]
+						},
+						"description": "Calcula intereses para registros de cuenta corriente"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Boletas Activas",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/buscarBoletasActivas",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "buscarBoletasActivas"]
+						},
+						"description": "Busca boletas de pago activas"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Boletas Activas",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdsBoletas\": [1, 2]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/eliminarBoletasActivas",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "eliminarBoletasActivas"]
+						},
+						"description": "Elimina boletas de pago activas"
+					},
+					"response": []
+				},
+				{
+					"name": "Guardar Boleta de Pago",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Conceptos\": [],\n    \"Total\": 1000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/guardarBoletaPago",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "guardarBoletaPago"]
+						},
+						"description": "Guarda una nueva boleta de pago"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

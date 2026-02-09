@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "hs-018",
+		"name": "18 - Hash Service",
+		"description": "Endpoints del controller HashServiceController - Generación de hashes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HashService",
+			"item": [
+				{
+					"name": "Obtener Hash",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/HashService/obtenerHash/{{tipoHash}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "HashService", "obtenerHash", "{{tipoHash}}"]
+						},
+						"description": "Genera un hash del tipo especificado"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

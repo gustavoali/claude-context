@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "dp-014",
+		"name": "14 - Datos Personales",
+		"description": "Endpoints del controller DatosPersonalesController - Gestión de domicilios, teléfonos y emails\n\nActualizado: Enero 2025 - Bodies de domicilios corregidos para migración API Personas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "DatosPersonales",
+			"item": [
+				{
+					"name": "Resumen",
+					"item": [
+						{
+							"name": "Get Resumen Datos Personales",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/GetResumenDatosPersonales/{{idPersona}}/{{numeroSocio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "GetResumenDatosPersonales", "{{idPersona}}", "{{numeroSocio}}"]
+								},
+								"description": "Obtiene resumen completo de datos personales"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Domicilios",
+					"item": [
+						{
+							"name": "Categorias Domicilio",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/CategoriasDomicilio",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "CategoriasDomicilio"]
+								},
+								"description": "Obtiene categorías de domicilio disponibles"
+							},
+							"response": []
+						},
+						{
+							"name": "Domicilios por Persona",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Domicilios/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Domicilios", "{{idPersona}}"]
+								},
+								"description": "Obtiene domicilios de una persona"
+							},
+							"response": []
+						},
+						{
+							"name": "Opciones Merlin",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/OpcionesMerlin/{{calle}}/{{numero}}/{{codigoPostal}}/{{nombreLocalidad}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "OpcionesMerlin", "{{calle}}", "{{numero}}", "{{codigoPostal}}", "{{nombreLocalidad}}"]
+								},
+								"description": "Obtiene opciones de geolocalización de Merlin"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Domicilios",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"NumeroSocio\": {{numeroSocio}},\n  \"IdPersona\": {{idPersona}},\n  \"Domicilios\": [\n    {\n      \"EsDomicilioTitular\": true,\n      \"IdPersona\": {{idPersona}},\n      \"Id\": 0,\n      \"IdDomicilio\": 0,\n      \"Calle\": \"Av. Corrientes\",\n      \"Numero\": 1234,\n      \"Piso\": \"3\",\n      \"Departamento\": \"A\",\n      \"Edificio\": \"\",\n      \"Observaciones\": \"Entre Talcahuano y Uruguay\",\n      \"EnvioCorreo\": true,\n      \"Latitud\": \"-34.604320\",\n      \"Longitud\": \"-58.392340\",\n      \"Entrecalle1\": \"Talcahuano\",\n      \"Entrecalle2\": \"Uruguay\",\n      \"Eliminar\": false,\n      \"Localidad\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\",\n        \"NombreCodigoPostal\": \"Capital Federal (1043)\",\n        \"CodigoPostal\": \"1043\"\n      },\n      \"CategoriaDomicilio\": {\n        \"Id\": 1,\n        \"Descripcion\": \"Particular\"\n      },\n      \"Provincia\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\"\n      }\n    }\n  ]\n}",
+									"options": {"raw": {"language": "json"}}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+								},
+								"description": "Actualiza múltiples domicilios del grupo social.\n\n**Operaciones soportadas:**\n- Alta: `Id = 0` y `IdDomicilio = 0`\n- Modificación: `Id > 0` y `IdDomicilio > 0`\n- Baja: `Eliminar = true`\n\n**Categorías válidas:** 1, 2, 4\n\n**Migrado a API Personas:** Enero 2025"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Domicilios - Alta nuevo",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"NumeroSocio\": {{numeroSocio}},\n  \"IdPersona\": {{idPersona}},\n  \"Domicilios\": [\n    {\n      \"EsDomicilioTitular\": false,\n      \"IdPersona\": {{idPersona}},\n      \"Id\": 0,\n      \"IdDomicilio\": 0,\n      \"Calle\": \"Calle Nueva\",\n      \"Numero\": 500,\n      \"Piso\": \"\",\n      \"Departamento\": \"\",\n      \"Edificio\": \"\",\n      \"Observaciones\": \"Domicilio laboral\",\n      \"EnvioCorreo\": false,\n      \"Latitud\": \"\",\n      \"Longitud\": \"\",\n      \"Entrecalle1\": \"\",\n      \"Entrecalle2\": \"\",\n      \"Eliminar\": false,\n      \"Localidad\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\",\n        \"NombreCodigoPostal\": \"Capital Federal (1000)\",\n        \"CodigoPostal\": \"1000\"\n      },\n      \"CategoriaDomicilio\": {\n        \"Id\": 2,\n        \"Descripcion\": \"Laboral\"\n      },\n      \"Provincia\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\"\n      }\n    }\n  ]\n}",
+									"options": {"raw": {"language": "json"}}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+								},
+								"description": "Ejemplo de ALTA de un nuevo domicilio.\n\n`Id = 0` e `IdDomicilio = 0` indican que es un domicilio nuevo."
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Domicilios - Eliminar",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"NumeroSocio\": {{numeroSocio}},\n  \"IdPersona\": {{idPersona}},\n  \"Domicilios\": [\n    {\n      \"EsDomicilioTitular\": false,\n      \"IdPersona\": {{idPersona}},\n      \"Id\": 5555,\n      \"IdDomicilio\": 4444,\n      \"Calle\": \"Calle a eliminar\",\n      \"Numero\": 100,\n      \"Piso\": \"\",\n      \"Departamento\": \"\",\n      \"Edificio\": \"\",\n      \"Observaciones\": \"\",\n      \"EnvioCorreo\": false,\n      \"Latitud\": \"\",\n      \"Longitud\": \"\",\n      \"Entrecalle1\": \"\",\n      \"Entrecalle2\": \"\",\n      \"Eliminar\": true,\n      \"Localidad\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\",\n        \"NombreCodigoPostal\": \"Capital Federal (1000)\",\n        \"CodigoPostal\": \"1000\"\n      },\n      \"CategoriaDomicilio\": {\n        \"Id\": 1,\n        \"Descripcion\": \"Particular\"\n      },\n      \"Provincia\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\"\n      }\n    }\n  ]\n}",
+									"options": {"raw": {"language": "json"}}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilios",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarDomicilios"]
+								},
+								"description": "Ejemplo de BAJA de un domicilio existente.\n\n`Eliminar = true` indica que se debe eliminar el domicilio.\n\nReemplazar `Id` e `IdDomicilio` con valores reales."
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Domicilio Individual",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"NumeroSocio\": {{numeroSocio}},\n  \"IdPersona\": {{idPersona}},\n  \"Domicilios\": [\n    {\n      \"EsDomicilioTitular\": true,\n      \"IdPersona\": {{idPersona}},\n      \"Id\": 5555,\n      \"IdDomicilio\": 4444,\n      \"Calle\": \"Av. Santa Fe\",\n      \"Numero\": 2000,\n      \"Piso\": \"\",\n      \"Departamento\": \"\",\n      \"Edificio\": \"\",\n      \"Observaciones\": \"\",\n      \"EnvioCorreo\": false,\n      \"Latitud\": \"-34.595000\",\n      \"Longitud\": \"-58.401000\",\n      \"Entrecalle1\": \"Ayacucho\",\n      \"Entrecalle2\": \"Junín\",\n      \"Eliminar\": false,\n      \"Localidad\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\",\n        \"NombreCodigoPostal\": \"Capital Federal (1123)\",\n        \"CodigoPostal\": \"1123\"\n      },\n      \"CategoriaDomicilio\": {\n        \"Id\": 1,\n        \"Descripcion\": \"Particular\"\n      },\n      \"Provincia\": {\n        \"Id\": 1,\n        \"Nombre\": \"Capital Federal\"\n      }\n    }\n  ]\n}",
+									"options": {"raw": {"language": "json"}}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarDomicilio",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarDomicilio"]
+								},
+								"description": "Actualiza un único domicilio con campos parciales.\n\n**Campos que actualiza este endpoint:**\n- Calle\n- Numero\n- Entrecalle1\n- Entrecalle2\n- Latitud\n- Longitud\n\nNota: Solo toma el primer domicilio de la lista.\n\n**Migrado a API Personas:** Enero 2025"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Telefonos",
+					"item": [
+						{
+							"name": "Tipos Contactos Telefono",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/TiposContactosTelefono",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "TiposContactosTelefono"]
+								},
+								"description": "Obtiene tipos de contactos telefónicos"
+							},
+							"response": []
+						},
+						{
+							"name": "Tipos Telefonos",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/TiposTelefonos",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "TiposTelefonos"]
+								},
+								"description": "Obtiene tipos de teléfonos"
+							},
+							"response": []
+						},
+						{
+							"name": "Telefonos por Persona",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Telefonos/{{idPersona}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Telefonos", "{{idPersona}}"]
+								},
+								"description": "Obtiene teléfonos de una persona"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Telefonos",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Telefonos\": [\n        {\n            \"IdTipoTelefono\": 1,\n            \"IdTipoContacto\": 1,\n            \"CodigoArea\": \"351\",\n            \"Numero\": \"1234567\"\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarTelefonos",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarTelefonos"]
+								},
+								"description": "Actualiza teléfonos de una persona"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Emails",
+					"item": [
+						{
+							"name": "Tipos Mails",
+							"request": {
+								"auth": {"type": "noauth"},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/TiposMails",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "TiposMails"]
+								},
+								"description": "Obtiene tipos de emails"
+							},
+							"response": []
+						},
+						{
+							"name": "Mails por Persona",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/Mails/{{idPersona}}/{{numeroSocio}}/{{ordenSocio}}",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "Mails", "{{idPersona}}", "{{numeroSocio}}", "{{ordenSocio}}"]
+								},
+								"description": "Obtiene emails de una persona"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar Emails",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Emails\": [\n        {\n            \"IdTipoMail\": 1,\n            \"Email\": \"usuario@email.com\"\n        }\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/ActualizarEmails",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "ActualizarEmails"]
+								},
+								"description": "Actualiza emails de una persona"
+							},
+							"response": []
+						},
+						{
+							"name": "Cambiar Mail Registro",
+							"request": {
+								"method": "POST",
+								"header": [{"key": "Content-Type", "value": "application/json"}],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"EmailAnterior\": \"anterior@email.com\",\n    \"EmailNuevo\": \"nuevo@email.com\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/DatosPersonales/CambiarMailRegistro",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "DatosPersonales", "CambiarMailRegistro"]
+								},
+								"description": "Cambia el email de registro"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

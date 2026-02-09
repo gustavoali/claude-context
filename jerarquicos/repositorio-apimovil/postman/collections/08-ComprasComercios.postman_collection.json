@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "cco-008",
+		"name": "08 - Compras Comercios",
+		"description": "Endpoints del controller ComprasComerciosController - Gestión de compras en comercios adheridos y QR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "ComprasComercios",
+			"item": [
+				{
+					"name": "Compras por Persona",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "{{idPersona}}"]
+						},
+						"description": "Obtiene historial de compras en comercios de una persona"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Resumen Tarjeta",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/descargarResumenTarjeta/{{idResumenTarjeta}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "descargarResumenTarjeta", "{{idResumenTarjeta}}"]
+						},
+						"description": "Descarga PDF del resumen de tarjeta"
+					},
+					"response": []
+				},
+				{
+					"name": "Deshabilitar Credenciales Compras",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Motivo\": \"Pérdida de tarjeta\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/DeshabilitarCredencialesCompras",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "DeshabilitarCredencialesCompras"]
+						},
+						"description": "Deshabilita las credenciales de compras"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Comprobante Deshabilitacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/descargarComprobanteDeshabilitacion/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "descargarComprobanteDeshabilitacion", "{{idPersona}}"]
+						},
+						"description": "Descarga comprobante de deshabilitación de credenciales"
+					},
+					"response": []
+				},
+				{
+					"name": "Limite de Credito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/limiteCredito",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "limiteCredito"]
+						},
+						"description": "Obtiene el límite de crédito disponible"
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar Credencial Habilitada",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/ConsultarCredencialHabilitada/{{numeroTarjeta}}/{{numeroIin}}/{{digitoVerificacion}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "ConsultarCredencialHabilitada", "{{numeroTarjeta}}", "{{numeroIin}}", "{{digitoVerificacion}}"]
+						},
+						"description": "Consulta si una credencial está habilitada"
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar Estado Compra QR",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/consultarEstadoCompraQR",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "consultarEstadoCompraQR"]
+						},
+						"description": "Consulta el estado de una compra por QR"
+					},
+					"response": []
+				},
+				{
+					"name": "Transaccion Compra QR",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CodigoQR\": \"codigo-qr-escaneado\",\n    \"Monto\": 1000,\n    \"Cuotas\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/TransaccionCompraQR",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "TransaccionCompraQR"]
+						},
+						"description": "Realiza una transacción de compra por QR"
+					},
+					"response": []
+				},
+				{
+					"name": "Calcular Interes Compras QR",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/calcularInteresComprasQR?monto=10000&cuotas=6",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "calcularInteresComprasQR"],
+							"query": [
+								{"key": "monto", "value": "10000"},
+								{"key": "cuotas", "value": "6"}
+							]
+						},
+						"description": "Calcula el interés para compras QR en cuotas"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

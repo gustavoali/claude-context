@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "pai-025",
+		"name": "25 - Paises",
+		"description": "Endpoints del controller PaisesController - Lista de países",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Paises",
+			"item": [
+				{
+					"name": "Obtener Paises",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Paises",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Paises"]
+						},
+						"description": "Obtiene lista de países"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "ayu-004",
+		"name": "04 - Ayudas Economicas",
+		"description": "Endpoints del controller AyudasEconomicasController - Gestión de ayudas económicas y préstamos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]
+	},
+	"item": [
+		{
+			"name": "AyudasEconomicas",
+			"item": [
+				{
+					"name": "Ayudas Activas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/AyudasActivas/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "AyudasActivas", "{{idPersona}}"]
+						},
+						"description": "Obtiene las ayudas económicas activas del socio"
+					},
+					"response": []
+				},
+				{
+					"name": "Pedido de Ayuda",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/pedidoAyuda/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "pedidoAyuda", "{{idPersona}}"]
+						},
+						"description": "Obtiene información para solicitar una ayuda económica"
+					},
+					"response": []
+				},
+				{
+					"name": "Solicitar Ayuda Inmediata",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Monto\": 10000,\n    \"CantidadCuotas\": 6\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/solicitarayudainmediata",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "solicitarayudainmediata"]
+						},
+						"description": "Solicita una ayuda económica inmediata"
+					},
+					"response": []
+				},
+				{
+					"name": "Grabar Nueva Cuenta Pago Persona",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"IdPersona\": {{idPersona}},\n    \"Cbu\": \"{{cbu}}\",\n    \"Alias\": \"mi-cuenta\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/grabarnuevacuentapagopersona",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "grabarnuevacuentapagopersona"]
+						},
+						"description": "Registra una nueva cuenta bancaria para pagos"
+					},
+					"response": []
+				},
+				{
+					"name": "Nueva Cuenta Bancaria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/nuevaCuentaBancaria",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "nuevaCuentaBancaria"]
+						},
+						"description": "Obtiene información para crear una nueva cuenta bancaria"
+					},
+					"response": []
+				},
+				{
+					"name": "Nueva Cuenta Bancaria por Entidad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/nuevaCuentaBancaria/{{entidad}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "nuevaCuentaBancaria", "{{entidad}}"]
+						},
+						"description": "Obtiene información de cuenta bancaria para una entidad específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Calcular Cuotas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/AyudasEconomicas/calcularCuotas/{{monto}}/{{interes}}/{{cantCuotas}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "AyudasEconomicas", "calcularCuotas", "{{monto}}", "{{interes}}", "{{cantCuotas}}"]
+						},
+						"description": "Calcula las cuotas de una ayuda económica"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

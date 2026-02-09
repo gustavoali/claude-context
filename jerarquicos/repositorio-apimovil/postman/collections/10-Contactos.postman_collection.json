@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "cnt-010",
+		"name": "10 - Contactos",
+		"description": "Endpoints del controller ContactosController - Información de contacto de sucursales",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Contactos",
+			"item": [
+				{
+					"name": "Obtener Contactos por Ubicacion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Contactos/ObtenerContactos/{{latitud}}/{{longitud}}/",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Contactos", "ObtenerContactos", "{{latitud}}", "{{longitud}}", ""]
+						},
+						"description": "Obtiene información de contacto de sucursales cercanas a una ubicación"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
