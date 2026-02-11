@@ -1,6 +1,6 @@
 # Code Review Rules - Jerarquicos
 
-**Version:** 1.0
+**Version:** 1.1
 **Ultima actualizacion:** 2026-02-11
 **Origen:** Observaciones de code review de Guillermo Loinaz + convenciones del equipo
 
@@ -76,6 +76,25 @@ Si se necesita el fully qualified por ambiguedad, documentar por que con un come
 
 **Incorrecto:** Cambiar `ConfigurationManager` a `System.Configuration.ConfigurationManager`
 **Correcto:** Mantener `ConfigurationManager` con `using System.Configuration;`
+
+---
+
+### R006: Naming de keys de URLs de APIs en Web.config sigue patron UrlApi...
+**Severidad:** Media
+**Aplica a:** Web.config (appSettings), clases de configuracion de servicios
+
+Las keys de URLs de APIs en Web.config siguen el patron `UrlApi[NombreServicio]`, sin "Base" ni prefijos extra.
+Respetar la convencion existente en la seccion `<!--URLS APIS-->`.
+
+**Incorrecto:** `UrlBaseApiReporte`
+**Correcto:** `UrlApiReporte`
+
+Patron de referencia:
+```xml
+<add key="UrlApiGS" value="..." />
+<add key="UrlApiRecetaElectronica" value="..." />
+<add key="UrlApiReporte" value="..." />
+```
 
 ---
 
