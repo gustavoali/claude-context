@@ -92,45 +92,82 @@ Para verificar que la migracion no cambio el comportamiento, usar el script de c
 | Archivo | Descripcion |
 |---------|-------------|
 | `Compare-Endpoints.ps1` | Script PowerShell de comparacion |
+| `config.json` | Archivo de configuracion con variables |
 | `run-comparison.bat` | Wrapper para ejecutar facilmente |
+
+### Configuracion
+
+El script usa `config.json` para almacenar configuracion. Estructura:
+
+```json
+{
+  "environments": {
+    "dev": { "base_url": "https://tu-servidor-dev.com" },
+    "local": { "base_url": "http://localhost:5000" }
+  },
+  "authentication": {
+    "token": "tu_token_jwt"
+  },
+  "test_data": {
+    "id_comprobante": "12345",
+    "id_resumen_tarjeta": "67890",
+    "numero_socio": "123456",
+    "anio": "2025",
+    "id_tipo_comprobante": "1",
+    "id_cuenta_corriente": "11111"
+  },
+  "settings": {
+    "output_dir": ".\\comparison_results",
+    "timeout_seconds": 30
+  }
+}
+```
 
 ### Uso
 
-#### Opcion 1: Editar y ejecutar el .bat
+#### Opcion 1: Modo interactivo (recomendado)
 
-1. Editar `run-comparison.bat`
-2. Configurar las variables:
-   ```batch
-   set DEV_URL=https://tu-servidor-dev.com
-   set LOCAL_URL=http://localhost:5000
-   set TOKEN=tu_token_jwt_aqui
-   ```
-3. Doble-click en `run-comparison.bat`
-
-#### Opcion 2: Ejecutar PowerShell directamente
+Ejecutar sin parametros. El script pedira los valores faltantes:
 
 ```powershell
-.\Compare-Endpoints.ps1 `
-    -DevBaseUrl "https://dev-api.example.com" `
-    -LocalBaseUrl "http://localhost:5000" `
-    -Token "eyJhbGciOiJIUzI1..."
+.\Compare-Endpoints.ps1
 ```
 
-### Configurar IDs de Prueba
+El script:
+1. Carga `config.json`
+2. Muestra valores actuales
+3. Pide valores faltantes interactivamente
+4. Pregunta si guardar cambios al config
 
-Editar `Compare-Endpoints.ps1` y completar los IDs reales en la seccion `$endpoints`:
+#### Opcion 2: Usar config existente sin prompts
 
 ```powershell
-$endpoints = @(
-    @{
-        Name = "Comprobante Electronico"
-        Path = "/api/facturacion/descargarComprobanteElectronico/{id_comprobante}"
-        Params = @{ id_comprobante = "12345" }  # <-- Completar con ID real
-        FileName = "comprobante_electronico.pdf"
-    },
-    # ... etc
-)
+.\Compare-Endpoints.ps1 -SkipPrompts
 ```
+
+**Nota:** Fallara si el token no esta configurado.
+
+#### Opcion 3: Resetear configuracion
+
+```powershell
+.\Compare-Endpoints.ps1 -ResetConfig
+```
+
+Crea un `config.json` nuevo con valores por defecto.
+
+#### Opcion 4: Ejecutar el .bat
+
+1. Configurar `config.json` con los valores correctos
+2. Doble-click en `run-comparison.bat`
+
+### Parametros del Script
+
+| Parametro | Descripcion |
+|-----------|-------------|
+| `-ConfigFile` | Path al archivo de configuracion (default: `.\config.json`) |
+| `-SkipPrompts` | No pedir valores interactivamente |
+| `-SaveConfig` | Guardar cambios automaticamente sin preguntar |
+| `-ResetConfig` | Resetear configuracion a valores por defecto |
 
 ### Output
 

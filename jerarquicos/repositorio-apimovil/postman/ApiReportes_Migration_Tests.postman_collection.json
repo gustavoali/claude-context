@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "api-reportes-migration-tests",
 		"name": "API Reportes - Migration Tests",
-		"description": "Coleccion para probar los endpoints migrados de WCF/Legacy a API Reportes REST.\n\nEndpoints migrados:\n- Comprobante Electronico (Facturacion)\n- Resumen Tarjeta JS (Compras Comercios)\n- Resumen Tarjeta JS (Cuenta Corriente)\n- Certificado Pago Servicios Salud\n- Detalle Plan Salud",
+		"description": "Coleccion para probar los endpoints migrados de WCF/Legacy a API Reportes REST.\n\nEndpoints migrados (Ola 1 - commit 74d54313):\n- Comprobante Electronico (Facturacion)\n- Resumen Tarjeta JS (Compras Comercios)\n- Resumen Tarjeta JS (Cuenta Corriente)\n- Certificado Pago Servicios Salud\n- Detalle Plan Salud\n\nEndpoints migrados (Ola 2 - rama feature/reemplazo_llamadas_legacy_reportes):\n- Boleta de Pago (BoletaPago) - desde ServiceFactory\n- Certificado Provisorio (Credenciales) - desde Crystal Reports\n- Comprobante Practica Liberada (PracticasLiberadas) - desde Crystal Reports\n- Resumen Anual Reintegros (Reintegros) - desde Crystal Reports\n- Reintegro Liquidado (Reintegros) - desde Crystal Reports",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -21,15 +21,15 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/facturacion/descargarComprobanteElectronico/{{id_comprobante}}",
+							"raw": "{{base_url}}/api/facturacion/descargarComprobante/{{idComprobante}}",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"api",
 								"facturacion",
-								"descargarComprobanteElectronico",
-								"{{id_comprobante}}"
+								"descargarComprobante",
+								"{{idComprobante}}"
 							]
 						},
 						"description": "Descarga el PDF de un comprobante electronico.\n\nReporte: ReporteComprobanteElectronico\nParametros:\n- @idCuentaCorriente: ID del comprobante\n- PathQRFacturacionElectronica: Recurso para QR (pendiente implementacion)"
@@ -54,7 +54,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/comprascomercios/descargarResumenTarjeta/{{id_resumen_tarjeta}}",
+							"raw": "{{base_url}}/api/comprascomercios/descargarResumenTarjeta/{{idResumenTarjeta}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -62,7 +62,7 @@
 								"api",
 								"comprascomercios",
 								"descargarResumenTarjeta",
-								"{{id_resumen_tarjeta}}"
+								"{{idResumenTarjeta}}"
 							]
 						},
 						"description": "Descarga el PDF del resumen de tarjeta JS desde el modulo de comercios.\n\nReporte: ReporteResumenTarjetaJS\nParametros:\n- @idResumen: ID del resumen de tarjeta\n- @idPersona: ID de la persona (obtenido del token)"
@@ -87,7 +87,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/CuentaCorriente/descargarGastosDeSalud/{{numero_socio}}/{{anio}}",
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarGastosDeSalud/{{numeroSocio}}/{{anio}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -95,7 +95,7 @@
 								"api",
 								"CuentaCorriente",
 								"descargarGastosDeSalud",
-								"{{numero_socio}}",
+								"{{numeroSocio}}",
 								"{{anio}}"
 							]
 						},
@@ -115,7 +115,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/CuentaCorriente/descargarResumenTarjeta/{{id_comprobante}}/{{id_tipo_comprobante}}",
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarResumenTarjeta/{{idcomprobante}}/{{idTipoComprobante}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -123,8 +123,8 @@
 								"api",
 								"CuentaCorriente",
 								"descargarResumenTarjeta",
-								"{{id_comprobante}}",
-								"{{id_tipo_comprobante}}"
+								"{{idcomprobante}}",
+								"{{idTipoComprobante}}"
 							]
 						},
 						"description": "Descarga el PDF del resumen de tarjeta JS desde cuenta corriente.\n\nReporte: ReporteResumenTarjetaJS\nParametros:\n- @idResumen: ID del comprobante (idCcResumenTarjeta)\n- @idPersona: ID de la persona (obtenido del token)"
@@ -143,7 +143,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/CuentaCorriente/descargarPdfCcteSalud/{{id_cuenta_corriente}}",
+							"raw": "{{base_url}}/api/CuentaCorriente/descargarPdfCcteSalud/{{idCuentaCorriente}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -151,7 +151,7 @@
 								"api",
 								"CuentaCorriente",
 								"descargarPdfCcteSalud",
-								"{{id_cuenta_corriente}}"
+								"{{idCuentaCorriente}}"
 							]
 						},
 						"description": "Descarga el PDF con el detalle del plan de salud.\n\nReporte: ReporteDetallePlanSalud\nParametros:\n- @idPersona: ID de la persona (obtenido del token)\n- @idCuentaCorriente: ID de la cuenta corriente"
@@ -160,6 +160,173 @@
 				}
 			],
 			"description": "Endpoints del controller de Cuenta Corriente"
+		},
+		{
+			"name": "Boleta Pago",
+			"item": [
+				{
+					"name": "Descargar Boleta de Pago",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/boletaPago/descargarBoletaPago/{{idBoletaPago}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"boletaPago",
+								"descargarBoletaPago",
+								"{{idBoletaPago}}"
+							]
+						},
+						"description": "Descarga el PDF de una boleta de pago.\n\nReporte: ReporteBoletaPago\nParametros:\n- @IdBoletaPago: ID de la boleta\n\nMigrado desde: ServiceFactory.ReportesApi\nValidaciones: Sin ownership (pre-existente)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Boleta Pago"
+		},
+		{
+			"name": "Credenciales",
+			"item": [
+				{
+					"name": "Descargar Certificado Provisorio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/Credenciales/DescargarProvisorio/{{numeroSocio}}/{{idCertificado}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Credenciales",
+								"DescargarProvisorio",
+								"{{numeroSocio}}",
+								"{{idCertificado}}"
+							]
+						},
+						"description": "Descarga el PDF del certificado provisorio.\n\nReporte: ReporteCertificadoProvisorio\nParametros:\n- @IdCertificado: ID del certificado\n- @NumeroSocio: Numero de socio\n- pEncabezadoPath: MembreteJSMutual (recurso)\n\nMigrado desde: Crystal Reports directo\nValidaciones: Ownership via WCF (certificado.Socio.Numero == numeroSocio)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Credenciales"
+		},
+		{
+			"name": "Practicas Liberadas",
+			"item": [
+				{
+					"name": "Descargar Comprobante Practica",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/PracticasLiberadas/descargarcomprobante/{{codigoPractica}}/{{idPlan}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"PracticasLiberadas",
+								"descargarcomprobante",
+								"{{codigoPractica}}",
+								"{{idPlan}}"
+							]
+						},
+						"description": "Descarga el PDF del comprobante de practica liberada.\n\nReporte: ReportePracticaLiberada o ReportePracticaRequiereAutorizacion (segun tipo)\nParametros:\n- @CodigoPractica: Codigo de la practica\n- @IdPlan: ID del plan\n\nMigrado desde: Crystal Reports directo\nValidaciones: WCF para seleccion de tipo de reporte (preservado)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Practicas Liberadas"
+		},
+		{
+			"name": "Reintegros",
+			"item": [
+				{
+					"name": "Descargar Resumen Anual de Reintegros",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/Reintegros/descargaresumenanual/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{anio}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Reintegros",
+								"descargaresumenanual",
+								"{{numeroSocio}}",
+								"{{ordenSocio}}",
+								"{{idPersona}}",
+								"{{anio}}"
+							]
+						},
+						"description": "Descarga el PDF del resumen anual de reintegros.\n\nReporte: ReporteResumenAnualReintegros\nParametros:\n- @NumeroSocio: Numero de socio\n- @Anio: Anio del resumen\n\nMigrado desde: Crystal Reports directo\nValidaciones:\n- Solo titular (ordenSocio == 0)\n- WCF: ObtenerReintegrosGrupoSocial + filtro MontoLiquidado > 0\n- Logica especial de fechas para anio 2014"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Reintegro Liquidado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/Reintegros/descargareintegro/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{idReintegro}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"Reintegros",
+								"descargareintegro",
+								"{{numeroSocio}}",
+								"{{ordenSocio}}",
+								"{{idPersona}}",
+								"{{idReintegro}}"
+							]
+						},
+						"description": "Descarga el PDF del detalle de un reintegro liquidado.\n\nReporte: ReporteReintegroLiquidado\nParametros:\n- @IdReintegro: ID del reintegro (IdMesaEntrada)\n- @NumeroSocio: Numero de socio\n- @OrdenSocio: Orden del socio\n\nMigrado desde: Crystal Reports directo\nValidaciones: Ownership via WCF (adherente: NumeroSocio+OrdenSocio, titular: solo NumeroSocio)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints del controller de Reintegros"
 		}
 	],
 	"event": [
@@ -212,17 +379,22 @@
 			"type": "string"
 		},
 		{
-			"key": "id_comprobante",
+			"key": "idComprobante",
 			"value": "12345",
 			"type": "string"
 		},
 		{
-			"key": "id_resumen_tarjeta",
+			"key": "idcomprobante",
 			"value": "12345",
 			"type": "string"
 		},
 		{
-			"key": "numero_socio",
+			"key": "idResumenTarjeta",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "numeroSocio",
 			"value": "123456",
 			"type": "string"
 		},
@@ -232,13 +404,48 @@
 			"type": "string"
 		},
 		{
-			"key": "id_tipo_comprobante",
+			"key": "idTipoComprobante",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"key": "id_cuenta_corriente",
+			"key": "idCuentaCorriente",
 			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "idBoletaPago",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "idCertificado",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "ordenSocio",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "idPersona",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "idReintegro",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "codigoPractica",
+			"value": "010101",
+			"type": "string"
+		},
+		{
+			"key": "idPlan",
+			"value": "1",
 			"type": "string"
 		}
 	]

@@ -1,7 +1,7 @@
 # Code Review Rules - Jerarquicos
 
-**Version:** 1.1
-**Ultima actualizacion:** 2026-02-11
+**Version:** 1.2
+**Ultima actualizacion:** 2026-02-12
 **Origen:** Observaciones de code review de Guillermo Loinaz + convenciones del equipo
 
 ---
@@ -35,6 +35,8 @@ public async Task<HttpResponseMessage> MiMetodo()
 
 Antes de crear un nuevo recurso en un archivo .resx, verificar si ya existe uno con el mismo proposito o significado similar.
 Crear recursos duplicados con diferentes nombres genera confusion y dificulta el mantenimiento.
+
+**Verificacion obligatoria:** Antes de sugerir crear un recurso nuevo, leer el .resx completo, listar los recursos existentes y confirmar explicitamente que ninguno cubre el mismo caso de uso. Si no se realiza esta verificacion, el hallazgo del review es invalido.
 
 **Incorrecto:** Crear "SinDocumentos" cuando ya existe "ErrorAlDescargarArchivo"
 **Correcto:** Reutilizar "ErrorAlDescargarArchivo"

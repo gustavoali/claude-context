@@ -1,0 +1,308 @@
+{
+	"info": {
+		"name": "ApiReporte - Preparacion (Obtener IDs)",
+		"description": "Endpoints auxiliares para descubrir los IDs y datos necesarios para testear los reportes de ApiReporte.\n\nOrganizada por cada endpoint de descarga que necesita datos previos.\nConfigurar variables {{baseUrl}} y {{token}} antes de usar.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "baseUrl", "value": "https://localhost:44300" },
+		{ "key": "token", "value": "" },
+		{ "key": "idPersona", "value": "0" },
+		{ "key": "numeroSocio", "value": "0" },
+		{ "key": "ordenSocio", "value": "0" }
+	],
+	"item": [
+		{
+			"name": "0. Autenticacion",
+			"item": [
+				{
+					"name": "Obtener Token",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "grant_type", "value": "password", "type": "text" },
+								{ "key": "username", "value": "", "type": "text", "description": "Completar con usuario de prueba" },
+								{ "key": "password", "value": "", "type": "text", "description": "Completar con password de prueba" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/token",
+							"host": ["{{baseUrl}}"],
+							"path": ["token"]
+						},
+						"description": "Obtener token OAuth.\nCopiar access_token y pegarlo en la variable {{token}}."
+					}
+				}
+			]
+		},
+		{
+			"name": "1. Para BoletaPago → idBoletaPago",
+			"item": [
+				{
+					"name": "Obtener boletas de pago (todas)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/obtenerBoletasPago/false",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "obtenerBoletasPago", "false"]
+						},
+						"description": "Obtiene TODAS las boletas (incluye vencidas, noVencidas=false).\n\n**Campo a extraer:** Modelo[].Id → es el idBoletaPago\n\nCampos utiles:\n- Id → idBoletaPago para descargar\n- Importe, Vencimiento, Pagada\n- EstadoBoletaId (1=Abonar, 2=Pagada, 3=Vencida, 4=ProcesandoPago)"
+					}
+				},
+				{
+					"name": "Obtener boletas vigentes (no vencidas)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/obtenerBoletasPago/true",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "obtenerBoletasPago", "true"]
+						},
+						"description": "Solo boletas vigentes (no vencidas, estado Pendiente o Rechazado en MP).\n\n**Campo a extraer:** Modelo[].Id → es el idBoletaPago"
+					}
+				},
+				{
+					"name": "Buscar boletas activas (IDs directos)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/buscarBoletasActivas",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "buscarBoletasActivas"]
+						},
+						"description": "Devuelve List<int> directamente con IDs de boletas activas.\n\n**Campo a extraer:** Modelo[] → array de enteros, cada uno es un idBoletaPago valido"
+					}
+				}
+			],
+			"description": "Endpoints para obtener idBoletaPago.\nUsar en: GET api/boletaPago/descargarBoletaPago/{idBoletaPago}"
+		},
+		{
+			"name": "2. Para ComprasComercios → idResumenTarjeta",
+			"item": [
+				{
+					"name": "Obtener compras y resumenes tarjeta",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "{{idPersona}}"]
+						},
+						"description": "Obtiene toda la informacion de compras en comercios del socio.\n\n**Campo a extraer:** Modelo.ReporteResumenTarjeta[].Id → es el idResumenTarjeta\n\nTambien devuelve:\n- ReporteResumenTarjeta[].FechaCierreActual\n- ReporteResumenTarjeta[].Monto\n- Transacciones, CredencialEncabezado, ConsumosActuales, etc."
+					}
+				}
+			],
+			"description": "Endpoint para obtener idResumenTarjeta.\nUsar en: GET api/comprascomercios/descargarResumenTarjeta/{idResumenTarjeta}"
+		},
+		{
+			"name": "3. Para Credenciales → idCertificado, numeroSocio",
+			"item": [
+				{
+					"name": "Obtener credenciales y provisorios",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/{{numeroSocio}}/{{ordenSocio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "{{numeroSocio}}", "{{ordenSocio}}"]
+						},
+						"description": "Obtiene credenciales y provisorios del grupo social.\n\n**Campo a extraer:** Modelo.Provisorios[].Id → es el idCertificado\n\nTambien devuelve:\n- Provisorios[].NumeroSocio → para el URL de descarga\n- Provisorios[].FechaVencimiento, ApellidoNombre, NombrePlan\n- Credenciales[] con estado de cada credencial"
+					}
+				}
+			],
+			"description": "Endpoint para obtener idCertificado (provisorio).\nUsar en: GET api/Credenciales/DescargarProvisorio/{numeroSocio}/{idCertificado}"
+		},
+		{
+			"name": "4. Para CuentaCorriente → idComprobante, idCuentaCorriente",
+			"item": [
+				{
+					"name": "Obtener cuenta corriente (resumenes mensuales)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "{{idPersona}}"]
+						},
+						"description": "Obtiene los resumenes de cuenta corriente del socio.\n\n**Campos a extraer:**\n- CuentasPersonas[].IdComprobante → para descargarResumenTarjeta/{idComprobante}/{idTipoComprobante}\n- IdCuentaCorrienteSalud → para descargarPdfCcteSalud/{idCuentaCorriente}\n- IdResumenCaja → ID del resumen de caja\n\nNota: Para descargarGastosDeSalud solo necesitas numeroSocio y anio (datos del socio)."
+					}
+				},
+				{
+					"name": "Obtener datos CC (formato nuevo)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/obtenerDatosCuentaCorriente/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "obtenerDatosCuentaCorriente", "{{idPersona}}"]
+						},
+						"description": "Formato alternativo de datos de cuenta corriente.\nDevuelve CuentaCorrienteModel2 con ListaResumenes agrupados."
+					}
+				}
+			],
+			"description": "Endpoints para obtener idComprobante e idCuentaCorriente.\nUsar en:\n- GET api/CuentaCorriente/descargarResumenTarjeta/{idComprobante}/{idTipoComprobante}\n- GET api/CuentaCorriente/descargarPdfCcteSalud/{idCuentaCorriente}\n- GET api/CuentaCorriente/descargarGastosDeSalud/{numeroSocio}/{anio} (no necesita preparacion, son datos del socio)"
+		},
+		{
+			"name": "5. Para Facturacion → idComprobante",
+			"item": [
+				{
+					"name": "Listar comprobantes electronicos",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/comprobantesElectronicos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "comprobantesElectronicos"]
+						},
+						"description": "Lista todos los comprobantes electronicos (facturas) del socio autenticado.\n\n**Campo a extraer:** Modelo[].Id → es el idComprobante para descargar\n\nTambien devuelve:\n- Fecha, Tipo (A/B/C), Numero (ej: '0057-10371787'), Importe"
+					}
+				}
+			],
+			"description": "Endpoint para obtener idComprobante de facturacion electronica.\nUsar en: GET api/facturacion/descargarComprobante/{idComprobante}"
+		},
+		{
+			"name": "6. Para PracticasLiberadas → codigoPractica, idPlan",
+			"item": [
+				{
+					"name": "Obtener planes disponibles",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/obtenerPlanes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "obtenerPlanes"]
+						},
+						"description": "Lista planes disponibles para el socio.\n\n**Campo a extraer:** Modelo[].Id → es el idPlan para descargar comprobante"
+					}
+				},
+				{
+					"name": "Obtener grupos/capitulos",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/GruposCapitulos",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "GruposCapitulos"]
+						},
+						"description": "Lista grupos y capitulos de practicas.\nUsar el resultado para navegar a las practicas de cada grupo."
+					}
+				},
+				{
+					"name": "Listar practicas por grupo",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/GRUPO_EJEMPLO",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "GRUPO_EJEMPLO"]
+						},
+						"description": "Lista practicas liberadas de un grupo/capitulo especifico.\nReemplazar GRUPO_EJEMPLO por un valor obtenido de GruposCapitulos.\n\n**Campo a extraer:** Modelo[].CodigoPractica → es el codigoPractica (string)"
+					}
+				},
+				{
+					"name": "Buscar practica especifica",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Codigo\": \"\",\n  \"Descripcion\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/buscadorPractica",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "buscadorPractica"]
+						},
+						"description": "Busca practicas por codigo o descripcion.\nCompletear Codigo o Descripcion (al menos uno).\n\n**Campo a extraer:** Modelo[].CodigoPractica"
+					}
+				}
+			],
+			"description": "Endpoints para obtener codigoPractica e idPlan.\nUsar en: GET api/PracticasLiberadas/descargarcomprobante/{codigoPractica}/{idPlan}"
+		},
+		{
+			"name": "7. Para Reintegros → idReintegro, anio",
+			"item": [
+				{
+					"name": "Listar reintegros del socio",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reintegros/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reintegros", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}"]
+						},
+						"description": "Lista todos los reintegros del socio.\n\n**Campo a extraer:** Modelo[].Id → es el idReintegro\n\nPara descargar reintegro liquidado, elegir uno con MontoLiquidado > 0.\n\nTambien devuelve: NumeroSocio, OrdenSocio, Concepto, MontoLiquidado, EstadoReintegro[]"
+					}
+				},
+				{
+					"name": "Obtener periodos disponibles (resumen anual)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reintegros/obtenerPeriodosResumenAnual",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reintegros", "obtenerPeriodosResumenAnual"]
+						},
+						"description": "Devuelve List<int> con los anios disponibles para resumen anual de reintegros.\n\n**Campo a extraer:** Modelo[] → array de enteros (anios), ej: [2024, 2025]\nUsar como {{anio}} en descargaresumenanual."
+					}
+				}
+			],
+			"description": "Endpoints para obtener idReintegro y anios disponibles.\nUsar en:\n- GET api/Reintegros/descargareintegro/{nroSocio}/{ordenSocio}/{idPersona}/{idReintegro}\n- GET api/Reintegros/descargaresumenanual/{nroSocio}/{ordenSocio}/{idPersona}/{anio}"
+		},
+		{
+			"name": "8. Para Solicitudes → idSolicitud",
+			"item": [
+				{
+					"name": "Listar solicitudes de autorizacion (salud)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/obtenerSolicitudAutorizaciones",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "obtenerSolicitudAutorizaciones"]
+						},
+						"description": "Lista solicitudes de autorizacion de salud del socio.\n\n**Campo a extraer:** Modelo[].Id → es el idSolicitud\n\nTambien devuelve:\n- IdUltimoEstado, Estado (descripcion)\n- IdExpediente (si tiene)\n- NombreServicio\n\nUsar para: descargarAutorizacionSinExpediente/{idSolicitud}"
+					}
+				},
+				{
+					"name": "Listar solicitudes administrativas",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/gestionSolicitudes/obtenerInformacionSolicitudes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "gestionSolicitudes", "obtenerInformacionSolicitudes"]
+						},
+						"description": "Lista solicitudes administrativas (gestion) del socio.\n\n**Campo a extraer:** Modelo.solicitudes[].Id → es el idSolicitud\n\nTambien devuelve IdUltimoEstado para saber que reporte generara:\n- Resuelto → SolicitudServicioResolucion\n- ReclamoDocumentacionEnviada → ReporteSolicitudDocumentacionFaltante\n- Anulado → SolicitudServicioAnulacion\n\nUsar para:\n- descargarReporteSolicitudServicioResolucion/{idSolicitud}\n- descargarPdfSolicitud/{idSolicitud}"
+					}
+				}
+			],
+			"description": "Endpoints para obtener idSolicitud.\nUsar en:\n- GET api/Autorizaciones/descargarAutorizacionSinExpediente/{idSolicitud}\n- GET api/gestionSolicitudes/descargarReporteSolicitudServicioResolucion/{idSolicitud}\n- GET api/gestionSolicitudes/descargarPdfSolicitud/{idSolicitud}"
+		}
+	]
+}

@@ -1,0 +1,52 @@
+{
+    "_endpoint": "GET /api/facturacion/comprobantesElectronicos",
+    "_historia": "179610",
+
+    "caso_con_comprobantes": {
+        "http_status": 200,
+        "response": {
+            "Exito": true,
+            "Mensaje": "Comprobantes obtenidos correctamente",
+            "Modelo": [
+                {
+                    "Id": 12345,
+                    "Fecha": "2024-01-15T00:00:00",
+                    "Tipo": "B",
+                    "Numero": "0057-10371787",
+                    "Importe": 15000.50
+                },
+                {
+                    "Id": 12344,
+                    "Fecha": "2024-01-01T00:00:00",
+                    "Tipo": "B",
+                    "Numero": "0057-10371700",
+                    "Importe": 12500.00
+                },
+                {
+                    "Id": 12300,
+                    "Fecha": "2023-12-15T00:00:00",
+                    "Tipo": "A",
+                    "Numero": "0057-10371650",
+                    "Importe": 8750.25
+                }
+            ],
+            "Notificacion": {
+                "Mensaje": "",
+                "Tipo": 0
+            }
+        }
+    },
+
+    "caso_sin_comprobantes": {
+        "http_status": 200,
+        "response": {
+            "Exito": true,
+            "Mensaje": "Comprobantes obtenidos correctamente",
+            "Modelo": [],
+            "Notificacion": {
+                "Mensaje": "",
+                "Tipo": 0
+            }
+        }
+    }
+}

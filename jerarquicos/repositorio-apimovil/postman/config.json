@@ -1,0 +1,28 @@
+{
+  "environments": {
+    "dev": {
+      "base_url": "https://dev-api.example.com",
+      "description": "Servidor de desarrollo (legacy)"
+    },
+    "local": {
+      "base_url": "http://localhost:5000",
+      "description": "Servidor local (nuevo)"
+    }
+  },
+  "authentication": {
+    "token": ""
+  },
+  "test_data": {
+    "idComprobante": "",
+    "idResumenTarjeta": "",
+    "numeroSocio": "",
+    "anio": "2025",
+    "idTipoComprobante": "1",
+    "idCuentaCorriente": ""
+  },
+  "settings": {
+    "output_dir": ".\\comparison_results",
+    "timeout_seconds": 30,
+    "save_pdfs": true
+  }
+}

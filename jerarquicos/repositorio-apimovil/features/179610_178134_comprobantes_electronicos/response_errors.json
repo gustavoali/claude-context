@@ -1,0 +1,33 @@
+{
+    "_descripcion": "Ejemplos de respuestas de error para los endpoints de comprobantes electronicos",
+
+    "listado_sin_autenticacion": {
+        "endpoint": "GET /api/facturacion/comprobantesElectronicos",
+        "http_status": 401,
+        "response": {
+            "Message": "Authorization has been denied for this request."
+        }
+    },
+
+    "descarga_sin_autenticacion": {
+        "endpoint": "GET /api/facturacion/descargarComprobante/{id}",
+        "http_status": 401,
+        "response": {
+            "Message": "Authorization has been denied for this request."
+        }
+    },
+
+    "descarga_id_inexistente": {
+        "endpoint": "GET /api/facturacion/descargarComprobante/999999999",
+        "http_status": 404,
+        "response": null
+    },
+
+    "descarga_id_invalido": {
+        "endpoint": "GET /api/facturacion/descargarComprobante/abc",
+        "http_status": 400,
+        "response": {
+            "Message": "The request is invalid."
+        }
+    }
+}

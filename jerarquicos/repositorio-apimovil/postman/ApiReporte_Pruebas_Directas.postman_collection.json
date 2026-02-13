@@ -1,0 +1,236 @@
+{
+	"info": {
+		"name": "ApiReporte - Pruebas Directas",
+		"description": "Endpoints que descargan PDFs via ApiReporteClient (GenerarReporteAsync).\nTodos devuelven application/octet-stream (PDF).\n\nConfigurar variables {{baseUrl}} y {{token}} antes de usar.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "baseUrl", "value": "https://localhost:44300" },
+		{ "key": "token", "value": "" },
+		{ "key": "idBoletaPago", "value": "0" },
+		{ "key": "idResumenTarjeta", "value": "0" },
+		{ "key": "idComprobante", "value": "0" },
+		{ "key": "idTipoComprobante", "value": "0" },
+		{ "key": "idCuentaCorriente", "value": "0" },
+		{ "key": "idCertificado", "value": "0" },
+		{ "key": "numeroSocio", "value": "0" },
+		{ "key": "ordenSocio", "value": "0" },
+		{ "key": "idPersona", "value": "0" },
+		{ "key": "anio", "value": "2025" },
+		{ "key": "codigoPractica", "value": "" },
+		{ "key": "idPlan", "value": "0" },
+		{ "key": "idReintegro", "value": "0" },
+		{ "key": "idSolicitud", "value": "0" }
+	],
+	"item": [
+		{
+			"name": "1. BoletaPago",
+			"item": [
+				{
+					"name": "Descargar Boleta de Pago",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/boletaPago/descargarBoletaPago/{{idBoletaPago}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "boletaPago", "descargarBoletaPago", "{{idBoletaPago}}"]
+						},
+						"description": "**Reporte:** ReporteBoletaPago\n**Param reporte:** @idBoletaPago (int)\n**Archivo:** JS-BoletaDePag-{id}.pdf\n\n**Obtener ID:** Usar 'obtenerBoletasPago' o 'buscarBoletasActivas' de la coleccion de preparacion."
+					}
+				}
+			]
+		},
+		{
+			"name": "2. ComprasComercios",
+			"item": [
+				{
+					"name": "Descargar Resumen Tarjeta JS",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/comprascomercios/descargarResumenTarjeta/{{idResumenTarjeta}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "comprascomercios", "descargarResumenTarjeta", "{{idResumenTarjeta}}"]
+						},
+						"description": "**Reporte:** ReporteResumenTarjetaJS\n**Params reporte:** @idResumen (del URL), @idPersona (del token)\n\n**Obtener ID:** Usar 'GET comprascomercios/{idPersona}' → Modelo.ReporteResumenTarjeta[].Id"
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Credenciales",
+			"item": [
+				{
+					"name": "Descargar Certificado Provisorio",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Credenciales/DescargarProvisorio/{{numeroSocio}}/{{idCertificado}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Credenciales", "DescargarProvisorio", "{{numeroSocio}}", "{{idCertificado}}"]
+						},
+						"description": "**Reporte:** ReporteCertificadoProvisorio\n**Params reporte:** @IdCertificado, @NumeroSocio, pEncabezadoPath=MembreteJSMutual\n\nValida que el certificado pertenezca al socio.\n\n**Obtener ID:** Usar 'GET Credenciales/{nroSocio}/{ordenSocio}' → Modelo.Provisorios[].Id"
+					}
+				}
+			]
+		},
+		{
+			"name": "4. CuentaCorriente",
+			"item": [
+				{
+					"name": "Descargar Gastos de Salud",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarGastosDeSalud/{{numeroSocio}}/{{anio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarGastosDeSalud", "{{numeroSocio}}", "{{anio}}"]
+						},
+						"description": "**Reporte:** ReporteCertificadoPagoServiciosSalud\n**Params reporte:** @NumeroSocio, @Anio, RutaEncabezado=MembreteJSMutual\n\nValida token + TokenValido(numeroSocio).\n\n**Params URL:** numeroSocio y anio son datos conocidos del socio de prueba."
+					}
+				},
+				{
+					"name": "Descargar Resumen Tarjeta",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarResumenTarjeta/{{idComprobante}}/{{idTipoComprobante}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarResumenTarjeta", "{{idComprobante}}", "{{idTipoComprobante}}"]
+						},
+						"description": "**Reporte:** ReporteResumenTarjetaJS\n**Params reporte:** @idResumen (=idComprobante del URL), @idPersona (del token)\n\nNota: idTipoComprobante se recibe en URL pero NO se pasa al reporte.\n\n**Obtener ID:** Usar 'GET CuentaCorriente/{idPersona}' → cada CuentaCorrienteModel tiene CuentasPersonas[].IdComprobante"
+					}
+				},
+				{
+					"name": "Descargar PDF Ccte Salud (Detalle Plan)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/CuentaCorriente/descargarPdfCcteSalud/{{idCuentaCorriente}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "CuentaCorriente", "descargarPdfCcteSalud", "{{idCuentaCorriente}}"]
+						},
+						"description": "**Reporte:** ReporteDetallePlanSalud\n**Params reporte:** @idPersona (del token), @idCuentaCorriente (del URL)\n\n**Obtener ID:** Usar 'GET CuentaCorriente/{idPersona}' → CuentaCorrienteModel.IdCuentaCorrienteSalud"
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Facturacion",
+			"item": [
+				{
+					"name": "Descargar Comprobante Electronico",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/facturacion/descargarComprobante/{{idComprobante}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "facturacion", "descargarComprobante", "{{idComprobante}}"]
+						},
+						"description": "**Reporte:** ReporteComprobanteElectronico\n**Params reporte:** @ComprobanteId (del URL), pRutaBaseQr=PathQRFacturacionElectronica\n**Archivo:** Comprobante_{id}.pdf\n\n**Obtener ID:** Usar 'GET facturacion/comprobantesElectronicos' → Modelo[].Id"
+					}
+				}
+			]
+		},
+		{
+			"name": "6. PracticasLiberadas",
+			"item": [
+				{
+					"name": "Descargar Comprobante Practica",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/PracticasLiberadas/descargarcomprobante/{{codigoPractica}}/{{idPlan}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "PracticasLiberadas", "descargarcomprobante", "{{codigoPractica}}", "{{idPlan}}"]
+						},
+						"description": "**Reporte:** ReportePracticaLiberada o ReportePracticaRequiereAutorizacion\n  (depende de si RequiereAutorizacion && !EsLiberada)\n**Params reporte:** @CodigoPractica (string), @IdPlan (int)\n\n**Obtener IDs:**\n- idPlan: 'GET PracticasLiberadas/obtenerPlanes' → Modelo[].Id\n- codigoPractica: 'GET PracticasLiberadas/{grupoCapitulos}' → Modelo[].CodigoPractica"
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Reintegros",
+			"item": [
+				{
+					"name": "Descargar Resumen Anual Reintegros",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reintegros/descargaresumenanual/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{anio}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reintegros", "descargaresumenanual", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}", "{{anio}}"]
+						},
+						"description": "**Reporte:** ReporteResumenAnualReintegros\n**Params reporte:** @NumeroSocio, @Anio\n\nNota: ordenSocio e idPersona son para validacion de seguridad, no van al reporte.\nValida que existan reintegros liquidados en el periodo.\n\n**Obtener anio:** 'GET Reintegros/obtenerPeriodosResumenAnual' → Modelo[] (lista de anios)"
+					}
+				},
+				{
+					"name": "Descargar Reintegro Liquidado",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Reintegros/descargareintegro/{{numeroSocio}}/{{ordenSocio}}/{{idPersona}}/{{idReintegro}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Reintegros", "descargareintegro", "{{numeroSocio}}", "{{ordenSocio}}", "{{idPersona}}", "{{idReintegro}}"]
+						},
+						"description": "**Reporte:** ReporteReintegroLiquidado\n**Params reporte:** @IdReintegro, @NumeroSocio, @OrdenSocio\n\nValida que el reintegro pertenezca al socio.\n\n**Obtener ID:** 'GET Reintegros/{nroSocio}/{ordenSocio}/{idPersona}' → Modelo[].Id (los que tienen MontoLiquidado > 0)"
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Solicitudes (via GestionSolicitudesUtil)",
+			"item": [
+				{
+					"name": "Descargar Autorizacion Sin Expediente",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/Autorizaciones/descargarAutorizacionSinExpediente/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Autorizaciones", "descargarAutorizacionSinExpediente", "{{idSolicitud}}"]
+						},
+						"description": "**Reporte:** SolicitudServicioResolucion\n**Param reporte:** @SolicitudServicioID\n\n**Obtener ID:** 'GET Autorizaciones/obtenerSolicitudAutorizaciones' → Modelo[].Id"
+					}
+				},
+				{
+					"name": "Descargar Solicitud Servicio Resolucion",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarReporteSolicitudServicioResolucion/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "gestionSolicitudes", "descargarReporteSolicitudServicioResolucion", "{{idSolicitud}}"]
+						},
+						"description": "**Reporte:** SolicitudServicioResolucion\n**Param reporte:** @SolicitudServicioID\n\n**Obtener ID:** 'GET gestionSolicitudes/obtenerInformacionSolicitudes' → solicitudes con estado Resuelto"
+					}
+				},
+				{
+					"name": "Descargar PDF Solicitud (segun estado)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{baseUrl}}/api/gestionSolicitudes/descargarPdfSolicitud/{{idSolicitud}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "gestionSolicitudes", "descargarPdfSolicitud", "{{idSolicitud}}"]
+						},
+						"description": "Reporte variable segun estado de la solicitud:\n- **Resuelto** → SolicitudServicioResolucion (@SolicitudServicioID)\n- **ReclamoDocumentacionEnviada** → ReporteSolicitudDocumentacionFaltante (@IdSolicitud + pEncabezadoPath=MembreteJSMutual)\n- **Anulado** → SolicitudServicioAnulacion (@SolicitudID)\n\n**Obtener ID:** 'GET gestionSolicitudes/obtenerInformacionSolicitudes' → buscar solicitud segun estado deseado"
+					}
+				}
+			]
+		}
+	]
+}

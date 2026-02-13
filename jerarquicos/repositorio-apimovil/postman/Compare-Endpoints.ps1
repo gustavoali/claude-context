@@ -1,19 +1,339 @@
 # ==============================================================================
 # Compare-Endpoints.ps1
 # Compara los resultados de endpoints entre servidor DEV (legacy) y LOCAL (nuevo)
+# Usa archivo de configuracion config.json para variables
 # ==============================================================================
 
 param(
-    [string]$DevBaseUrl = "https://dev-api.example.com",
-    [string]$LocalBaseUrl = "http://localhost:5000",
-    [string]$Token = "",
-    [string]$OutputDir = ".\comparison_results"
+    [string]$ConfigFile = ".\config.json",
+    [switch]$ResetConfig,
+    [switch]$SkipPrompts,
+    [switch]$SaveConfig
 )
 
 # Colores para output
 function Write-Success { param($msg) Write-Host $msg -ForegroundColor Green }
 function Write-Failure { param($msg) Write-Host $msg -ForegroundColor Red }
 function Write-Info { param($msg) Write-Host $msg -ForegroundColor Cyan }
+function Write-Warning { param($msg) Write-Host $msg -ForegroundColor Yellow }
+
+# ==============================================================================
+# FUNCIONES DE CONFIGURACION
+# ==============================================================================
+
+function Get-DefaultConfig {
+    return @{
+        environments = @{
+            dev = @{
+                base_url = "https://dev-api.example.com"
+                description = "Servidor de desarrollo (legacy)"
+            }
+            local = @{
+                base_url = "http://localhost:5000"
+                description = "Servidor local (nuevo)"
+            }
+        }
+        authentication = @{
+            token = ""
+        }
+        test_data = @{
+            idComprobante = ""
+            idResumenTarjeta = ""
+            numeroSocio = ""
+            anio = "2025"
+            idTipoComprobante = "1"
+            idCuentaCorriente = ""
+        }
+        settings = @{
+            output_dir = ".\comparison_results"
+            timeout_seconds = 30
+            save_pdfs = $true
+        }
+    }
+}
+
+function Load-Config {
+    param([string]$Path)
+
+    if (Test-Path $Path) {
+        try {
+            $jsonContent = Get-Content $Path -Raw | ConvertFrom-Json
+
+            # Convertir PSCustomObject a Hashtable recursivamente
+            $config = Convert-ToHashtable $jsonContent
+            return $config
+        }
+        catch {
+            Write-Warning "Error leyendo config: $($_.Exception.Message)"
+            Write-Info "Usando configuracion por defecto..."
+            return Get-DefaultConfig
+        }
+    }
+    else {
+        Write-Warning "Archivo de configuracion no encontrado: $Path"
+        Write-Info "Creando configuracion por defecto..."
+        $defaultConfig = Get-DefaultConfig
+        Save-Config -Config $defaultConfig -Path $Path
+        return $defaultConfig
+    }
+}
+
+function Convert-ToHashtable {
+    param($InputObject)
+
+    if ($null -eq $InputObject) { return $null }
+
+    if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
+        $collection = @()
+        foreach ($item in $InputObject) {
+            $collection += Convert-ToHashtable $item
+        }
+        return $collection
+    }
+    elseif ($InputObject -is [PSCustomObject]) {
+        $hash = @{}
+        foreach ($property in $InputObject.PSObject.Properties) {
+            $hash[$property.Name] = Convert-ToHashtable $property.Value
+        }
+        return $hash
+    }
+    else {
+        return $InputObject
+    }
+}
+
+function Save-Config {
+    param(
+        [hashtable]$Config,
+        [string]$Path
+    )
+
+    try {
+        $Config | ConvertTo-Json -Depth 10 | Set-Content $Path -Encoding UTF8
+        Write-Success "Configuracion guardada en: $Path"
+    }
+    catch {
+        Write-Failure "Error guardando config: $($_.Exception.Message)"
+    }
+}
+
+function Prompt-ForValue {
+    param(
+        [string]$Name,
+        [string]$Description,
+        [string]$CurrentValue,
+        [switch]$Required,
+        [switch]$IsSecret
+    )
+
+    $displayValue = if ($CurrentValue -and !$IsSecret) { " [$CurrentValue]" }
+                    elseif ($CurrentValue -and $IsSecret) { " [****]" }
+                    else { "" }
+
+    $requiredMark = if ($Required) { " (REQUERIDO)" } else { "" }
+
+    Write-Host ""
+    Write-Info "$Description$requiredMark"
+    $input = Read-Host "$Name$displayValue"
+
+    if ([string]::IsNullOrWhiteSpace($input)) {
+        return $CurrentValue
+    }
+    return $input
+}
+
+function Validate-AndPromptConfig {
+    param(
+        [hashtable]$Config,
+        [switch]$SkipPrompts
+    )
+
+    $configChanged = $false
+
+    Write-Host ""
+    Write-Host "=" * 60 -ForegroundColor Cyan
+    Write-Info "CONFIGURACION DE COMPARACION DE ENDPOINTS"
+    Write-Host "=" * 60 -ForegroundColor Cyan
+
+    # Mostrar configuracion actual
+    Write-Host ""
+    Write-Info "Entornos configurados:"
+    Write-Host "  DEV:   $($Config.environments.dev.base_url)"
+    Write-Host "  LOCAL: $($Config.environments.local.base_url)"
+
+    # Verificar y solicitar token
+    if ([string]::IsNullOrWhiteSpace($Config.authentication.token)) {
+        if ($SkipPrompts) {
+            Write-Failure "ERROR: Token no configurado y -SkipPrompts activo"
+            exit 1
+        }
+
+        $token = Prompt-ForValue -Name "Token JWT" `
+                                  -Description "Token de autenticacion Bearer (JWT)" `
+                                  -CurrentValue $Config.authentication.token `
+                                  -Required -IsSecret
+
+        if ([string]::IsNullOrWhiteSpace($token)) {
+            Write-Failure "ERROR: El token es obligatorio"
+            exit 1
+        }
+
+        $Config.authentication.token = $token
+        $configChanged = $true
+    }
+    else {
+        Write-Host ""
+        Write-Success "Token: Configurado (****)"
+    }
+
+    # Verificar datos de prueba
+    Write-Host ""
+    Write-Info "Datos de prueba:"
+
+    $testDataFields = @(
+        @{ key = "idComprobante"; desc = "ID del comprobante electronico"; required = $false },
+        @{ key = "idResumenTarjeta"; desc = "ID del resumen de tarjeta (comercios)"; required = $false },
+        @{ key = "numeroSocio"; desc = "Numero de socio para gastos de salud"; required = $false },
+        @{ key = "anio"; desc = "Anio para certificado de salud"; required = $false },
+        @{ key = "idTipoComprobante"; desc = "Tipo de comprobante (1=default)"; required = $false },
+        @{ key = "idCuentaCorriente"; desc = "ID de cuenta corriente"; required = $false }
+    )
+
+    foreach ($field in $testDataFields) {
+        $currentValue = $Config.test_data[$field.key]
+
+        if ([string]::IsNullOrWhiteSpace($currentValue)) {
+            Write-Warning "  $($field.key): No configurado"
+
+            if (!$SkipPrompts) {
+                $newValue = Prompt-ForValue -Name $field.key `
+                                            -Description $field.desc `
+                                            -CurrentValue $currentValue
+
+                if (![string]::IsNullOrWhiteSpace($newValue)) {
+                    $Config.test_data[$field.key] = $newValue
+                    $configChanged = $true
+                }
+            }
+        }
+        else {
+            Write-Host "  $($field.key): $currentValue"
+        }
+    }
+
+    # Preguntar si modificar URLs
+    if (!$SkipPrompts) {
+        Write-Host ""
+        $modifyUrls = Read-Host "Desea modificar las URLs de los servidores? (s/N)"
+
+        if ($modifyUrls -eq "s" -or $modifyUrls -eq "S") {
+            $devUrl = Prompt-ForValue -Name "DEV URL" `
+                                       -Description "URL del servidor DEV (legacy)" `
+                                       -CurrentValue $Config.environments.dev.base_url
+
+            if (![string]::IsNullOrWhiteSpace($devUrl)) {
+                $Config.environments.dev.base_url = $devUrl
+                $configChanged = $true
+            }
+
+            $localUrl = Prompt-ForValue -Name "LOCAL URL" `
+                                         -Description "URL del servidor LOCAL (nuevo)" `
+                                         -CurrentValue $Config.environments.local.base_url
+
+            if (![string]::IsNullOrWhiteSpace($localUrl)) {
+                $Config.environments.local.base_url = $localUrl
+                $configChanged = $true
+            }
+        }
+    }
+
+    return @{
+        Config = $Config
+        Changed = $configChanged
+    }
+}
+
+# ==============================================================================
+# FUNCIONES DE COMPARACION
+# ==============================================================================
+
+function Get-ResolvedUrl {
+    param($baseUrl, $path, $params)
+
+    $url = $baseUrl + $path
+    foreach ($key in $params.Keys) {
+        $url = $url -replace "\{$key\}", $params[$key]
+    }
+    return $url
+}
+
+function Get-EndpointFile {
+    param($url, $outputPath, $token, $timeout)
+
+    try {
+        $headers = @{
+            "Authorization" = "Bearer $token"
+        }
+
+        Invoke-WebRequest -Uri $url -Headers $headers -OutFile $outputPath `
+                          -TimeoutSec $timeout -ErrorAction Stop
+        return $true
+    }
+    catch {
+        Write-Failure "  ERROR: $($_.Exception.Message)"
+        return $false
+    }
+}
+
+function Get-FileHashMD5 {
+    param($filePath)
+
+    if (Test-Path $filePath) {
+        return (Get-FileHash -Path $filePath -Algorithm MD5).Hash
+    }
+    return $null
+}
+
+# ==============================================================================
+# MAIN
+# ==============================================================================
+
+# Reset config si se solicita
+if ($ResetConfig) {
+    Write-Info "Reseteando configuracion..."
+    $config = Get-DefaultConfig
+    Save-Config -Config $config -Path $ConfigFile
+    Write-Success "Configuracion reseteada. Ejecute nuevamente sin -ResetConfig."
+    exit 0
+}
+
+# Cargar configuracion
+$config = Load-Config -Path $ConfigFile
+
+# Validar y solicitar valores faltantes
+$result = Validate-AndPromptConfig -Config $config -SkipPrompts:$SkipPrompts
+$config = $result.Config
+
+# Guardar config si cambio
+if ($result.Changed -or $SaveConfig) {
+    Write-Host ""
+    if (!$SaveConfig) {
+        $saveAnswer = Read-Host "Desea guardar los cambios en el archivo de configuracion? (S/n)"
+        if ($saveAnswer -ne "n" -and $saveAnswer -ne "N") {
+            Save-Config -Config $config -Path $ConfigFile
+        }
+    }
+    else {
+        Save-Config -Config $config -Path $ConfigFile
+    }
+}
+
+# Variables de configuracion
+$DevBaseUrl = $config.environments.dev.base_url
+$LocalBaseUrl = $config.environments.local.base_url
+$Token = $config.authentication.token
+$OutputDir = $config.settings.output_dir
+$Timeout = $config.settings.timeout_seconds
 
 # Crear directorio de output
 if (!(Test-Path $OutputDir)) {
@@ -34,113 +354,46 @@ LOCAL Server: $LocalBaseUrl
 
 "@
 
-# Definir los endpoints a probar
-# IMPORTANTE: Completar con IDs reales de datos de prueba
+# Definir los endpoints a probar usando config
 $endpoints = @(
     @{
-        Name = "Comprobante Electronico"
-        Path = "/api/facturacion/descargarComprobanteElectronico/{id_comprobante}"
-        Params = @{ id_comprobante = "COMPLETAR_ID" }
+        Name = "Comprobante Electronico (Facturacion)"
+        Path = "/api/facturacion/descargarComprobante/{idComprobante}"
+        Params = @{ idComprobante = $config.test_data.idComprobante }
         FileName = "comprobante_electronico.pdf"
     },
     @{
         Name = "Resumen Tarjeta (Comercios)"
-        Path = "/api/comprascomercios/descargarResumenTarjeta/{id_resumen}"
-        Params = @{ id_resumen = "COMPLETAR_ID" }
+        Path = "/api/comprascomercios/descargarResumenTarjeta/{idResumenTarjeta}"
+        Params = @{ idResumenTarjeta = $config.test_data.idResumenTarjeta }
         FileName = "resumen_tarjeta_comercios.pdf"
     },
     @{
         Name = "Gastos de Salud"
-        Path = "/api/CuentaCorriente/descargarGastosDeSalud/{numero_socio}/{anio}"
-        Params = @{ numero_socio = "COMPLETAR_SOCIO"; anio = "2025" }
+        Path = "/api/CuentaCorriente/descargarGastosDeSalud/{numeroSocio}/{anio}"
+        Params = @{ numeroSocio = $config.test_data.numeroSocio; anio = $config.test_data.anio }
         FileName = "gastos_salud.pdf"
     },
     @{
         Name = "Resumen Tarjeta (Cuenta Corriente)"
-        Path = "/api/CuentaCorriente/descargarResumenTarjeta/{id_comprobante}/{id_tipo}"
-        Params = @{ id_comprobante = "COMPLETAR_ID"; id_tipo = "1" }
+        Path = "/api/CuentaCorriente/descargarResumenTarjeta/{idcomprobante}/{idTipoComprobante}"
+        Params = @{ idcomprobante = $config.test_data.idComprobante; idTipoComprobante = $config.test_data.idTipoComprobante }
         FileName = "resumen_tarjeta_cc.pdf"
     },
     @{
         Name = "Detalle Plan Salud"
-        Path = "/api/CuentaCorriente/descargarPdfCcteSalud/{id_cuenta_corriente}"
-        Params = @{ id_cuenta_corriente = "COMPLETAR_ID" }
+        Path = "/api/CuentaCorriente/descargarPdfCcteSalud/{idCuentaCorriente}"
+        Params = @{ idCuentaCorriente = $config.test_data.idCuentaCorriente }
         FileName = "detalle_plan_salud.pdf"
     }
 )
 
-# Funcion para reemplazar parametros en la URL
-function Get-ResolvedUrl {
-    param($baseUrl, $path, $params)
-
-    $url = $baseUrl + $path
-    foreach ($key in $params.Keys) {
-        $url = $url -replace "\{$key\}", $params[$key]
-    }
-    return $url
-}
-
-# Funcion para descargar archivo
-function Get-EndpointFile {
-    param($url, $outputPath, $token)
-
-    try {
-        $headers = @{
-            "Authorization" = "Bearer $token"
-        }
-
-        Invoke-WebRequest -Uri $url -Headers $headers -OutFile $outputPath -ErrorAction Stop
-        return $true
-    }
-    catch {
-        Write-Failure "  ERROR: $($_.Exception.Message)"
-        return $false
-    }
-}
-
-# Funcion para calcular hash MD5
-function Get-FileHashMD5 {
-    param($filePath)
-
-    if (Test-Path $filePath) {
-        return (Get-FileHash -Path $filePath -Algorithm MD5).Hash
-    }
-    return $null
-}
-
-# Funcion para comparar archivos byte a byte
-function Compare-FilesContent {
-    param($file1, $file2)
-
-    if (!(Test-Path $file1) -or !(Test-Path $file2)) {
-        return $false
-    }
-
-    $bytes1 = [System.IO.File]::ReadAllBytes($file1)
-    $bytes2 = [System.IO.File]::ReadAllBytes($file2)
-
-    if ($bytes1.Length -ne $bytes2.Length) {
-        return $false
-    }
-
-    for ($i = 0; $i -lt $bytes1.Length; $i++) {
-        if ($bytes1[$i] -ne $bytes2[$i]) {
-            return $false
-        }
-    }
-
-    return $true
-}
-
-# Verificar token
-if ([string]::IsNullOrEmpty($Token)) {
-    Write-Failure "ERROR: Debe proporcionar un token de autenticacion"
-    Write-Info "Uso: .\Compare-Endpoints.ps1 -Token 'tu_token_jwt' -DevBaseUrl 'https://dev..' -LocalBaseUrl 'http://localhost:5000'"
-    exit 1
-}
-
-Write-Info "Iniciando comparacion de endpoints..."
-Write-Info "DEV: $DevBaseUrl"
+Write-Host ""
+Write-Host "=" * 60 -ForegroundColor Cyan
+Write-Info "INICIANDO COMPARACION DE ENDPOINTS"
+Write-Host "=" * 60 -ForegroundColor Cyan
+Write-Host ""
+Write-Info "DEV:   $DevBaseUrl"
 Write-Info "LOCAL: $LocalBaseUrl"
 Write-Host ""
 
@@ -154,18 +407,19 @@ foreach ($endpoint in $endpoints) {
     Write-Host "[$totalTests] Probando: $($endpoint.Name)" -ForegroundColor Yellow
 
     # Verificar si tiene IDs configurados
-    $hasPlaceholders = $false
-    foreach ($value in $endpoint.Params.Values) {
-        if ($value -like "COMPLETAR*") {
-            $hasPlaceholders = $true
+    $hasEmptyParams = $false
+    foreach ($key in $endpoint.Params.Keys) {
+        if ([string]::IsNullOrWhiteSpace($endpoint.Params[$key])) {
+            $hasEmptyParams = $true
             break
         }
     }
 
-    if ($hasPlaceholders) {
+    if ($hasEmptyParams) {
         Write-Info "  SKIPPED: Faltan parametros por configurar"
         $skippedTests++
         $report += "[$totalTests] $($endpoint.Name): SKIPPED (faltan parametros)`n"
+        Write-Host ""
         continue
     }
 
@@ -180,14 +434,14 @@ foreach ($endpoint in $endpoints) {
 
     # Descargar de DEV
     Write-Host "  Descargando de DEV..." -NoNewline
-    $devSuccess = Get-EndpointFile -url $devUrl -outputPath $devFile -token $Token
+    $devSuccess = Get-EndpointFile -url $devUrl -outputPath $devFile -token $Token -timeout $Timeout
     if ($devSuccess) {
         Write-Success " OK"
     }
 
     # Descargar de LOCAL
     Write-Host "  Descargando de LOCAL..." -NoNewline
-    $localSuccess = Get-EndpointFile -url $localUrl -outputPath $localFile -token $Token
+    $localSuccess = Get-EndpointFile -url $localUrl -outputPath $localFile -token $Token -timeout $Timeout
     if ($localSuccess) {
         Write-Success " OK"
     }
@@ -210,7 +464,6 @@ foreach ($endpoint in $endpoints) {
         }
         else {
             # Los PDFs pueden tener metadata diferente (fecha de generacion, etc)
-            # pero el contenido visual ser igual
             Write-Failure "  RESULTADO: DIFERENTES"
             Write-Info "  NOTA: Puede ser por metadata (fecha/hora). Revisar manualmente."
             $failedTests++
@@ -241,9 +494,9 @@ Skipped: $skippedTests
 ================================================================================
 "@
 
-Write-Host "================================================================================" -ForegroundColor Cyan
+Write-Host "=" * 60 -ForegroundColor Cyan
 Write-Host "RESUMEN" -ForegroundColor Cyan
-Write-Host "================================================================================" -ForegroundColor Cyan
+Write-Host "=" * 60 -ForegroundColor Cyan
 Write-Host "Total tests: $totalTests"
 Write-Success "Passed: $passedTests"
 if ($failedTests -gt 0) { Write-Failure "Failed: $failedTests" } else { Write-Host "Failed: $failedTests" }
@@ -261,5 +514,9 @@ if ($failedTests -eq 0 -and $skippedTests -eq 0) {
 }
 elseif ($failedTests -gt 0) {
     Write-Failure "HAY DIFERENCIAS - Revisar los archivos PDF manualmente"
-    Write-Info "Tip: Abrir ambos PDFs y comparar visualmente, o usar una herramienta de diff de PDF"
+    Write-Info "Tip: Abrir ambos PDFs y comparar visualmente"
+}
+elseif ($skippedTests -gt 0 -and $passedTests -eq 0 -and $failedTests -eq 0) {
+    Write-Warning "TODOS LOS TESTS FUERON SKIPPED - Configure los datos de prueba"
+    Write-Info "Ejecute: .\Compare-Endpoints.ps1 (sin -SkipPrompts)"
 }
