@@ -1,7 +1,7 @@
 # Code Review Rules - Jerarquicos
 
-**Version:** 1.2
-**Ultima actualizacion:** 2026-02-12
+**Version:** 1.4
+**Ultima actualizacion:** 2026-02-23
 **Origen:** Observaciones de code review de Guillermo Loinaz + convenciones del equipo
 
 ---
@@ -97,6 +97,158 @@ Patron de referencia:
 <add key="UrlApiRecetaElectronica" value="..." />
 <add key="UrlApiReporte" value="..." />
 ```
+
+---
+
+### R007: No exponer ex.Message en respuestas al cliente
+**Severidad:** Alta
+**Aplica a:** Todos los servicios que devuelven DTOs de respuesta al cliente
+
+Los mensajes de error devueltos al cliente **nunca** deben contener `ex.Message` ni informacion derivada de excepciones internas. Las excepciones pueden filtrar detalles de infraestructura (connection strings, URLs internas, nombres de tablas, stack traces parciales).
+
+Loguear el detalle completo en el logger y devolver un mensaje generico o un ID de correlacion para trazabilidad.
+
+**Incorrecto:**
+```csharp
+catch (Exception ex)
+{
+    _logger.LogError(ex, "Error en operacion");
+    return ResponseDto.Error("Error", "ERR-001", ex.Message);  // EXPONE detalles internos
+}
+```
+
+**Correcto:**
+```csharp
+catch (Exception ex)
+{
+    _logger.LogError(ex, "Error en operacion. CorrelationId: {CorrelationId}", correlationId);
+    return ResponseDto.Error("Error", "ERR-001", null);  // Sin detalles internos
+}
+```
+
+---
+
+### R008: Constantes de negocio en configuracion, no hardcodeadas
+**Severidad:** Media
+**Aplica a:** Todos los archivos .cs
+
+Los valores de negocio (IDs por defecto, limites, umbrales) deben estar en `appsettings.json` o en una clase de configuracion inyectable, no como `const` o magic numbers hardcodeados en el codigo. Esto permite cambiarlos sin recompilar y evita duplicacion cuando se usan en multiples lugares.
+
+**Incorrecto:**
+```csharp
+private const int DefaultPlanId = 24;  // Magic number duplicado en 2 clases
+```
+
+**Correcto:**
+```csharp
+// appsettings.json
+"CartillaSettings": { "DefaultPlanId": 24 }
+
+// Clase
+private readonly int _defaultPlanId = options.Value.DefaultPlanId;
+```
+
+---
+
+### R009: Abstracciones base deben ser efectivamente reutilizadas
+**Severidad:** Media
+**Aplica a:** Validators, servicios base, clases abstractas
+
+Si se crea una clase base, validator base o interface con el proposito de reutilizacion, los consumidores **deben** efectivamente usarla. De lo contrario, es codigo muerto que agrega complejidad sin beneficio. No crear abstracciones "por si acaso".
+
+**Incorrecto:**
+```csharp
+// Se crea GeoLocationValidator<T> con interface IGeoLocation
+// Pero los DTOs no implementan IGeoLocation
+// Y los validators concretos repiten las reglas manualmente
+```
+
+**Correcto:**
+```csharp
+// Opcion A: Los DTOs implementan IGeoLocation y los validators heredan de GeoLocationValidator
+// Opcion B: No crear GeoLocationValidator y poner las reglas directamente en cada validator
+```
+
+---
+
+### R010: Metodos async deben usar async/await, no Task.FromResult
+**Severidad:** Media
+**Aplica a:** Todos los archivos .cs con metodos que retornan Task<T>
+
+Los metodos que hacen I/O (llamadas a API, reportes, base de datos) DEBEN usar `async Task<T>` con `await`, no devolver `Task.FromResult()` simulando asincronia.
+
+**Incorrecto:**
+```csharp
+public Task<HttpResponseMessage> DescargarReporte(int id)
+{
+    var respuesta = servicio.GenerarReporte(id);
+    var response = new HttpResponseMessage(HttpStatusCode.OK);
+    return Task.FromResult(response);
+}
+```
+
+**Correcto:**
+```csharp
+public async Task<HttpResponseMessage> DescargarReporte(int id)
+{
+    var respuesta = await servicio.GenerarReporteAsync(id).ConfigureAwait(false);
+    var response = new HttpResponseMessage(HttpStatusCode.OK);
+    return response;
+}
+```
+
+---
+
+### R011: No devolver null desde endpoints de Web API
+**Severidad:** Alta
+**Aplica a:** Controllers con endpoints que retornan HttpResponseMessage o Task<HttpResponseMessage>
+
+Devolver `null` desde un endpoint causa `NullReferenceException` en el pipeline de Web API. Siempre devolver un `HttpResponseMessage` con el status code apropiado.
+
+**Incorrecto:**
+```csharp
+if (!this.RequestContext.Principal.Identity.IsAuthenticated)
+{
+    return null;
+}
+```
+
+**Correcto:**
+```csharp
+if (!this.RequestContext.Principal.Identity.IsAuthenticated)
+{
+    return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+}
+```
+
+**Nota:** Este patron pre-existe en +80 lugares del proyecto. Aplicar progresivamente al tocar cada archivo.
+
+---
+
+### R012: En clases static, recibir dependencias como parametro, no usar service locator
+**Severidad:** Media
+**Aplica a:** Clases utilitarias estaticas que consumen servicios
+
+El patron `ObjectFactory.GetInstance<T>()` dentro de metodos estaticos es un anti-patron (service locator) que dificulta testing y oculta dependencias. Las clases utilitarias estaticas deben recibir sus dependencias como parametros.
+
+**Incorrecto:**
+```csharp
+public static async Task<ReporteResponseDto> GenerarReporte(int id)
+{
+    var client = ObjectFactory.GetInstance<IApiReporteClient>();
+    return await client.GenerarReporteAsync(nombre, parametros);
+}
+```
+
+**Correcto:**
+```csharp
+public static async Task<ReporteResponseDto> GenerarReporte(int id, IApiReporteClient apiReportesClient)
+{
+    return await apiReportesClient.GenerarReporteAsync(nombre, parametros);
+}
+```
+
+**Alternativa:** Convertir la clase a no-estatica con DI por constructor.
 
 ---
 
