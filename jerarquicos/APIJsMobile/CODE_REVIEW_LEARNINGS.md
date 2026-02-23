@@ -11,6 +11,7 @@
 1. [FluentValidation](#1-fluentvalidation)
 2. [Logging y Exception Handling](#2-logging-y-exception-handling)
 3. [Patrones Generales](#3-patrones-generales)
+4. [Dependency Injection](#4-dependency-injection)
 
 ---
 
@@ -230,6 +231,59 @@ contextInfo[0], contextInfo[1], contextInfo[2], contextInfo[3], extraValue
 
 ---
 
+## 4. Dependency Injection
+
+### 4.1 No instanciar clients/services con `new` dentro de metodos
+
+**Fecha:** 2026-02-23
+**Reviewer:** Natalia Belen Mignola
+**Archivo:** `ComprasComerciosController.cs` (Repositorio-ApiMovil)
+
+#### Incorrecto
+
+```csharp
+public async Task<HttpResponseMessage> DescargarResumenTarjeta(int id)
+{
+    // Instanciar el client en cada llamada al metodo
+    var apiReportesClient = new ApiReporteClient();
+    var respuesta = await apiReportesClient.GenerarReporteAsync(nombre, parametros);
+}
+```
+
+#### Correcto
+
+```csharp
+// Field a nivel de clase
+private readonly IApiReporteClient apiReportesClient;
+
+// Inyeccion por constructor
+public MiController(IApiReporteClient _apiReportesClient)
+{
+    apiReportesClient = _apiReportesClient;
+}
+
+// Uso directo del field inyectado
+public async Task<HttpResponseMessage> DescargarResumenTarjeta(int id)
+{
+    var respuesta = await apiReportesClient.GenerarReporteAsync(nombre, parametros);
+}
+```
+
+#### Explicacion
+
+Los clients y services deben registrarse en el container de DI y recibirse por constructor, no instanciarse con `new` en cada metodo. Razones:
+
+- **Reutilizacion:** Una sola instancia (Singleton) en vez de crear una nueva por cada request
+- **Testabilidad:** Se puede mockear la interfaz en tests
+- **Consistencia:** Todos los demas clients del proyecto siguen este patron
+- **Rendimiento:** Evita overhead de crear y configurar instancias repetidamente
+
+**Aplica a:** Cualquier proyecto con DI container (StructureMap en ApiMovil, Microsoft DI en ApiJsMobile).
+
+**Patron para clases estaticas (sin constructor):** Resolver via `ObjectFactory.GetInstance<IInterface>()` o recibir como parametro.
+
+---
+
 ## Checklist de Code Review
 
 Antes de crear un PR, verificar:
@@ -243,6 +297,11 @@ Antes de crear un PR, verificar:
 - [ ] Se usa spread operator `[.. array, extras]` en lugar de indexacion
 - [ ] Los logs mantienen consistencia con otros casos similares
 - [ ] Se incluye informacion de contexto (correlation, user, client)
+
+### Dependency Injection
+- [ ] No se instancian clients/services con `new` dentro de metodos
+- [ ] Nuevos clients registrados en el container de DI
+- [ ] Inyeccion por constructor, no por `ObjectFactory.GetInstance` en controllers
 
 ### General
 - [ ] El codigo sigue los patrones existentes del proyecto
@@ -263,6 +322,7 @@ Antes de crear un PR, verificar:
 | 2024-12-29 | `ProfesionalFindByFiltersRequestDtoValidator.cs` | Remover `.When(HasValue)` redundante | (detectado en busqueda) |
 | 2024-12-29 | `FindNearbyRequestDtoBaseValidator.cs` | Remover `.When(HasValue)` en Latitud, Longitud, Page, PageSize | (detectado en busqueda) |
 | 2024-12-29 | `FindNearbyRequestDtoBaseValidator.cs` | Unificar RuleFor duplicados para Latitud y Longitud | Natalia Mignola |
+| 2026-02-23 | `ComprasComerciosController.cs` (ApiMovil) | No instanciar clients con `new` en metodos, usar DI | Natalia Mignola |
 
 ---
 
