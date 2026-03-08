@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-02-12
 **Categoria:** projects
-**Estado:** Seed
+**Estado:** In Progress
 **Prioridad:** Sin definir
 
 ---
@@ -42,3 +42,4 @@ Retomar el desarrollo de LTE (LinkedIn Transcript Extractor), actualmente en v0.
 | Fecha | Evento |
 |-------|--------|
 | 2026-02-12 | Idea capturada |
+| 2026-02-14 | Estado → In Progress. v0.16.0 activa, Epic 9 completado. |

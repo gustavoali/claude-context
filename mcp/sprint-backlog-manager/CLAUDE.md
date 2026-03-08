@@ -29,7 +29,8 @@ Evolucion de `C:/mcp/sprint-tracker/` (CLI con JSON) hacia un servidor MCP compl
 - Prefijos de ID por proyecto (LTE-001, API-001, etc.)
 
 ## Conexion PostgreSQL
-- Default: postgresql://localhost:5432/sprint_backlog
+- Default: postgresql://postgres:postgres@localhost:5435/sprint_backlog
+- Docker container: sprint-backlog-pg (WSL2, port 5435)
 - Configurable via DATABASE_URL env var
 
 ## Capacidades MCP (tools expuestos a Claude)
@@ -40,3 +41,4 @@ Evolucion de `C:/mcp/sprint-tracker/` (CLI con JSON) hacia un servidor MCP compl
 - Technical Debt: list_debt, create_debt, update_debt
 - Metricas: get_velocity, get_capacity, get_burndown
 - Archivado: archive_completed_stories
+- GitHub Sync: create_github_issue, link_github_issue, sync_to_github, pull_from_github

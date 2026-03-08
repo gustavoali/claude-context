@@ -1,8 +1,8 @@
 # LinkedIn Transcript Extractor (LTE) - Project Context
 
-**Version:** 0.12.0
+**Version:** 0.17.0
 **Ubicacion:** C:/mcp/linkedin
-**Estado:** Funcional - En desarrollo activo
+**Estado:** Funcional - Desarrollo activo
 
 ---
 
@@ -10,24 +10,21 @@
 
 Chrome Extension + MCP Server para capturar y consultar transcripts de LinkedIn Learning. Optimizado para consumo por LLMs (ChatGPT, Claude).
 
-### Stack Tecnologico
+### Stack
+
 - **Extension:** JavaScript (Chrome Manifest V3)
 - **Backend:** Node.js + SQLite (better-sqlite3)
 - **Servidor:** Express.js (HTTP) + MCP SDK
 - **Crawler:** Playwright
+- **Testing:** Jest (~85% coverage, 2,724 tests)
 
 ---
 
-## Componentes
+## Arquitectura
 
-| Componente | Ubicacion | Estado |
-|------------|-----------|--------|
-| Chrome Extension | `/extension/` | Funcional |
-| Native Host | `/native-host/host.js` | SQLite |
-| MCP Server | `/server/index.js` | Funcional |
-| HTTP Server | `/server/http-server.js` | Funcional |
-| Auto-Crawler | `/crawler/auto-crawler.js` | Funcional |
-| DB Library | `/scripts/lib/database.js` | Central |
+6 modulos en `modules/`: shared, capture, storage, matching, crawl, api
+
+**Detalle:** Ver `ARCHITECTURE_ANALYSIS.md`
 
 ---
 
@@ -35,69 +32,23 @@ Chrome Extension + MCP Server para capturar y consultar transcripts de LinkedIn 
 
 **Archivo:** `data/lte.db` (SQLite)
 
-| Tabla | Contenido |
-|-------|-----------|
-| transcripts | 107 videos, 6 cursos |
-| unassigned_vtts | VTTs pendientes de asignar |
-| visited_contexts | Contextos visitados por crawler |
-
-**Backup:** `npm run db:backup`
+Tablas principales: `courses_normalized`, `chapters_normalized`, `videos_normalized`, `transcripts_normalized`, `unassigned_vtts`, `visited_contexts`, `collections`, `collection_memberships`, `collection_operations`
 
 ---
 
-## Comandos Frecuentes
+## Comandos
 
 ```bash
-# Desarrollo
-npm test                          # Tests (29% coverage)
+npm test                          # 2,724 tests
 npm run lint                      # ESLint
+npm run db:backup                 # Backup SQLite
 
-# Servidores
-cd server && npm run start:http   # HTTP (ChatGPT via ngrok)
+cd server && npm run start:http   # HTTP (puerto 3456)
 cd server && npm start            # MCP (Claude Desktop)
 
-# Crawler
-npm run crawl -- --url "URL"      # Crawl curso
-npm run crawl:setup               # Setup sesion LinkedIn
-
-# Base de datos
-npm run db:backup                 # Crear backup
-npm run db:backup:verify          # Verificar backup
+node crawler/auto-crawler.js <slug>              # Crawl secuencial
+node crawler/auto-crawler.js <slug> --parallel   # Crawl paralelo
 ```
-
----
-
-## URLs y Endpoints
-
-### HTTP Server (puerto 3456)
-- `GET /api/status` - Estado
-- `GET /api/courses` - Lista cursos
-- `GET /api/courses/:slug` - Estructura curso
-- `GET /api/search?q=query` - Buscar
-- `POST /api/ask` - Preguntar sobre contenido
-- `GET /openapi.json` - OpenAPI spec
-
-### MCP Tools (11 herramientas)
-`list_courses`, `get_course_structure`, `get_video_transcript`, `search_transcripts`, `ask_about_content`, `get_topics_overview`, `compare_videos`, `get_full_course_content`, `find_prerequisites`, `check_for_updates`, `list_learnings`
-
----
-
-## Estado del Desarrollo
-
-### Completado
-- [x] Migracion SQLite (v0.12.0)
-- [x] Sistema de backup
-- [x] Organizacion de scripts (LTE-004)
-- [x] ESLint configurado (LTE-021)
-- [x] Validacion de matching (LTE-020)
-
-### En Progreso
-- [ ] Tests unitarios - 29% coverage (LTE-002)
-
-### Pendiente Prioritario
-- LTE-001: Unificar parser VTT
-- LTE-003: Centralizar storage
-- LTE-022: API crawl desde ChatGPT
 
 ---
 
@@ -109,22 +60,26 @@ npm run db:backup:verify          # Verificar backup
 | Extension Chrome | `chrome-extension-developer` |
 | Tests | `test-engineer` |
 | Code Review | `code-reviewer` |
-| **Gestion de Backlog** | `product-owner` |
+| Gestion de Backlog | `product-owner` |
 
-### Regla de Gestion de Backlog
+### Regla de Backlog
 
-**OBLIGATORIO:** Antes de crear o modificar historias en el backlog, delegar al agente `product-owner` para:
-1. Verificar el ID Registry en PRODUCT_BACKLOG.md
-2. Asignar el proximo ID disponible
-3. Definir user story con formato correcto y acceptance criteria
-4. Actualizar el ID Registry
+**OBLIGATORIO:** Delegar al agente `product-owner` para crear/modificar historias. Verificar ID Registry (proximo: LTE-074).
 
-Esto evita colisiones de IDs entre sesiones.
+### Regla de Versionado
+
+**OBLIGATORIO:** Todos los componentes deben mantener la misma version general del proyecto. Al incrementar version, actualizar TODOS los archivos:
+- `package.json` (raiz)
+- `extension/manifest.json` (version de la extension)
+- `CLAUDE.md` (version en header)
+- `ARCHITECTURE_ANALYSIS.md` (version en header)
+- Cualquier otro archivo que declare version del proyecto
 
 ---
 
-## Documentacion Relacionada
+## Documentacion
 
-- `TASK_STATE.md` - Estado de tareas activas
-- `PRODUCT_BACKLOG.md` - Backlog del producto (v2.0)
-- `ARCHITECTURE_ANALYSIS.md` - Analisis de arquitectura
+- `TASK_STATE.md` - Estado actual y proximos pasos
+- `PRODUCT_BACKLOG.md` - Backlog del producto
+- `ARCHITECTURE_ANALYSIS.md` - Arquitectura v0.16.0
+- `archive/` - Historial completo archivado

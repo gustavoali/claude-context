@@ -1,7 +1,7 @@
 # Code Review Rules - Jerarquicos
 
-**Version:** 1.4
-**Ultima actualizacion:** 2026-02-23
+**Version:** 1.6
+**Ultima actualizacion:** 2026-03-04
 **Origen:** Observaciones de code review de Guillermo Loinaz + convenciones del equipo
 
 ---
@@ -249,6 +249,147 @@ public static async Task<ReporteResponseDto> GenerarReporte(int id, IApiReporteC
 ```
 
 **Alternativa:** Convertir la clase a no-estatica con DI por constructor.
+
+---
+
+### R013: Todo catch en API clients debe setear Success y ErrorMessage
+**Severidad:** Alta
+**Aplica a:** Todas las clases *Client.cs en BackendServices/
+
+Todo bloque `catch` en un API client debe setear explicitamente `response.Success = false` y `response.ErrorMessage` con un mensaje descriptivo. No confiar en el valor default de `bool` para indicar fallo.
+
+**Incorrecto:**
+```csharp
+catch (Exception e)
+{
+    logger.LogError(e, "Error: {Message}", e.Message);
+    // response.Success queda en false por default, ErrorMessage queda null
+}
+```
+
+**Correcto:**
+```csharp
+catch (Exception e)
+{
+    logger.LogError(e, "Error: {Message}", e.Message);
+    response.Success = false;
+    response.ErrorMessage = $"Error al ejecutar operacion: {e.Message}";
+}
+```
+
+---
+
+### R014: No usar .Result ni .Wait() en controllers
+**Severidad:** Alta
+**Aplica a:** Todos los controllers que llaman a API clients o servicios async
+
+Los metodos de controller que invocan operaciones async deben ser `async Task<T>` y usar `await`. Usar `.Result` o `.Wait()` causa deadlocks con el `SynchronizationContext` de ASP.NET. Extension de R010.
+
+**Incorrecto:**
+```csharp
+[HttpGet]
+public RespuestaModel<List<T>> ObtenerDatos()
+{
+    var respuesta = _apiClient.GetDatosAsync(request).Result; // DEADLOCK RISK
+    // ...
+}
+```
+
+**Correcto:**
+```csharp
+[HttpGet]
+public async Task<RespuestaModel<List<T>>> ObtenerDatos()
+{
+    var respuesta = await _apiClient.GetDatosAsync(request);
+    // ...
+}
+```
+
+---
+
+### R015: Usar AutoMapper para todos los mapeos DTO/Model a ViewModel
+**Severidad:** Alta
+**Aplica a:** Todos los controllers y servicios que transforman datos entre capas
+
+Todo mapeo entre DTOs, Models y ViewModels **debe** realizarse mediante AutoMapper con su correspondiente `CreateMap` en `AutoMapperProfile.cs`. No se permite mapeo manual con `new ViewModel { Prop = dto.Prop, ... }` ni con `.Select(x => new ViewModel { ... })`.
+
+Esto asegura:
+- Centralizar las reglas de transformacion en un unico lugar
+- Facilitar el mantenimiento cuando cambian las propiedades
+- Consistencia en todo el proyecto
+- Detectar mapeos faltantes en tiempo de startup (no en runtime)
+
+**Incorrecto:**
+```csharp
+var viewModels = dtos.Select(d => new MiViewModel
+{
+    Id = d.Id,
+    Descripcion = d.Nombre,
+    OtroCampo = d.Valor
+}).ToList();
+```
+
+**Correcto:**
+```csharp
+// En AutoMapperProfile.cs
+CreateMap<MiDto, MiViewModel>()
+    .ForMember(dest => dest.Descripcion, opt => opt.MapFrom(src => src.Nombre));
+
+// En el Controller/Service
+var viewModels = Mapper.Map<List<MiDto>, List<MiViewModel>>(dtos);
+```
+
+**Excepcion:** Mapeos que requieren datos de contexto externo (ej: lookup en otro dataset) pueden completarse post-mapeo con `.ForEach()`, pero las propiedades base deben mapearse con AutoMapper.
+
+---
+
+### R016: Null-guard en apiResponse.Data despues de Success check
+**Severidad:** Alta
+**Aplica a:** Todos los controllers que consumen API clients de BackendServices/
+
+Despues de verificar `apiResponse.Success`, siempre aplicar null-coalescing al acceder a `apiResponse.Data`. El hecho de que `Success == true` no garantiza que `Data` no sea null (la API puede devolver 200 con body vacio o JSON no deserializable).
+
+**Incorrecto:**
+```csharp
+if (!apiResponse.Success)
+{
+    // manejar error...
+}
+respuesta.Modelo = Mapper.Map<List<MiDto>, List<MiViewModel>>(apiResponse.Data);
+```
+
+**Correcto:**
+```csharp
+if (!apiResponse.Success)
+{
+    // manejar error...
+}
+respuesta.Modelo = Mapper.Map<List<MiDto>, List<MiViewModel>>(
+    apiResponse.Data ?? new List<MiDto>());
+```
+
+---
+
+### R017: Paralelizar llamadas HTTP independientes con Task.WhenAll
+**Severidad:** Media
+**Aplica a:** Controllers y servicios que realizan multiples llamadas a API clients
+
+Cuando dos o mas llamadas a API clients son independientes (no dependen del resultado del otro), usar `Task.WhenAll` para ejecutarlas en paralelo en vez de awaitar secuencialmente.
+
+**Incorrecto:**
+```csharp
+var localidades = await _apiClient.FindLocalidades(idPais);
+var provincias = await _apiClient.FindProvincias(idPais);
+```
+
+**Correcto:**
+```csharp
+var localidadesTask = _apiClient.FindLocalidades(idPais);
+var provinciasTask = _apiClient.FindProvincias(idPais);
+await Task.WhenAll(localidadesTask, provinciasTask);
+var localidades = localidadesTask.Result;
+var provincias = provinciasTask.Result;
+```
 
 ---
 

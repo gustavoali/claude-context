@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-02-12
 **Categoria:** projects
-**Estado:** Seed
+**Estado:** In Progress
 **Prioridad:** Media
 
 ---
@@ -38,3 +38,4 @@ Mediano (~4 sprints)
 | Fecha | Evento |
 |-------|--------|
 | 2026-02-12 | Documento de integracion creado. Pendiente arranque. |
+| 2026-02-14 | Estado → In Progress. REST API + dual-mode implementados. |

@@ -1,0 +1,1569 @@
+{
+  "info": {
+    "name": "Cartilla API - Integration Tests",
+    "description": "Tests de integracion para API Cartilla.\nComparar respuestas entre api-movil (legacy) y ApiJsMobile (.NET 8).\n\nConfigurar {{baseUrl}} en el entorno correspondiente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "apiVersion", "value": "v1" },
+    { "key": "token", "value": "" },
+    { "key": "localidadId", "value": "1" },
+    { "key": "radio", "value": "10" },
+    { "key": "idPersona", "value": "123" },
+    { "key": "latitud", "value": "-31.4135" },
+    { "key": "longitud", "value": "-64.1811" },
+    { "key": "radioKm", "value": "5" },
+    { "key": "idTipoInstitucion", "value": "1" },
+    { "key": "idEspecialidad", "value": "1" },
+    { "key": "idPrestador", "value": "456" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Helper global: validar estructura CartillaResponseDto",
+          "pm.globals.set('validateCartillaResponse', function(jsonData, testName) {",
+          "    pm.test(testName + ' - tiene campo exito', function() {",
+          "        pm.expect(jsonData).to.have.property('exito');",
+          "    });",
+          "    pm.test(testName + ' - tiene campo mensaje', function() {",
+          "        pm.expect(jsonData).to.have.property('mensaje');",
+          "    });",
+          "    pm.test(testName + ' - tiene campo modelo', function() {",
+          "        pm.expect(jsonData).to.have.property('modelo');",
+          "    });",
+          "}.toString());"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Auth",
+      "item": [
+        {
+          "name": "Login - Obtener Token JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Response tiene token', function() {",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "    pm.expect(jsonData.token).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "// Guardar token para uso en otros requests",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    console.log('Token guardado exitosamente');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{authUsername}}\",\n  \"password\": \"{{authPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - Emergencias",
+      "item": [
+        {
+          "name": "GET Emergencias (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Estructura CartillaResponseDto valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('mensaje');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    pm.test('Emergencia tiene campos esperados', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/{{radio}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "{{radio}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Emergencias (publico) - Validacion localidad=0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response indica error de validacion', function() {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/0/{{radio}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "0", "{{radio}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Emergencias (publico) - Validacion radio=0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "0"]
+            }
+          }
+        },
+        {
+          "name": "GET Emergencias Protegido (autenticado)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Estructura CartillaResponseDto valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('mensaje');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/{{radio}}/{{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "{{radio}}", "{{idPersona}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Emergencias Protegido - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/{{radio}}/{{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "{{radio}}", "{{idPersona}}"]
+            }
+          }
+        },
+        {
+          "name": "GET Emergencias Protegido - Validacion idPersona=0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/{{radio}}/0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "{{radio}}", "0"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Instituciones",
+      "item": [
+        {
+          "name": "GET TiposInstitucion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Estructura CartillaResponseDto valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/TiposInstitucion",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "TiposInstitucion"]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test('Estructura CartillaResponseDto valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('mensaje');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    pm.test('Institucion tiene campos esperados', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "        pm.expect(item).to.have.property('activo');",
+                  "    });",
+                  "",
+                  "    pm.test('Institucion tiene domicilio', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        if (item.domicilio) {",
+                  "            pm.expect(item.domicilio).to.have.property('calle');",
+                  "            pm.expect(item.domicilio).to.have.property('latitud');",
+                  "            pm.expect(item.domicilio).to.have.property('longitud');",
+                  "        }",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi - Con filtro tipo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}&IdTipoInstitucion={{idTipoInstitucion}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi - Validacion latitud fuera de rango",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi?Latitud=999&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "999" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi - Validacion radio fuera de rango",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio=200",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "200" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMiProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi Protegido - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMiProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones RadioN (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/RadioN?IdLocalidad={{localidadId}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "RadioN"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones RadioN - Con filtro tipo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/RadioN?IdLocalidad={{localidadId}}&Radio={{radioKm}}&IdTipoInstitucion={{idTipoInstitucion}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "RadioN"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones RadioN Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/RadioNProtegido?IdLocalidad={{localidadId}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "RadioNProtegido"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi Mapa (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    pm.test('InstitucionMapa tiene campos de mapa', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "        pm.expect(item).to.have.property('latitud');",
+                  "        pm.expect(item).to.have.property('longitud');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi/Mapa?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi", "Mapa"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Instituciones CercaDeMi Mapa Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi/MapaProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi", "MapaProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Profesionales",
+      "item": [
+        {
+          "name": "GET EspecialidadesMedicas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/EspecialidadesMedicas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "EspecialidadesMedicas"]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales RadioN (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    pm.test('Profesional tiene campos esperados', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "        pm.expect(item).to.have.property('apellido');",
+                  "        pm.expect(item).to.have.property('activo');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/RadioN?IdLocalidad={{localidadId}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "RadioN"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales RadioN - Con filtro especialidad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/RadioN?IdLocalidad={{localidadId}}&Radio={{radioKm}}&IdEspecialidad={{idEspecialidad}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "RadioN"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdEspecialidad", "value": "{{idEspecialidad}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales RadioN Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/RadioNProtegido?IdLocalidad={{localidadId}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "RadioNProtegido"],
+              "query": [
+                { "key": "IdLocalidad", "value": "{{localidadId}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi - Validacion latitud fuera de rango",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMi?Latitud=-100&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "-100" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMiProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi Protegido - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMiProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi Mapa (publico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    pm.test('ProfesionalMapa tiene campos de mapa', function() {",
+                  "        var item = jsonData.modelo[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombreCompleto');",
+                  "        pm.expect(item).to.have.property('latitud');",
+                  "        pm.expect(item).to.have.property('longitud');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMi/Mapa?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMi", "Mapa"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Profesionales CercaDeMi Mapa Protegido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('exito es true', function() {",
+                  "    pm.expect(jsonData.exito).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMi/MapaProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}&IdPersona={{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMi", "MapaProtegido"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" },
+                { "key": "IdPersona", "value": "{{idPersona}}" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Favoritos",
+      "item": [
+        {
+          "name": "POST AgregarFavorito - Profesional",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": {{idPersona}},\n  \"idPrestador\": {{idPrestador}},\n  \"tipoPrestador\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/AgregarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "AgregarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "POST AgregarFavorito - Institucion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": {{idPersona}},\n  \"idPrestador\": {{idPrestador}},\n  \"tipoPrestador\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/AgregarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "AgregarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "POST AgregarFavorito - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 123,\n  \"idPrestador\": 456,\n  \"tipoPrestador\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/AgregarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "AgregarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "POST AgregarFavorito - TipoPrestador invalido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 123,\n  \"idPrestador\": 456,\n  \"tipoPrestador\": 99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/AgregarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "AgregarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "POST QuitarFavorito - Profesional",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": {{idPersona}},\n  \"idPrestador\": {{idPrestador}},\n  \"tipoPrestador\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/QuitarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "QuitarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "POST QuitarFavorito - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idPersona\": 123,\n  \"idPrestador\": 456,\n  \"tipoPrestador\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/QuitarFavorito",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "QuitarFavorito"]
+            }
+          }
+        },
+        {
+          "name": "GET BuscarFavoritos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Estructura valida', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "if (jsonData.exito && jsonData.modelo) {",
+                  "    pm.test('Favoritos tiene categorias', function() {",
+                  "        var m = jsonData.modelo;",
+                  "        pm.expect(m).to.have.property('idPersona');",
+                  "        pm.expect(m).to.have.property('totalFavoritos');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/BuscarFavoritos/{{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "BuscarFavoritos", "{{idPersona}}"]
+            }
+          }
+        },
+        {
+          "name": "GET BuscarFavoritos - Sin token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 401 Unauthorized', function() {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/BuscarFavoritos/{{idPersona}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "BuscarFavoritos", "{{idPersona}}"]
+            }
+          }
+        },
+        {
+          "name": "GET BuscarFavoritos - Validacion idPersona=0 (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400 Bad Request', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/BuscarFavoritos/0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "BuscarFavoritos", "0"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Comparacion Cross-API",
+      "description": "Tests para comparar respuestas entre api-movil y ApiJsMobile.\nProceso:\n1. Correr coleccion contra entorno api-movil y guardar responses\n2. Correr contra entorno ApiJsMobile\n3. Comparar estructura y datos",
+      "item": [
+        {
+          "name": "Emergencias - Comparar estructura",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "// Guardar response para comparacion",
+                  "var envName = pm.environment.name || 'unknown';",
+                  "pm.globals.set('emergencias_response_' + envName, JSON.stringify(jsonData));",
+                  "",
+                  "// Validar estructura comun obligatoria",
+                  "pm.test('Tiene campos obligatorios: exito, mensaje, modelo', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('mensaje');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "pm.test('exito es booleano', function() {",
+                  "    pm.expect(jsonData.exito).to.be.a('boolean');",
+                  "});",
+                  "",
+                  "pm.test('modelo es array', function() {",
+                  "    pm.expect(jsonData.modelo).to.be.an('array');",
+                  "});",
+                  "",
+                  "// Log para comparacion manual",
+                  "console.log('[' + envName + '] Emergencias: ' + (jsonData.modelo ? jsonData.modelo.length : 0) + ' resultados');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Emergencias/{{localidadId}}/{{radio}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Emergencias", "{{localidadId}}", "{{radio}}"]
+            }
+          }
+        },
+        {
+          "name": "Instituciones CercaDeMi - Comparar estructura",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "var envName = pm.environment.name || 'unknown';",
+                  "pm.globals.set('instituciones_cerca_response_' + envName, JSON.stringify(jsonData));",
+                  "",
+                  "pm.test('Estructura obligatoria', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    var item = jsonData.modelo[0];",
+                  "    pm.test('Institucion tiene id y nombre', function() {",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "    });",
+                  "}",
+                  "",
+                  "console.log('[' + envName + '] Instituciones CercaDeMi: ' + (jsonData.modelo ? jsonData.modelo.length : 0) + ' resultados');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Instituciones/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Instituciones", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Profesionales CercaDeMi - Comparar estructura",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var jsonData = pm.response.json();",
+                  "var envName = pm.environment.name || 'unknown';",
+                  "pm.globals.set('profesionales_cerca_response_' + envName, JSON.stringify(jsonData));",
+                  "",
+                  "pm.test('Estructura obligatoria', function() {",
+                  "    pm.expect(jsonData).to.have.property('exito');",
+                  "    pm.expect(jsonData).to.have.property('modelo');",
+                  "});",
+                  "",
+                  "if (jsonData.modelo && jsonData.modelo.length > 0) {",
+                  "    var item = jsonData.modelo[0];",
+                  "    pm.test('Profesional tiene id, nombre, apellido', function() {",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('nombre');",
+                  "        pm.expect(item).to.have.property('apellido');",
+                  "    });",
+                  "}",
+                  "",
+                  "console.log('[' + envName + '] Profesionales CercaDeMi: ' + (jsonData.modelo ? jsonData.modelo.length : 0) + ' resultados');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/cartilla/Profesionales/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radioKm}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "cartilla", "Profesionales", "CercaDeMi"],
+              "query": [
+                { "key": "Latitud", "value": "{{latitud}}" },
+                { "key": "Longitud", "value": "{{longitud}}" },
+                { "key": "Radio", "value": "{{radioKm}}" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

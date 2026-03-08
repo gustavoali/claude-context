@@ -124,6 +124,9 @@ C:/claude_context/jerarquicos/Repositorio-ApiMovil/
 
 ---
 
+## Reglas Compartidas Jerarquicos
+@C:/claude_context/jerarquicos/SHARED_RULES.md
+
 ## Directivas de Codigo
 
 ### Comentarios y documentacion

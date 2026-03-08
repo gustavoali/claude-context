@@ -1,0 +1,786 @@
+{
+	"info": {
+		"_postman_id": "cartilla-comparison-001",
+		"name": "Cartilla - Legacy vs ApiJsMobile Comparison",
+		"description": "Coleccion para comparar respuestas entre la API legacy (Repositorio-ApiMovil) y la nueva ApiJsMobile.\n\nVariables:\n- legacy_url: URL base de la API legacy\n- new_url: URL base de ApiJsMobile\n- legacy_token: Token de auth legacy\n- new_token: Token JWT de ApiJsMobile\n\nDatos de prueba (Cordoba capital):\n- localidad: 7001 (Cordoba)\n- radio: 10 (km)\n- latitud: -31.4201\n- longitud: -64.1888\n- idPersona: 51430 (monitor)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "legacy_url", "value": "https://serviciosdevelop.jerarquicos.com:10700/develop" },
+		{ "key": "new_url", "value": "http://localhost:5209" },
+		{ "key": "legacy_token", "value": "" },
+		{ "key": "new_token", "value": "" },
+		{ "key": "localidad", "value": "7001" },
+		{ "key": "radio", "value": "10" },
+		{ "key": "latitud", "value": "-31.4201" },
+		{ "key": "longitud", "value": "-64.1888" },
+		{ "key": "idPersona", "value": "51430" },
+		{ "key": "idTipoInstitucion", "value": "" },
+		{ "key": "idEspecialidad", "value": "" }
+	],
+	"item": [
+		{
+			"name": "01 - Emergencias",
+			"item": [
+				{
+					"name": "01a LEGACY - Emergencias",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Emergencias/{{localidad}}/{{radio}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}"]
+						}
+					}
+				},
+				{
+					"name": "01b NEW - Emergencias",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Emergencias/{{localidad}}/{{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}"]
+						}
+					}
+				},
+				{
+					"name": "02a LEGACY - Emergencias con IdPersona",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Emergencias/{{localidad}}/{{radio}}/{{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}", "{{idPersona}}"]
+						}
+					}
+				},
+				{
+					"name": "02b NEW - Emergencias con IdPersona [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Emergencias/{{localidad}}/{{radio}}/{{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Emergencias", "{{localidad}}", "{{radio}}", "{{idPersona}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "02 - TiposInstitucion",
+			"item": [
+				{
+					"name": "03a LEGACY - TiposInstitucion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/TiposInstitucion",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "TiposInstitucion"]
+						}
+					}
+				},
+				{
+					"name": "03b NEW - TiposInstitucion",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/TiposInstitucion",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "TiposInstitucion"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "03 - Instituciones CercaDeMi",
+			"item": [
+				{
+					"name": "04a LEGACY - Instituciones CercaDeMi",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/CercaDeMi?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}&model.idTipoInstitucion={{idTipoInstitucion}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "CercaDeMi"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "04b NEW - Instituciones CercaDeMi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "CercaDeMi"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "05a LEGACY - Instituciones CercaDeMiProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/CercaDeMiProtegido?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}&model.idPersona={{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "CercaDeMiProtegido"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "05b NEW - Instituciones CercaDeMiProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "CercaDeMiProtegido"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "04 - Instituciones RadioN",
+			"item": [
+				{
+					"name": "06a LEGACY - Instituciones RadioN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/RadioN?model.idLocalidad={{localidad}}&model.radio={{radio}}&model.paginaActual=1&model.tamanioPagina=10",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "RadioN"],
+							"query": [
+								{ "key": "model.idLocalidad", "value": "{{localidad}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.paginaActual", "value": "1" },
+								{ "key": "model.tamanioPagina", "value": "10" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true },
+								{ "key": "model.nombre", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "06b NEW - Instituciones RadioN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/RadioN?IdLocalidad={{localidad}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "RadioN"],
+							"query": [
+								{ "key": "IdLocalidad", "value": "{{localidad}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "07a LEGACY - Instituciones RadioNProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/RadioNProtegido?model.idLocalidad={{localidad}}&model.radio={{radio}}&model.idPersona={{idPersona}}&model.paginaActual=1&model.tamanioPagina=10",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "RadioNProtegido"],
+							"query": [
+								{ "key": "model.idLocalidad", "value": "{{localidad}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.paginaActual", "value": "1" },
+								{ "key": "model.tamanioPagina", "value": "10" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "07b NEW - Instituciones RadioNProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/RadioNProtegido?IdLocalidad={{localidad}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "RadioNProtegido"],
+							"query": [
+								{ "key": "IdLocalidad", "value": "{{localidad}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "05 - Instituciones Mapa",
+			"item": [
+				{
+					"name": "08a LEGACY - Instituciones CercaDeMi/Mapa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/CercaDeMi/Mapa?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "CercaDeMi", "Mapa"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "08b NEW - Instituciones CercaDeMi/Mapa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/CercaDeMi/Mapa?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "CercaDeMi", "Mapa"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "09a LEGACY - Instituciones CercaDeMi/MapaProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Instituciones/CercaDeMi/MapaProtegido?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}&model.idPersona={{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Instituciones", "CercaDeMi", "MapaProtegido"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.idTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "09b NEW - Instituciones CercaDeMi/MapaProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Instituciones/CercaDeMi/MapaProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Instituciones", "CercaDeMi", "MapaProtegido"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdTipoInstitucion", "value": "{{idTipoInstitucion}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "06 - EspecialidadesMedicas",
+			"item": [
+				{
+					"name": "10a LEGACY - EspecialidadesMedicas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/EspecialidadesMedicas",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "EspecialidadesMedicas"]
+						}
+					}
+				},
+				{
+					"name": "10b NEW - EspecialidadesMedicas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/EspecialidadesMedicas",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "EspecialidadesMedicas"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "07 - Profesionales CercaDeMi",
+			"item": [
+				{
+					"name": "11a LEGACY - Profesionales CercaDeMi",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/CercaDeMi?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "CercaDeMi"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true },
+								{ "key": "model.nombre", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "11b NEW - Profesionales CercaDeMi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/CercaDeMi?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "CercaDeMi"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "12a LEGACY - Profesionales CercaDeMiProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/CercaDeMiProtegido?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}&model.idPersona={{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "CercaDeMiProtegido"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "12b NEW - Profesionales CercaDeMiProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/CercaDeMiProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "CercaDeMiProtegido"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "08 - Profesionales RadioN",
+			"item": [
+				{
+					"name": "13a LEGACY - Profesionales RadioN",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/RadioN?model.idLocalidad={{localidad}}&model.radio={{radio}}&model.paginaActual=1&model.tamanioPagina=10",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "RadioN"],
+							"query": [
+								{ "key": "model.idLocalidad", "value": "{{localidad}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.paginaActual", "value": "1" },
+								{ "key": "model.tamanioPagina", "value": "10" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true },
+								{ "key": "model.nombre", "value": "", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "13b NEW - Profesionales RadioN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/RadioN?IdLocalidad={{localidad}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "RadioN"],
+							"query": [
+								{ "key": "IdLocalidad", "value": "{{localidad}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "14a LEGACY - Profesionales RadioNProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/RadioNProtegido?model.idLocalidad={{localidad}}&model.radio={{radio}}&model.idPersona={{idPersona}}&model.paginaActual=1&model.tamanioPagina=10",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "RadioNProtegido"],
+							"query": [
+								{ "key": "model.idLocalidad", "value": "{{localidad}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.paginaActual", "value": "1" },
+								{ "key": "model.tamanioPagina", "value": "10" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "14b NEW - Profesionales RadioNProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/RadioNProtegido?IdLocalidad={{localidad}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "RadioNProtegido"],
+							"query": [
+								{ "key": "IdLocalidad", "value": "{{localidad}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "09 - Profesionales Mapa",
+			"item": [
+				{
+					"name": "15a LEGACY - Profesionales CercaDeMi/Mapa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}", "disabled": true }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/CercaDeMi/Mapa?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "CercaDeMi", "Mapa"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "15b NEW - Profesionales CercaDeMi/Mapa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/CercaDeMi/Mapa?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "CercaDeMi", "Mapa"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "16a LEGACY - Profesionales CercaDeMi/MapaProtegido",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/Profesionales/CercaDeMi/MapaProtegido?model.latitudUsuario={{latitud}}&model.longitudUsuario={{longitud}}&model.radio={{radio}}&model.idPersona={{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "Profesionales", "CercaDeMi", "MapaProtegido"],
+							"query": [
+								{ "key": "model.latitudUsuario", "value": "{{latitud}}" },
+								{ "key": "model.longitudUsuario", "value": "{{longitud}}" },
+								{ "key": "model.radio", "value": "{{radio}}" },
+								{ "key": "model.idPersona", "value": "{{idPersona}}" },
+								{ "key": "model.idEspecialidadMedica", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "16b NEW - Profesionales CercaDeMi/MapaProtegido [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/Profesionales/CercaDeMi/MapaProtegido?Latitud={{latitud}}&Longitud={{longitud}}&Radio={{radio}}&IdPersona={{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "Profesionales", "CercaDeMi", "MapaProtegido"],
+							"query": [
+								{ "key": "Latitud", "value": "{{latitud}}" },
+								{ "key": "Longitud", "value": "{{longitud}}" },
+								{ "key": "Radio", "value": "{{radio}}" },
+								{ "key": "IdPersona", "value": "{{idPersona}}" },
+								{ "key": "IdEspecialidad", "value": "{{idEspecialidad}}", "disabled": true }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "10 - Favoritos",
+			"item": [
+				{
+					"name": "17a LEGACY - AgregarFavorito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"IdPersona\": {{idPersona}},\n  \"IdPrestador\": 12345,\n  \"TipoPrestador\": 2\n}"
+						},
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/AgregarFavorito",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "AgregarFavorito"]
+						}
+					}
+				},
+				{
+					"name": "17b NEW - AgregarFavorito [Auth]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"IdPersona\": {{idPersona}},\n  \"IdPrestador\": 12345,\n  \"TipoPrestador\": 2\n}"
+						},
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/AgregarFavorito",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "AgregarFavorito"]
+						}
+					}
+				},
+				{
+					"name": "18a LEGACY - QuitarFavorito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"IdPersona\": {{idPersona}},\n  \"IdPrestador\": 12345,\n  \"TipoPrestador\": 2\n}"
+						},
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/QuitarFavorito",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "QuitarFavorito"]
+						}
+					}
+				},
+				{
+					"name": "18b NEW - QuitarFavorito [Auth]",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" },
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"IdPersona\": {{idPersona}},\n  \"IdPrestador\": 12345,\n  \"TipoPrestador\": 2\n}"
+						},
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/QuitarFavorito",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "QuitarFavorito"]
+						}
+					}
+				},
+				{
+					"name": "19a LEGACY - BuscarFavoritos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla/BuscarFavoritos/{{idPersona}}",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla", "BuscarFavoritos", "{{idPersona}}"]
+						}
+					}
+				},
+				{
+					"name": "19b NEW - BuscarFavoritos [Auth]",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{new_token}}" }
+						],
+						"url": {
+							"raw": "{{new_url}}/api/v1/Cartilla/BuscarFavoritos/{{idPersona}}",
+							"host": ["{{new_url}}"],
+							"path": ["api", "v1", "Cartilla", "BuscarFavoritos", "{{idPersona}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "11 - Solo Legacy (sin equivalente)",
+			"item": [
+				{
+					"name": "20 LEGACY ONLY - POST Cartilla (obtener idPersona)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{legacy_token}}" }
+						],
+						"url": {
+							"raw": "{{legacy_url}}/api/Cartilla?numeroSocio=43344&ordenSocio=0",
+							"host": ["{{legacy_url}}"],
+							"path": ["api", "Cartilla"],
+							"query": [
+								{ "key": "numeroSocio", "value": "43344" },
+								{ "key": "ordenSocio", "value": "0" }
+							]
+						},
+						"description": "Este endpoint solo existe en la API legacy. En ApiJsMobile, el idPersona se obtiene via JWT claims internamente."
+					}
+				}
+			]
+		}
+	]
+}

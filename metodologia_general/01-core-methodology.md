@@ -80,7 +80,9 @@ Fase 6: Validacion y Cierre (tests E2E, retrospectiva)
 | Flutter | `flutter-developer` |
 | Tests | `test-engineer` |
 | Code review | `code-reviewer` |
-| Arquitectura | `software-architect` |
+| Arquitectura Frontend | `software-architect` + perfil frontend |
+| Arquitectura Backend | `software-architect` + perfil backend |
+| Arquitectura General | `software-architect` |
 | Base de datos | `database-expert` |
 | DevOps/CI-CD | `devops-engineer` |
 | User stories | `product-owner` |
@@ -91,6 +93,23 @@ Fase 6: Validacion y Cierre (tests E2E, retrospectiva)
 | Idiomas, traduccion, i18n | `localization-analyst` |
 
 **Regla de delegacion:** Si la tarea toma >30 min y existe un agente, DELEGAR.
+**Regla de validacion:** Al recibir output de un agente, revisar "Asunciones de Contexto". Si el agente asumio algo que no recibio, re-delegar con contexto corregido.
+
+### Agentes Especializados (Perfiles con Herencia)
+
+Algunos agentes tienen perfiles especializados que se componen al delegar:
+
+```
+BASE (principios comunes) + ESPECIALIZACION (dominio) + Contexto del proyecto
+```
+
+Ver `claude_context/metodologia_general/agents/README.md` para el sistema completo.
+
+Al delegar a un agente especializado, Claude DEBE:
+1. Leer el documento BASE del rol
+2. Leer el documento de ESPECIALIZACION
+3. Incluir ambos contenidos en el prompt del agente
+4. Agregar el contexto especifico de la tarea/proyecto
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-02-12
 **Categoria:** projects
-**Estado:** Seed
+**Estado:** In Progress
 **Prioridad:** Alta
 
 ---
@@ -37,3 +37,4 @@ Grande (~172h en 4 fases)
 | Fecha | Evento |
 |-------|--------|
 | 2026-02-12 | Planificacion completa. Pendiente arranque. |
+| 2026-02-14 | Estado → In Progress. Phase 1 completa + TD fixes (commits activos). |

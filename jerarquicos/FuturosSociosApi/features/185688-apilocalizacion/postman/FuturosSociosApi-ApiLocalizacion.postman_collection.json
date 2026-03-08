@@ -1,0 +1,458 @@
+{
+	"info": {
+		"_postman_id": "fs-001-apilocalizacion",
+		"name": "FuturosSociosApi - FS-001 ApiLocalizacion",
+		"description": "Coleccion para validar la integracion de ApiLocalizacion en ObtenerOpcionesGenerales.\n\nPermite comparar los datos de Localidades y Provincias que devuelve el endpoint integrado vs las llamadas directas a ApiLocalizacion.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrlApi",
+			"value": "{{env_baseUrlApi}}",
+			"type": "string"
+		},
+		{
+			"key": "baseUrlLocalizacion",
+			"value": "{{env_baseUrlLocalizacion}}",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Endpoint Integrado",
+			"description": "Llamadas al endpoint OpcionesGenerales que ahora usa ApiLocalizacion internamente.",
+			"item": [
+				{
+					"name": "GET OpcionesGenerales (endpoint principal)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Validar respuesta exitosa",
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Exito es true', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Modelo no es null', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.modelo).to.not.be.null;",
+									"});",
+									"",
+									"// Validar estructura de Localidades",
+									"pm.test('Localidades: tiene registros', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.modelo.localidad).to.be.an('array');",
+									"    pm.expect(json.modelo.localidad.length).to.be.greaterThan(0);",
+									"    // Guardar cantidad para comparar",
+									"    pm.collectionVariables.set('totalLocalidadesEndpoint', json.modelo.localidad.length);",
+									"});",
+									"",
+									"pm.test('Localidades: estructura correcta (id, descripcion, codigoPostal, idProvincia, provinciaDescripcion)', function () {",
+									"    var json = pm.response.json();",
+									"    var loc = json.modelo.localidad[0];",
+									"    pm.expect(loc).to.have.property('id');",
+									"    pm.expect(loc).to.have.property('descripcion');",
+									"    pm.expect(loc).to.have.property('codigoPostal');",
+									"    pm.expect(loc).to.have.property('idProvincia');",
+									"    pm.expect(loc).to.have.property('provinciaDescripcion');",
+									"});",
+									"",
+									"pm.test('Localidades: descripcion tiene formato \"Nombre (CP: XXXX)\"', function () {",
+									"    var json = pm.response.json();",
+									"    var loc = json.modelo.localidad[0];",
+									"    pm.expect(loc.descripcion).to.match(/.*\\(CP:.*\\)/);",
+									"});",
+									"",
+									"pm.test('Localidades: ordenadas alfabeticamente por descripcion', function () {",
+									"    var json = pm.response.json();",
+									"    var locs = json.modelo.localidad;",
+									"    for (var i = 1; i < Math.min(locs.length, 50); i++) {",
+									"        pm.expect(locs[i].descripcion.localeCompare(locs[i-1].descripcion)).to.be.at.least(0,",
+									"            'Desordenadas en posicion ' + i + ': \"' + locs[i-1].descripcion + '\" > \"' + locs[i].descripcion + '\"');",
+									"    }",
+									"});",
+									"",
+									"// Validar estructura de Provincias",
+									"pm.test('Provincias: tiene registros', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.modelo.provincia).to.be.an('array');",
+									"    pm.expect(json.modelo.provincia.length).to.be.greaterThan(0);",
+									"    pm.collectionVariables.set('totalProvinciasEndpoint', json.modelo.provincia.length);",
+									"});",
+									"",
+									"pm.test('Provincias: estructura correcta (id, descripcion, idPais)', function () {",
+									"    var json = pm.response.json();",
+									"    var prov = json.modelo.provincia[0];",
+									"    pm.expect(prov).to.have.property('id');",
+									"    pm.expect(prov).to.have.property('descripcion');",
+									"    pm.expect(prov).to.have.property('idPais');",
+									"});",
+									"",
+									"pm.test('Provincias: ordenadas alfabeticamente', function () {",
+									"    var json = pm.response.json();",
+									"    var provs = json.modelo.provincia;",
+									"    for (var i = 1; i < provs.length; i++) {",
+									"        pm.expect(provs[i].descripcion.localeCompare(provs[i-1].descripcion)).to.be.at.least(0,",
+									"            'Desordenadas en posicion ' + i);",
+									"    }",
+									"});",
+									"",
+									"// Validar que las demas tablas siguen funcionando",
+									"pm.test('Demas tablas de referencia presentes', function () {",
+									"    var json = pm.response.json();",
+									"    var m = json.modelo;",
+									"    pm.expect(m.estadoCivil).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.parentesco).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.condicionLaboral).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.tipoFormaPago).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.tipoCuentaBancaria).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.tipoTarjetaCredito).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.sexo).to.be.an('array').and.not.empty;",
+									"    pm.expect(m.plan).to.be.an('array').and.not.empty;",
+									"});",
+									"",
+									"pm.test('Version y LinkAnexoServicios presentes', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.modelo.version).to.be.a('number');",
+									"    pm.expect(json.modelo.linkAnexoServicios).to.be.a('string');",
+									"});",
+									"",
+									"// Guardar respuesta completa para comparacion",
+									"pm.collectionVariables.set('opcionesGeneralesResponse', JSON.stringify(pm.response.json()));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrlApi}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					}
+				},
+				{
+					"name": "GET OpcionesGenerales (medir tiempo de respuesta)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Tiempo de respuesta < 10s', function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(10000);",
+									"});",
+									"",
+									"console.log('Tiempo de respuesta OpcionesGenerales: ' + pm.response.responseTime + 'ms');",
+									"pm.collectionVariables.set('responseTimeEndpoint', pm.response.responseTime);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrlApi}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. ApiLocalizacion Directa",
+			"description": "Llamadas directas a ApiLocalizacion para comparar datos con lo que devuelve OpcionesGenerales.",
+			"item": [
+				{
+					"name": "GET Localidades (directo ApiLocalizacion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Tiene registros', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.registers).to.be.an('array');",
+									"    pm.expect(json.registers.length).to.be.greaterThan(0);",
+									"    pm.collectionVariables.set('totalLocalidadesDirecto', json.registers.length);",
+									"});",
+									"",
+									"pm.test('Estructura correcta (id, idProvincia, nombre, codigoPostal)', function () {",
+									"    var json = pm.response.json();",
+									"    var loc = json.registers[0];",
+									"    pm.expect(loc).to.have.property('id');",
+									"    pm.expect(loc).to.have.property('idProvincia');",
+									"    pm.expect(loc).to.have.property('nombre');",
+									"    pm.expect(loc).to.have.property('codigoPostal');",
+									"});",
+									"",
+									"pm.test('TotalRegisters coincide con length', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.totalRegisters).to.eql(json.registers.length);",
+									"});",
+									"",
+									"console.log('Localidades directo: ' + pm.response.json().registers.length + ' registros');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocalizacion}}/v1/Localidad?IdPais=1&PageSize=10000&OrderBy=Nombre+ASC",
+							"host": ["{{baseUrlLocalizacion}}"],
+							"path": ["v1", "Localidad"],
+							"query": [
+								{ "key": "IdPais", "value": "1" },
+								{ "key": "PageSize", "value": "10000" },
+								{ "key": "OrderBy", "value": "Nombre+ASC" }
+							]
+						}
+					}
+				},
+				{
+					"name": "GET Provincias (directo ApiLocalizacion)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Tiene registros', function () {",
+									"    var json = pm.response.json();",
+									"    pm.expect(json.registers).to.be.an('array');",
+									"    pm.expect(json.registers.length).to.be.greaterThan(0);",
+									"    pm.collectionVariables.set('totalProvinciasDirecto', json.registers.length);",
+									"});",
+									"",
+									"pm.test('Estructura correcta (id, idPais, nombre)', function () {",
+									"    var json = pm.response.json();",
+									"    var prov = json.registers[0];",
+									"    pm.expect(prov).to.have.property('id');",
+									"    pm.expect(prov).to.have.property('idPais');",
+									"    pm.expect(prov).to.have.property('nombre');",
+									"});",
+									"",
+									"pm.test('Todas las provincias son de Argentina (idPais=1)', function () {",
+									"    var json = pm.response.json();",
+									"    json.registers.forEach(function(prov) {",
+									"        pm.expect(prov.idPais).to.eql(1);",
+									"    });",
+									"});",
+									"",
+									"console.log('Provincias directo: ' + pm.response.json().registers.length + ' registros');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocalizacion}}/v1/Provincia?IdPais=1&PageSize=100&OrderBy=Nombre+ASC",
+							"host": ["{{baseUrlLocalizacion}}"],
+							"path": ["v1", "Provincia"],
+							"query": [
+								{ "key": "IdPais", "value": "1" },
+								{ "key": "PageSize", "value": "100" },
+								{ "key": "OrderBy", "value": "Nombre+ASC" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Comparacion (ejecutar despues de 1 y 2)",
+			"description": "Tests que comparan las cantidades entre el endpoint integrado y las llamadas directas. Ejecutar la carpeta completa en orden con Collection Runner.",
+			"item": [
+				{
+					"name": "Comparar cantidades Localidades",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Este request no hace llamada HTTP real,",
+									"// solo compara variables guardadas de los requests anteriores.",
+									"// Ejecutar la coleccion completa en orden con Collection Runner."
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var totalEndpoint = parseInt(pm.collectionVariables.get('totalLocalidadesEndpoint') || '0');",
+									"var totalDirecto = parseInt(pm.collectionVariables.get('totalLocalidadesDirecto') || '0');",
+									"",
+									"pm.test('Cantidad de localidades coincide: endpoint (' + totalEndpoint + ') vs directo (' + totalDirecto + ')', function () {",
+									"    pm.expect(totalEndpoint).to.eql(totalDirecto);",
+									"});",
+									"",
+									"console.log('Localidades - Endpoint: ' + totalEndpoint + ', Directo: ' + totalDirecto);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrlApi}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					}
+				},
+				{
+					"name": "Comparar cantidades Provincias",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var totalEndpoint = parseInt(pm.collectionVariables.get('totalProvinciasEndpoint') || '0');",
+									"var totalDirecto = parseInt(pm.collectionVariables.get('totalProvinciasDirecto') || '0');",
+									"",
+									"pm.test('Cantidad de provincias coincide: endpoint (' + totalEndpoint + ') vs directo (' + totalDirecto + ')', function () {",
+									"    pm.expect(totalEndpoint).to.eql(totalDirecto);",
+									"});",
+									"",
+									"pm.test('Provincias argentinas son 24 (23 provincias + CABA)', function () {",
+									"    pm.expect(totalDirecto).to.eql(24);",
+									"});",
+									"",
+									"console.log('Provincias - Endpoint: ' + totalEndpoint + ', Directo: ' + totalDirecto);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlApi}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrlApi}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Casos de Error",
+			"description": "Validar comportamiento cuando ApiLocalizacion no esta disponible o parametros invalidos.",
+			"item": [
+				{
+					"name": "GET Localidades con IdPais invalido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200 (respuesta vacia, no error)', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Registers vacio o sin datos para pais inexistente', function () {",
+									"    var json = pm.response.json();",
+									"    if (json.registers) {",
+									"        pm.expect(json.registers.length).to.eql(0);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocalizacion}}/v1/Localidad?IdPais=9999&PageSize=100",
+							"host": ["{{baseUrlLocalizacion}}"],
+							"path": ["v1", "Localidad"],
+							"query": [
+								{ "key": "IdPais", "value": "9999" },
+								{ "key": "PageSize", "value": "100" }
+							]
+						}
+					}
+				},
+				{
+					"name": "GET Provincias con IdPais invalido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status 200 (respuesta vacia, no error)', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Registers vacio o sin datos para pais inexistente', function () {",
+									"    var json = pm.response.json();",
+									"    if (json.registers) {",
+									"        pm.expect(json.registers.length).to.eql(0);",
+									"    }",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocalizacion}}/v1/Provincia?IdPais=9999&PageSize=100",
+							"host": ["{{baseUrlLocalizacion}}"],
+							"path": ["v1", "Provincia"],
+							"query": [
+								{ "key": "IdPais", "value": "9999" },
+								{ "key": "PageSize", "value": "100" }
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

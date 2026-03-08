@@ -66,7 +66,16 @@ ApiJsMobile/src/
 Ver directivas detalladas en:
 @C:/claude_context/jerarquicos/APIJsMobile/API_CLIENT_IMPLEMENTATION_GUIDELINES.md
 
-## Documentacion Relacionada
+## Features Activas
+
+Cada feature/branch larga tiene su propio contexto en `features/[id]-[nombre]/`.
+Al iniciar sesion en una feature, cargar su TASK_STATE.md para retomar.
+
+| Feature | Branch | Estado | Contexto |
+|---------|--------|--------|----------|
+| 176505 Cartilla Controller | `feature/176505_cartilla_controller` | En progreso | `features/176505-cartilla-controller/` |
+
+## Documentacion General del Proyecto
 
 ### Guidelines y Pendientes
 @C:/claude_context/jerarquicos/APIJsMobile/LOGGING_GUIDELINES.md
@@ -92,6 +101,9 @@ dotnet test
 # Ejecutar API
 dotnet run --project ApiJsMobile.Api
 ```
+
+## Reglas Compartidas Jerarquicos
+@C:/claude_context/jerarquicos/SHARED_RULES.md
 
 ## Notas Importantes
 

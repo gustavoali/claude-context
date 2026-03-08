@@ -46,7 +46,9 @@ dotnet run --environment Development # Ejecutar
 | Frontend React | `frontend-react-developer` |
 | Escribir/ejecutar tests | `test-engineer` |
 | Revisar codigo (riguroso) | `code-reviewer` |
-| Disenar arquitectura | `software-architect` |
+| Arquitectura frontend | `software-architect` + perfil frontend |
+| Arquitectura backend | `software-architect` + perfil backend |
+| Arquitectura general | `software-architect` |
 | Optimizar queries DB | `database-expert` |
 | Setup CI/CD | `devops-engineer` |
 | Crear user stories | `product-owner` |
@@ -57,6 +59,19 @@ dotnet run --environment Development # Ejecutar
 
 **Regla:** Tarea >30 min y existe agente? DELEGAR.
 
+### Agentes con Perfil Especializado
+
+Para agentes con herencia, componer el prompt con BASE + ESPECIALIZACION + contexto:
+
+```
+# Ubicacion de perfiles
+claude_context/metodologia_general/agents/
+
+# Composicion
+AGENT_ARCHITECT_BASE.md + AGENT_ARCHITECT_FRONTEND.md → Frontend Architect
+AGENT_ARCHITECT_BASE.md + AGENT_ARCHITECT_BACKEND.md  → Backend Architect
+```
+
 ### Template de Delegacion
 ```
 Objetivo: [Que lograr]
@@ -66,6 +81,14 @@ Specs exactas: [Nombres de clases, interfaces, schemas]
 Restricciones: [Que NO hacer]
 AC: [Criterios de exito]
 ```
+
+### Post-Delegacion Review
+Al recibir output de un agente, verificar:
+- Reviso la seccion "Asunciones de Contexto" del agente?
+- El agente asumio interfaces/schemas que no recibio?
+- El agente creo archivos o estructuras no solicitadas?
+- El output contradice convenciones del proyecto?
+Si hay asunciones incorrectas: re-delegar con contexto corregido.
 
 ---
 

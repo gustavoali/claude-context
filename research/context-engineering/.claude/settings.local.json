@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:blog.devgenius.io)",
+      "WebFetch(domain:www.meziantou.net)"
+    ]
+  }
+}

@@ -71,6 +71,10 @@ Expone herramientas (tools) y recursos (resources) via protocolo MCP stdio.
 | `get_velocity` | project_id, ?last_n_sprints | Metricas de velocity |
 | `get_capacity` | sprint_id | Capacity planning del sprint |
 | `archive_completed` | project_id, ?before_date | Archivar stories completadas |
+| `create_github_issue` | story_id, ?repo | Create GitHub issue from story |
+| `link_github_issue` | story_id, issue_number, ?repo | Link existing issue to story |
+| `sync_to_github` | project_id, ?sprint_id, ?status, ?repo | Bulk sync stories to GitHub |
+| `pull_from_github` | project_id, ?repo | Pull issue state from GitHub |
 
 **Resources (lecturas de contexto):**
 
@@ -95,6 +99,7 @@ Logica de negocio pura, independiente de MCP y de persistencia.
 | `MetricsService` | Velocity, capacity, burndown, leading indicators |
 | `ArchiveService` | Archivar stories completadas, cleanup |
 | `IdRegistryService` | Generacion secuencial de IDs por proyecto (PREFIX-NNN) |
+| `GitHubService` | GitHub issue creation, linking, sync via gh CLI |
 
 ### 3. Repository Layer (`src/repositories/`)
 
@@ -274,6 +279,7 @@ C:/mcp/sprint-backlog-manager/
 |   |   |   |-- epics.js       # Epic tools
 |   |   |   |-- debt.js        # Technical debt tools
 |   |   |   |-- metrics.js     # Metrics tools
+|   |   |   |-- github.js      # GitHub sync tools
 |   |   |-- resources/
 |   |       |-- project-resources.js  # Resource handlers
 |   |-- services/
@@ -285,6 +291,7 @@ C:/mcp/sprint-backlog-manager/
 |   |   |-- metrics-service.js
 |   |   |-- archive-service.js
 |   |   |-- id-registry-service.js
+|   |   |-- github-service.js
 |   |-- repositories/
 |   |   |-- project-repository.js
 |   |   |-- story-repository.js

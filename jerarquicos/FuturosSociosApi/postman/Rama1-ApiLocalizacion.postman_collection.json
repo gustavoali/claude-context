@@ -1,0 +1,212 @@
+{
+	"info": {
+		"name": "Rama 1 - ApiLocalizacion (186929)",
+		"description": "Endpoints modificados en feature/186929_continuar_con_reemplazo_llamada_dao_x_apilocalizacion.\nVerifica que los controllers devuelvan datos de localidades y provincias desde la API de localizacion en lugar de los DAOs.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "idExpedienteApp",
+			"value": "COMPLETAR",
+			"type": "string"
+		},
+		{
+			"key": "nombreArchivoDni",
+			"value": "COMPLETAR.jpg",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Aplicacion - OpcionesGenerales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Aplicacion/OpcionesGenerales",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "Aplicacion", "OpcionesGenerales"]
+				},
+				"description": "Devuelve todas las opciones generales incluyendo Localidad y Provincia.\nVerificar:\n- respuesta.Exito == true\n- respuesta.Modelo.Localidad es un array con elementos\n- respuesta.Modelo.Provincia es un array con elementos\n- Cada localidad tiene Descripcion, CodigoPostal, IdProvincia, ProvinciaDescripcion"
+			},
+			"response": []
+		},
+		{
+			"name": "2. Localidades - Get All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Localidades",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "Localidades"]
+				},
+				"description": "Devuelve todas las localidades de Argentina.\nVerificar:\n- respuesta.Exito == true\n- respuesta.Modelo es un array con elementos\n- Cada elemento tiene Id, Descripcion, CodigoPostal, IdProvincia"
+			},
+			"response": []
+		},
+		{
+			"name": "3. GestionInterna - BuscarLocalidades (paginado)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=&IdProvincia=0&IdPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+					"query": [
+						{ "key": "PaginaActual", "value": "1" },
+						{ "key": "TamanioPagina", "value": "10" },
+						{ "key": "Descripcion", "value": "" },
+						{ "key": "CodigoPostal", "value": "" },
+						{ "key": "IdProvincia", "value": "0" },
+						{ "key": "IdPais", "value": "1" }
+					]
+				},
+				"description": "Busqueda paginada de localidades sin filtros.\nVerificar:\n- respuesta.Exito == true\n- respuesta.Modelo es un array con hasta 10 elementos\n- respuesta.Total > 0"
+			},
+			"response": []
+		},
+		{
+			"name": "4. GestionInterna - BuscarLocalidades (filtro por nombre)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=Cordoba&CodigoPostal=&IdProvincia=0&IdPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+					"query": [
+						{ "key": "PaginaActual", "value": "1" },
+						{ "key": "TamanioPagina", "value": "10" },
+						{ "key": "Descripcion", "value": "Cordoba" },
+						{ "key": "CodigoPostal", "value": "" },
+						{ "key": "IdProvincia", "value": "0" },
+						{ "key": "IdPais", "value": "1" }
+					]
+				},
+				"description": "Busqueda filtrada por nombre 'Cordoba'.\nVerificar:\n- respuesta.Exito == true\n- Resultados contienen 'Cordoba' en Descripcion"
+			},
+			"response": []
+		},
+		{
+			"name": "5. GestionInterna - BuscarLocalidades (filtro por CP)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=5000&IdProvincia=0&IdPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+					"query": [
+						{ "key": "PaginaActual", "value": "1" },
+						{ "key": "TamanioPagina", "value": "10" },
+						{ "key": "Descripcion", "value": "" },
+						{ "key": "CodigoPostal", "value": "5000" },
+						{ "key": "IdProvincia", "value": "0" },
+						{ "key": "IdPais", "value": "1" }
+					]
+				},
+				"description": "Busqueda filtrada por codigo postal '5000' (Cordoba capital).\nVerificar:\n- respuesta.Exito == true\n- Resultados tienen CodigoPostal = 5000"
+			},
+			"response": []
+		},
+		{
+			"name": "6. GestionInterna - BuscarLocalidades (filtro por provincia)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=&IdProvincia=14&IdPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+					"query": [
+						{ "key": "PaginaActual", "value": "1" },
+						{ "key": "TamanioPagina", "value": "10" },
+						{ "key": "Descripcion", "value": "" },
+						{ "key": "CodigoPostal", "value": "" },
+						{ "key": "IdProvincia", "value": "14" },
+						{ "key": "IdPais", "value": "1" }
+					]
+				},
+				"description": "Busqueda filtrada por IdProvincia=14 (Cordoba).\nVerificar:\n- respuesta.Exito == true\n- Resultados pertenecen a la provincia filtrada"
+			},
+			"response": []
+		},
+		{
+			"name": "7. GestionInterna - ObtenerProvincias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/obtenerProvincias?idPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "obtenerProvincias"],
+					"query": [
+						{ "key": "idPais", "value": "1" }
+					]
+				},
+				"description": "Devuelve todas las provincias de Argentina (idPais=1).\nVerificar:\n- respuesta.Exito == true\n- respuesta.Modelo es un array con 24 provincias\n- Cada provincia tiene Id y Descripcion"
+			},
+			"response": []
+		},
+		{
+			"name": "8. GestionInterna - ObtenerProvincias (idPais invalido)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/obtenerProvincias?idPais=0",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "obtenerProvincias"],
+					"query": [
+						{ "key": "idPais", "value": "0" }
+					]
+				},
+				"description": "Caso edge: idPais=0 (invalido).\nVerificar:\n- respuesta.Exito == false\n- respuesta.Notificacion con mensaje de error"
+			},
+			"response": []
+		},
+		{
+			"name": "10. Sid - ObtenerDatosPersona",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Sid/ObtenerDatosPersona/{{idExpedienteApp}}/{{nombreArchivoDni}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "Sid", "ObtenerDatosPersona", "{{idExpedienteApp}}", "{{nombreArchivoDni}}"]
+				},
+				"description": "Escanea barcode de imagen de DNI via Renaper y devuelve datos personales + domicilio con localidad/provincia.\nPre-requisitos:\n- ServicioRenaperHabilitado = true en appsettings\n- Imagen de DNI existente en RepositorioDocumentacionAnexa/{idExpedienteApp}/{archivo}\n\nVerificar:\n- respuesta.Exito == true\n- respuesta.Modelo.Nombre, Apellido, Cuil, Dni poblados\n- respuesta.Modelo.Domicilio.Localidad != null (resuelto desde ApiLocalizacion por CP)\n- respuesta.Modelo.Domicilio.Localidad.Provincia != null (resuelto desde ApiLocalizacion)"
+			},
+			"response": []
+		},
+		{
+			"name": "9. GestionInterna - BuscarLocalidades (paginado invalido)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=0&TamanioPagina=0&Descripcion=&CodigoPostal=&IdProvincia=0&IdPais=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+					"query": [
+						{ "key": "PaginaActual", "value": "0" },
+						{ "key": "TamanioPagina", "value": "0" },
+						{ "key": "Descripcion", "value": "" },
+						{ "key": "CodigoPostal", "value": "" },
+						{ "key": "IdProvincia", "value": "0" },
+						{ "key": "IdPais", "value": "1" }
+					]
+				},
+				"description": "Caso edge: paginado con valores 0 (invalido).\nVerificar:\n- respuesta.Exito == false\n- respuesta.Notificacion con mensaje de datos paginado no validos"
+			},
+			"response": []
+		}
+	]
+}

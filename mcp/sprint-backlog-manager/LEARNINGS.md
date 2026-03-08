@@ -31,3 +31,27 @@
 - Technical debt tracking con ROI
 - GitHub sync (a implementar en fase futura)
 - Markdown export (via MCP tool o CLI)
+
+## 2026-02-15 - GitHub Sync + Integration Tests
+
+### promisify + jest.mock incompatibility
+- `util.promisify(child_process.execFile)` uses a custom `[Symbol.for('nodejs.util.promisify.custom')]` that returns `{stdout, stderr}`
+- When mocking with `jest.mock('child_process')`, this symbol is lost
+- `promisify(mockFn)` then returns only the first callback arg (stdout as string), not `{stdout, stderr}`
+- Solution: use a manual Promise wrapper instead of `promisify`:
+```js
+function execFileAsync(cmd, args) {
+  return new Promise((resolve, reject) => {
+    execFile(cmd, args, { encoding: 'utf8' }, (error, stdout, stderr) => {
+      if (error) reject(error);
+      else resolve({ stdout, stderr });
+    });
+  });
+}
+```
+
+### PostgreSQL Docker (sprint-backlog-pg)
+- Container: sprint-backlog-pg en WSL2
+- Puerto 5435 (5432 en conflicto con plane-db)
+- WSL2 port forwarding puede ser intermitente
+- Volume: sprint-backlog-pgdata

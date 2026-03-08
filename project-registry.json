@@ -1,0 +1,275 @@
+{
+  "_meta": {
+    "version": "1.2",
+    "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
+    "updated": "2026-02-25"
+  },
+  "projects": {
+    "anthropic-academy": {
+      "name": "Anthropic Academy",
+      "short": "aa",
+      "path": "C:/capacitacion/anthropic-academy",
+      "context": "C:/claude_context/capacitacion/anthropic-academy",
+      "category": "capacitacion"
+    },
+    "deeplearning-ai": {
+      "name": "DeepLearning.AI",
+      "short": "dl",
+      "path": "C:/capacitacion/deeplearning-ai",
+      "context": "C:/claude_context/capacitacion/deeplearning-ai",
+      "category": "capacitacion"
+    },
+    "agenda": {
+      "name": "Agenda",
+      "short": "ag",
+      "path": "C:/mobile/agenda",
+      "context": "C:/claude_context/mobile/agenda",
+      "category": "mobile"
+    },
+    "atlas": {
+      "name": "AtlasOps",
+      "short": "ao",
+      "path": "C:/agents/atlasOps",
+      "context": "C:/claude_context/agents/atlasOps",
+      "category": "agents"
+    },
+    "chemical": {
+      "name": "Chemical",
+      "short": "ch",
+      "path": "C:/mobile/chemical",
+      "context": "C:/claude_context/mobile/chemical",
+      "category": "mobile"
+    },
+    "claude-personal": {
+      "name": "Claude Personal",
+      "short": "cp",
+      "path": "C:/agentes/claude-personal",
+      "context": "C:/claude_context/agents/claude-personal",
+      "category": "agents"
+    },
+    "orchestrator": {
+      "name": "Claude Orchestrator",
+      "short": "co",
+      "path": "C:/mcp/claude-orchestrator",
+      "context": "C:/claude_context/mcp/claude-orchestrator",
+      "category": "mcp"
+    },
+    "claude-monitor": {
+      "name": "Claude Monitor",
+      "short": "cm",
+      "path": "C:/apps/claude-monitor",
+      "context": "C:/claude_context/apps/claude-monitor",
+      "category": "apps"
+    },
+    "file-reader": {
+      "name": "File Reader",
+      "short": "fr",
+      "path": "C:/mcp/file-reader",
+      "context": "C:/claude_context/mcp/file-reader",
+      "category": "mcp"
+    },
+    "gaia-protocol": {
+      "name": "Gaia Protocol",
+      "short": "gp",
+      "path": "C:/games/gaia-protocol",
+      "context": "C:/claude_context/games/gaia-protocol",
+      "category": "games"
+    },
+    "linkedin": {
+      "name": "LinkedIn",
+      "short": "li",
+      "path": "C:/linkedin",
+      "context": "C:/claude_context/linkedin",
+      "category": "linkedin"
+    },
+    "linkedin-mcp": {
+      "name": "LinkedIn MCP",
+      "short": "lm",
+      "path": "C:/mcp/linkedin",
+      "context": "C:/claude_context/linkedin",
+      "category": "mcp"
+    },
+    "mew": {
+      "name": "Mew Michis",
+      "short": "mw",
+      "path": "C:/apps/mew-michis",
+      "context": "C:/claude_context/apps/mew-michis",
+      "category": "apps"
+    },
+    "project-admin": {
+      "name": "Project Admin",
+      "short": "pa",
+      "path": "C:/mcp/project-admin",
+      "context": "C:/claude_context/mcp/project-admin",
+      "category": "mcp"
+    },
+    "recetario": {
+      "name": "Recetario",
+      "short": "rec",
+      "path": "C:/mobile/recetario",
+      "context": "C:/claude_context/mobile/recetario",
+      "category": "mobile"
+    },
+    "spoti": {
+      "name": "Spoti Admin",
+      "short": "sp",
+      "path": "C:/mobile/spoti-admin",
+      "context": "C:/claude_context/mobile/spoti-admin",
+      "category": "mobile"
+    },
+    "sudoku": {
+      "name": "Sudoku Multi-Size",
+      "short": "sdk",
+      "path": "C:/apps/sudoku",
+      "context": "C:/claude_context/apps/sudoku",
+      "category": "apps"
+    },
+    "sprint-backlog": {
+      "name": "Sprint Backlog Manager",
+      "short": "sb",
+      "path": "C:/mcp/sprint-backlog-manager",
+      "context": "C:/claude_context/mcp/sprint-backlog-manager",
+      "category": "mcp"
+    },
+    "tracking": {
+      "name": "Tracking App",
+      "short": "tr",
+      "path": "C:/mobile/tracking_app",
+      "context": "C:/claude_context/mobile/tracking_app",
+      "category": "mobile"
+    },
+    "unity-mcp": {
+      "name": "Unity MCP Server",
+      "short": "um",
+      "path": "C:/tools/unity-mcp-server",
+      "context": "C:/claude_context/tools/unity-mcp-server",
+      "category": "tools"
+    },
+    "web-monitor": {
+      "name": "Web Monitor",
+      "short": "wm",
+      "path": "C:/apps/web-monitor",
+      "context": "C:/claude_context/apps/web-monitor",
+      "category": "apps"
+    },
+    "youtube-mcp": {
+      "name": "YouTube MCP",
+      "short": "ym",
+      "path": "C:/mcp/youtube",
+      "context": "C:/claude_context/mcp/youtube",
+      "category": "mcp"
+    },
+    "context-engineering": {
+      "name": "Context Engineering Research",
+      "short": "ce",
+      "path": "C:/claude_context/research/context-engineering",
+      "context": "C:/claude_context/research/context-engineering",
+      "category": "research"
+    },
+    "hamburguesas-vegetales": {
+      "name": "Hamburguesas Vegetales",
+      "short": "hv",
+      "path": "C:/personal/hamburguesas-vegetales",
+      "context": "C:/claude_context/personal/hamburguesas-vegetales",
+      "category": "personal"
+    },
+    "tracking-urbano": {
+      "name": "Tracking Urbano de Activos",
+      "short": "tu",
+      "path": "C:/apps/tracking-urbano",
+      "context": "C:/claude_context/apps/tracking-urbano",
+      "category": "apps"
+    },
+    "agua-tonica": {
+      "name": "Agua Tonica Casera",
+      "short": "at",
+      "path": "C:/personal/agua-tonica",
+      "context": "C:/claude_context/personal/agua-tonica",
+      "category": "personal"
+    },
+    "gin-casero": {
+      "name": "Gin Casero",
+      "short": "gc",
+      "path": "C:/personal/gin-casero",
+      "context": "C:/claude_context/personal/gin-casero",
+      "category": "personal"
+    },
+    "pan-de-papa": {
+      "name": "Pan de Papa Casero",
+      "short": "pp",
+      "path": "C:/personal/pan-de-papa",
+      "context": "C:/claude_context/personal/pan-de-papa",
+      "category": "personal"
+    },
+    "tecnicatura-datos": {
+      "name": "Tecnicatura Ciencia de Datos UNMDP",
+      "short": "td",
+      "path": "C:/personal/tecnicatura-datos",
+      "context": "C:/claude_context/personal/tecnicatura-datos",
+      "category": "personal"
+    },
+    "microgreens": {
+      "name": "Microgreens",
+      "short": "mg",
+      "path": "C:/personal/microgreens",
+      "context": "C:/claude_context/personal/microgreens",
+      "category": "personal"
+    },
+    "ai-sdk-provider": {
+      "name": "AI SDK Provider Claude Code",
+      "short": "ai",
+      "path": "C:/investigacion/ai-sdk-provider-claude-code",
+      "context": "C:/claude_context/investigacion/ai-sdk-provider-claude-code",
+      "category": "investigacion"
+    },
+    "atlas-agent": {
+      "name": "Atlas Agent",
+      "short": "al",
+      "path": "C:/agents/atlas-agent",
+      "context": "C:/claude_context/agents/atlas-agent",
+      "category": "agents"
+    },
+    "anyoneai-sprint1": {
+      "name": "AnyoneAI Sprint 1",
+      "short": "a1",
+      "path": "C:/Anyone_AI/sprint_1",
+      "context": "C:/claude_context/anyoneai/sprint_1",
+      "category": "capacitacion"
+    },
+    "anyoneai-sprint2": {
+      "name": "AnyoneAI Sprint 2",
+      "short": "a2",
+      "path": "C:/Anyone_AI/sprint_2",
+      "context": "C:/claude_context/anyoneai/sprint_2",
+      "category": "capacitacion"
+    },
+    "anyoneai-sprint3": {
+      "name": "AnyoneAI Sprint 3",
+      "short": "a3",
+      "path": "C:/Anyone_AI/sprint_3",
+      "context": "C:/claude_context/anyoneai/sprint_3",
+      "category": "capacitacion"
+    },
+    "anyoneai-sprint4": {
+      "name": "AnyoneAI Sprint 4",
+      "short": "a4",
+      "path": "C:/Anyone_AI/sprint_4",
+      "context": "C:/claude_context/anyoneai/sprint_4",
+      "category": "capacitacion"
+    },
+    "mcp-telegram-research": {
+      "name": "MCP Telegram Research",
+      "short": "rt",
+      "path": "C:/research/mcp-telegram-research",
+      "context": "C:/claude_context/research/mcp-telegram-research",
+      "category": "research"
+    },
+    "mcp-whatsapp-research": {
+      "name": "MCP WhatsApp Research",
+      "short": "rw",
+      "path": "C:/research/mcp-whatsapp-research",
+      "context": "C:/claude_context/research/mcp-whatsapp-research",
+      "category": "research"
+    }
+  }
+}

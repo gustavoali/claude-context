@@ -1,7 +1,7 @@
 # Claude Orchestrator - Arquitectura
 
-**Version:** 1.0
-**Fecha:** 2026-02-05
+**Version:** 0.8.0
+**Fecha:** 2026-03-07
 
 ---
 
@@ -10,7 +10,8 @@
 El Orchestrator actua como puente entre:
 1. **Claude Code** (via MCP) - para orquestar sesiones desde la linea de comandos
 2. **Flutter App** (via WebSocket) - para UI de monitoreo y control
-3. **Claude Agent SDK** - para crear y controlar agentes programaticamente
+3. **Project Admin / Ecosistema** (via REST API) - para consultar sesiones, token usage, health
+4. **Claude Agent SDK / Claude CLI** - para crear y controlar agentes programaticamente
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -28,19 +29,19 @@ El Orchestrator actua como puente entre:
 │                    CLAUDE ORCHESTRATOR                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌─────────────────┐       ┌─────────────────────────────┐      │
-│  │   MCP Server    │       │   WebSocket Server          │      │
-│  │   (stdio)       │       │   (ws://localhost:8765)     │      │
-│  │                 │       │                             │      │
-│  │   Tools:        │       │   Messages:                 │      │
-│  │   - list_*      │       │   - list_sessions           │      │
-│  │   - create_*    │       │   - create_session          │      │
-│  │   - send_*      │       │   - send_message            │      │
-│  │   - stop_*      │       │   - subscribe_session       │      │
-│  │   - end_*       │       │   + push events             │      │
-│  └────────┬────────┘       └──────────────┬──────────────┘      │
-│           │                               │                      │
-│           └───────────────┬───────────────┘                      │
+│  ┌───────────────┐  ┌─────────────────────┐  ┌───────────────┐  │
+│  │  MCP Server   │  │  WebSocket Server   │  │  HTTP API     │  │
+│  │  (stdio)      │  │  (ws://:8765)       │  │  (:3000)      │  │
+│  │               │  │                     │  │               │  │
+│  │  Tools:       │  │  Messages:          │  │  Endpoints:   │  │
+│  │  - list_*     │  │  - list_sessions    │  │  GET /health  │  │
+│  │  - create_*   │  │  - create_session   │  │  GET /sessions│  │
+│  │  - send_*     │  │  - send_message     │  │  GET /by-proj │  │
+│  │  - stop_*     │  │  - subscribe        │  │  GET /:id     │  │
+│  │  - end_*      │  │  + push events      │  │               │  │
+│  └───────┬───────┘  └──────────┬──────────┘  └───────┬───────┘  │
+│          │                     │                      │          │
+│          └─────────────────────┼──────────────────────┘          │
 │                           │                                      │
 │              ┌────────────▼────────────┐                         │
 │              │    Session Manager      │                         │
@@ -153,6 +154,11 @@ Expone session management via MCP protocol (stdio).
 | `get_session` | `{ sessionId }` | `{ id, status, ... }` |
 | `stop_session` | `{ sessionId }` | `{ success }` |
 | `end_session` | `{ sessionId }` | `{ success }` |
+| `inject_message` | `{ sessionId, message }` | `{ success, queued }` |
+| `bulk_stop_sessions` | `{ sessionIds?: string[] }` | `{ stopped, errors }` |
+| `bulk_end_sessions` | `{ sessionIds?: string[] }` | `{ ended, errors }` |
+| `update_priority` | `{ sessionId, priority }` | `{ success, sessionId, priority }` |
+| `discover_sessions` | `{ register?: boolean }` | `{ discovered, registered, sessions }` |
 
 ### 3. WebSocket Server (src/websocket/server.js)
 
@@ -170,6 +176,10 @@ Cliente → Servidor:
 { "type": "subscribe_session", "payload": { "sessionId": "..." } }
 { "type": "unsubscribe_session", "payload": { "sessionId": "..." } }
 { "type": "get_session", "payload": { "sessionId": "..." } }
+{ "type": "inject_message", "payload": { "sessionId": "...", "message": "..." } }
+{ "type": "bulk_stop", "payload": { "sessionIds": ["..."] } }
+{ "type": "bulk_end", "payload": { "sessionIds": ["..."] } }
+{ "type": "update_priority", "payload": { "sessionId": "...", "priority": "high" } }
 ```
 
 Servidor → Cliente:
@@ -189,6 +199,31 @@ Servidor → Cliente:
 - Cliente puede suscribirse a sesiones especificas
 - Solo recibe eventos de sesiones suscritas (excepto session_created que es broadcast)
 - Auto-subscribe al crear sesion
+
+### 4. HTTP API Server (src/http/server.js)
+
+REST API para integracion con ecosistema (Project Admin, dashboards).
+
+**Endpoints:**
+
+| Endpoint | Descripcion |
+|----------|-------------|
+| `GET /api/health` | Status, mode, session counts, config |
+| `GET /api/sessions` | Listar sesiones con filtros (status, cwd, includeEnded) |
+| `GET /api/sessions/by-project` | Agrupar por cwd con totales de tokens |
+| `GET /api/sessions/:id` | Detalle de sesion individual |
+| `POST /api/sessions/:id/inject` | Inject message into active session |
+| `GET /api/sessions/health` | Session health overview with stale detection |
+| `GET /api/sessions/:id/activity` | Activity log for a session |
+| `GET /api/sessions/:id/recovery-log` | Auto-recovery attempts for a session |
+| `POST /api/sessions/discover` | Discover external Claude Code sessions |
+
+**Response format estandar:**
+```json
+{ "success": true, "data": { ... }, "timestamp": "ISO string" }
+```
+
+**CORS:** Permite localhost:4200 (Angular) y localhost:3000.
 
 ---
 
@@ -372,7 +407,7 @@ Si se necesita exponer fuera de localhost:
 
 ## Proximos Pasos (Roadmap)
 
-### Fase A (Actual) - Scaffolding
+### Fase A (Completada) - Scaffolding
 - [x] Estructura de proyecto
 - [x] Session Manager
 - [x] MCP Server
@@ -385,18 +420,23 @@ Si se necesita exponer fuera de localhost:
 - [ ] UI para enviar instrucciones
 - [ ] Streaming de respuestas
 
-### Fase C - Integracion sprint-backlog-manager
-- [ ] Conectar con backlog MCP
-- [ ] Asignar historias a sesiones
-- [ ] Tracking de progreso
+### Fase C (Completada) - Autonomous Agent Foundation
+- [x] Mid-session message injection (ECO-001)
+- [x] Session health monitoring & stale detection (ECO-002)
+- [x] Session activity log (ECO-003)
+- [x] Bulk session operations (ECO-004)
+- [x] Session priority queue (ECO-005)
+- [x] Session events webhook (ECO-006)
+- [x] Inject + auto-recovery pattern (ECO-007)
+- [x] Discover external Claude Code sessions (ECO-008)
 
 ### Fase D - Produccion
-- [ ] Tests completos
 - [ ] Autenticacion WebSocket
-- [ ] Logging y metricas
 - [ ] CI/CD
+- [ ] Webhook HMAC signature
+- [ ] SessionManager base class refactor
 
 ---
 
-**Revision:** 2026-02-05
-**Estado:** Scaffolding completo
+**Revision:** 2026-03-07
+**Estado:** Autonomous Agent Foundation completada (ECO-001 a ECO-008)

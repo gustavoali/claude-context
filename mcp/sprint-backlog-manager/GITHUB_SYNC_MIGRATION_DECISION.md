@@ -335,6 +335,8 @@ Sprint Tracker puede pasar a estado **DEPRECATED** cuando se cumplan TODOS estos
 
 **PENDIENTE DE EJECUCION**
 
+**Nota (2026-02-15):** Project Admin (Fase 1b) ahora sincroniza **repo metadata** de GitHub (stars, forks, topics, language, etc.) via `pa_github_sync` / `pa_github_sync_all`. Esto es read-only metadata, NO la sincronizacion bidireccional de stories <-> GitHub Issues descrita en este documento. La migracion de stories/issues desde Sprint Tracker a SBM sigue pendiente.
+
 Este documento describe la decision y el plan. La implementacion se ejecutara cuando el equipo lo priorice. Las fases 1-3 del plan de migracion son las de mayor impacto y deberian ejecutarse como una sola unidad de trabajo (estimacion: 3-5 horas para un agente `nodejs-backend-developer`).
 
 ### Proximos pasos al ejecutar

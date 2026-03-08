@@ -146,6 +146,18 @@ Claude es responsable de identificar proactivamente oportunidades de mejora en:
 **Donde registrar:** `C:/claude_context/CONTINUOUS_IMPROVEMENT.md`
 **Como proponer:** Sin interrumpir trabajo urgente, documentar y presentar cuando haya pausa natural.
 
+### Ciclo Trimestral de Reflexion (Marzo, Junio, Septiembre, Diciembre)
+
+Al inicio de cada trimestre, Claude propone una sesion de revision:
+
+1. **Auditar directivas:** Cuales se cumplen consistentemente? Cuales se ignoran? Las ignoradas se eliminan o se convierten en enforcement automatico.
+2. **Evaluar scorecard:** Aplicar METRICS.md scorecard a 2-3 proyectos representativos. Comparar con trimestre anterior.
+3. **Revisar CROSS_PROJECT_LEARNINGS:** Extraer nuevos patrones de LEARNINGS de proyectos activos.
+4. **Limpiar CONTINUOUS_IMPROVEMENT.md:** Procesar items pendientes, archivar resueltos.
+5. **Actualizar version de metodologia** si hubo cambios significativos.
+
+**Output:** Entry en CONTINUOUS_IMPROVEMENT.md con fecha, hallazgos y acciones.
+
 ---
 
 ## 7. Autonomous Bug Fixing
@@ -208,6 +220,7 @@ Los settings de Claude viven en `claude_context`, no en el proyecto:
 ## 10. Infraestructura de Base de Datos: Docker Siempre
 
 **Toda base de datos de desarrollo se ejecuta en Docker. Sin excepciones.**
+**Docker se ejecuta via WSL, NO via Docker Desktop.**
 
 | Hacer | No hacer |
 |-------|----------|
@@ -215,6 +228,7 @@ Los settings de Claude viven en `claude_context`, no en el proyecto:
 | `docker run` con `--restart unless-stopped` | Servicios Windows de PostgreSQL/MySQL/etc |
 | Credenciales explicitas en env vars | Depender de defaults del OS |
 | Volume nombrado para persistencia | Bind mounts a carpetas del sistema |
+| Usar Docker via WSL (docker CLI en bash) | Usar Docker Desktop |
 
 ### Patron estandar para PostgreSQL
 
@@ -234,12 +248,343 @@ docker run -d \
 ### Reglas para agentes devops-engineer y database-expert
 
 1. **Siempre proponer Docker** para cualquier base de datos en desarrollo
-2. **Nunca asumir** que hay binarios de DB instalados en el host (psql, pg_isready, etc)
-3. **Usar el cliente del lenguaje** del proyecto para verificar conexion (Node pg, Python psycopg2, etc)
-4. **Docker Desktop en Windows:** puede necesitar arranque manual:
-   `powershell Start-Process 'C:\Program Files\Docker\Docker\Docker Desktop.exe'`
-5. **Esperar al daemon:** verificar con `docker info` en loop antes de operar
-6. **Documentar** container name, volume name, puerto y credenciales en el README del proyecto
+2. **Docker se usa via WSL**, NO via Docker Desktop. El daemon corre en WSL.
+3. **Nunca asumir** que hay binarios de DB instalados en el host (psql, pg_isready, etc)
+4. **Usar el cliente del lenguaje** del proyecto para verificar conexion (Node pg, Python psycopg2, etc)
+5. **NO usar Docker Desktop.** Si Docker no esta disponible, verificar que el servicio WSL esta corriendo.
+6. **Esperar al daemon:** verificar con `docker info` en loop antes de operar
+7. **Documentar** container name, volume name, puerto y credenciales en el README del proyecto
+
+---
+
+## 11. Permisos Amplios por Defecto en Cada Proyecto
+
+**Al iniciar un proyecto nuevo, crear `.claude/settings.local.json` con permisos amplios.**
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "WebFetch(domain:*)",
+      "WebSearch"
+    ]
+  }
+}
+```
+
+**Reglas:**
+1. Todo proyecto nuevo recibe este archivo como parte del setup inicial
+2. Usar `settings.local.json` (no `settings.json`) para que no se commitee al repo
+3. Los permisos globales en `~/.claude/settings.json` ya cubren el caso general
+4. Solo restringir permisos en proyectos con requerimientos de seguridad especificos
+
+---
+
+## 12. Proteccion de Contexto ante Interrupciones Abruptas de Sesion
+
+**Principio:** Las sesiones pueden interrumpirse en cualquier momento (limite de contexto, error, cierre accidental). Todo conocimiento valioso que exista solo en la conversacion se pierde irrecuperablemente. Claude DEBE escribir a archivos persistentes cualquier informacion que no pueda permitirse perder.
+
+### 12a. Registro en Tiempo Real de Pruebas Manuales
+
+**Toda prueba manual se documenta MIENTRAS se ejecuta, no despues.**
+
+Cuando Claude coordina o participa en pruebas manuales (E2E, integracion, exploratorias), DEBE registrar cada paso en tiempo real en el TASK_STATE o en un archivo dedicado de test log.
+
+#### Que registrar
+
+| Momento | Registrar |
+|---------|-----------|
+| Antes de empezar | Pre-condiciones, servicios a levantar, URLs/puertos |
+| Cada paso ejecutado | Comando/accion, resultado observado, PASS/FAIL |
+| Error encontrado | Mensaje exacto, stack trace, screenshot si aplica |
+| Fix aplicado | Que se cambio y por que |
+| Re-test post-fix | Resultado del re-test |
+| Al finalizar | Resumen: que funciono, que fallo, que quedo pendiente |
+
+#### Formato minimo
+
+```markdown
+## Manual Test: [descripcion]
+**Fecha:** YYYY-MM-DD | **Proyecto:** [nombre]
+
+### Pre-condiciones
+- Servicio X en :PUERTO - [UP/DOWN]
+- Servicio Y en :PUERTO - [UP/DOWN]
+
+### Paso 1: [descripcion]
+- Accion: [que se hizo]
+- Esperado: [que deberia pasar]
+- Resultado: PASS/FAIL
+- Detalle: [output, error, observacion]
+
+### Paso N: ...
+
+### Resultado Final
+- Tests pasados: N/M
+- Bloqueantes: [lista o "ninguno"]
+- Pendiente: [que falta probar]
+```
+
+#### Reglas de pruebas manuales
+
+1. **Registrar en tiempo real** - no esperar a terminar para documentar
+2. **Si la sesion se interrumpe**, el registro debe tener suficiente contexto para retomar
+3. **Errores con detalle exacto** - copiar mensajes de error textualmente
+4. **Ubicacion:** TASK_STATE.md del proyecto o `archive/tests/YYYY-MM-DD-descripcion.md`
+5. **Aplica a todos los proyectos** - no solo los que tienen test plan formal
+
+#### Checkpoint de codigo antes de pruebas
+
+Antes de iniciar cualquier prueba manual, asegurar que el codigo esta resguardado:
+
+| Situacion | Accion |
+|-----------|--------|
+| Cambios listos para commitear | Commit (puede ser WIP) |
+| Cambios experimentales/parciales | `git stash save "WIP: descripcion"` |
+| Multiples archivos sin stage | `git add` + commit WIP |
+
+**Regla:** Nunca empezar pruebas manuales con cambios sin commitear o stashear.
+
+#### Seccion "Sesion Activa" en TASK_STATE
+
+TASK_STATE debe incluir una seccion que capture el contexto inmediato de trabajo. Se actualiza en cada transicion de actividad (no solo cada 30 min).
+
+```markdown
+## Sesion Activa
+**Inicio:** YYYY-MM-DD HH:MM
+**Actividad actual:** [implementando|testeando|debuggeando|investigando]
+**Detalle:** [que estoy haciendo ahora mismo]
+**Hipotesis en curso:** [si estoy investigando un problema]
+**Ultimo resultado:** [output, error, o estado del ultimo paso]
+```
+
+**Al cerrar sesion:** archivar o borrar esta seccion, dejando solo "Proximos Pasos".
+
+#### Actualizar TASK_STATE al cambiar de fase
+
+Cada vez que el trabajo cambia de naturaleza, actualizar TASK_STATE ANTES de continuar:
+
+| Transicion | Actualizar |
+|------------|------------|
+| Coding -> Testing | Que se implemento, que se va a testear |
+| Testing -> Debugging | Que error se encontro (textual) |
+| Debugging -> Fix | Causa identificada, que se va a cambiar |
+| Fix -> Re-test | Que se cambio, que se va a re-testear |
+| Cualquier -> Interrupcion | Todo lo anterior + como retomar |
+
+#### Snapshot de servicios activos
+
+Para pruebas que involucran multiples servicios, registrar que esta corriendo:
+
+```markdown
+## Servicios Activos
+| Servicio | Puerto | Comando | Estado |
+|----------|--------|---------|--------|
+| orchestrator WS | 8765 | npm run server | UP |
+| orchestrator HTTP | 3000 | (mismo proceso) | UP |
+| web-monitor | 4200 | npx ng serve | UP |
+```
+
+Registrar al levantar servicios. Actualizar si alguno cae o se reinicia.
+
+#### Errores: registrar PRIMERO, investigar DESPUES
+
+Al encontrar un error durante pruebas:
+
+1. **PRIMERO:** Copiar el error textualmente al TASK_STATE o test log
+2. **SEGUNDO:** Anotar contexto (que paso ejecute, que esperaba)
+3. **TERCERO:** Investigar causa y proponer fix
+
+**Nunca investigar un error sin haberlo registrado primero.** Si la sesion se interrumpe durante la investigacion, el error queda documentado para retomar.
+
+### 12b. Documentar Sugerencias y Decisiones Inmediatamente
+
+**Toda sugerencia, recomendacion, o decision importante debe quedar por escrito ANTES de continuar con otro trabajo.**
+
+Si una sugerencia o decision queda solo en el contexto de la conversacion, se pierde irrecuperablemente ante una interrupcion.
+
+#### Que documentar
+
+| Tipo | Donde | Ejemplo |
+|------|-------|---------|
+| Sugerencia de mejora al proyecto actual | `TASK_STATE.md` seccion "Sugerencias Pendientes" | "Considerar agregar tool X al MCP server" |
+| Sugerencia de mejora a proyecto relacionado | `TASK_STATE.md` del proyecto relacionado o archivo dedicado | "UMS necesita component resolution para GP-032" |
+| Sugerencia de mejora al proceso/metodologia | `CONTINUOUS_IMPROVEMENT.md` | "Los agentes deberian recibir X contexto" |
+| Decision arquitectonica tomada en conversacion | `ARCHITECTURE_ANALYSIS.md` o ADR dedicado | "Elegimos Strategy B porque..." |
+| Idea de feature o tool nuevo | `PRODUCT_BACKLOG.md` como historia o nota | "UMS-026: Component-typed field resolution" |
+| Hallazgo tecnico importante | `LEARNINGS.md` del proyecto | "Unity Mono no soporta PipeSecurity ACL" |
+
+#### Reglas de documentacion de sugerencias
+
+1. **Documentar INMEDIATAMENTE** - no esperar a "un buen momento". Si surgio la idea, escribirla ahora.
+2. **Preferir archivo persistente sobre conversacion** - si algo es importante, no confiar en que la sesion sobreviva.
+3. **Incluir contexto suficiente** - otra sesion debe poder entender la sugerencia sin el contexto de la conversacion original.
+4. **Formato minimo para sugerencias:**
+```markdown
+## Sugerencia: [titulo corto]
+**Fecha:** YYYY-MM-DD | **Origen:** [que la motivo]
+**Proyecto afectado:** [nombre]
+**Descripcion:** [que se sugiere y por que]
+**Accion recomendada:** [que hacer con esto]
+```
+5. **Al cerrar sesion**, verificar que no quedan sugerencias o decisiones solo en el chat.
+6. **Aplica a TODOS los proyectos** - no solo al que se esta trabajando.
+
+#### Integracion con TASK_STATE
+
+TASK_STATE debe incluir una seccion opcional:
+
+```markdown
+## Sugerencias Pendientes
+- [YYYY-MM-DD] [Descripcion corta] -> [Proyecto afectado] | [Accion]
+```
+
+Esta seccion se revisa al inicio de cada sesion y las sugerencias se procesan (backlog, mejora, descarte).
+
+### 12c. Checkpoints de Estado en el Flujo de Trabajo
+
+El registro no se limita a pruebas manuales y sugerencias. Todo el flujo de trabajo debe generar checkpoints persistentes.
+
+#### Antes de lanzar agentes en paralelo
+
+Escribir en TASK_STATE:
+- Que agentes se van a lanzar y con que tarea
+- Que resultado se espera de cada uno
+- Cual es el plan post-agentes (siguiente ola, review, etc.)
+
+#### Despues de recibir resultados de agentes
+
+Escribir en TASK_STATE:
+- Resumen de lo que cada agente produjo
+- Archivos creados/modificados
+- Problemas encontrados o pendientes
+
+#### WIP commits agresivos
+
+| Evento | Accion |
+|--------|--------|
+| Agente completa una historia | `git add` archivos + WIP commit |
+| Code review identifica fixes | Commit pre-fix como checkpoint |
+| Antes de lanzar siguiente ola de trabajo | Commit ola anterior como WIP |
+| Antes de pruebas manuales | Commit (cubierto por 12a) |
+
+Se puede squashear al final si se prefiere historial limpio. Lo importante es que el codigo esta resguardado.
+
+#### Razonamiento de diseño inline
+
+Cuando se toma una decision de diseño durante la conversacion, documentar inmediatamente en:
+- Comentario en el codigo si es tecnico-local
+- `ARCHITECTURE_ANALYSIS.md` si es arquitectonico
+- `LEARNINGS.md` si es un patron aprendido
+
+**No esperar al cierre de sesion.** El "por que" es mas valioso que el "que" y es lo primero que se pierde.
+
+#### Resumen ejecutivo periodico
+
+Cada ~30 minutos de trabajo activo o despues de cada hito, actualizar "Sesion Activa" en TASK_STATE.
+**Aplicar observation masking** (ver 07-project-memory-management.md seccion 1b): preservar decisiones y razonamiento, descartar outputs de herramientas y datos transitorios.
+
+```markdown
+## Sesion Activa
+**Ultimo update:** HH:MM
+**Progreso:** [historias Done], [historia en curso]
+**Archivos nuevos:** [lista]
+**Pendiente esta sesion:** [siguiente paso]
+**Contexto critico:** [decisiones o hallazgos que no deben perderse]
+```
+
+#### Log de resultados de code review
+
+Al recibir resultado de code-reviewer, escribir resumen en TASK_STATE:
+
+```markdown
+## Code Review: [historias revisadas]
+**Criticos:** C-01 [descripcion], C-02 [descripcion]
+**Mayores:** M-01 [descripcion], ...
+**Aplicados:** C-01 (fixed), M-01 (fixed)
+**Pendientes:** M-03 (en progreso)
+```
+
+#### Plan de trabajo escrito antes de ejecutar
+
+Antes de trabajo complejo (multiples historias, olas paralelas), documentar el plan en TASK_STATE:
+
+```markdown
+## Plan de Ejecucion
+**Ola 1 (paralelo):** [historias]
+**Ola 2 (secuencial):** [historias + dependencias]
+**Post-implementacion:** [review, commit, etc.]
+```
+
+### 12d. Observacion Continua de Resiliencia de Contexto
+
+**Claude tiene como responsabilidad permanente la observacion de incidentes y oportunidades de mejora relacionados con la resiliencia del contexto de trabajo.**
+
+Esto incluye:
+- Detectar cuando informacion valiosa esta en riesgo de perderse
+- Identificar patrones de perdida de contexto recurrentes
+- Proponer mejoras al proceso basadas en incidentes reales
+- Registrar hallazgos en `CONTINUOUS_IMPROVEMENT.md` o en el proyecto de investigacion de Context Engineering (`C:/claude_context/research/context-engineering/`)
+
+Esta responsabilidad es **transversal a todos los proyectos** y se ejerce de forma continua, no solo cuando ocurre un incidente.
+
+---
+
+## 14. Alertas Cross-Project
+
+**Claude es responsable de notificar al usuario sobre alertas, incidentes y recordatorios del ecosistema, independientemente del proyecto en el que se este trabajando.**
+
+### Mecanismo automatico (health-check hook)
+
+El hook `session-health-check.ps1` revisa al inicio de cada sesion:
+- Tamanos de archivos de contexto (existente)
+- Frescura de TASK_STATE (existente)
+- **Logs de hooks** (auto-learnings, precompact) buscando TIMEOUT, ERROR, SKIPPED en las ultimas 24h
+- **Alertas activas** en `C:/claude_context/ALERTS.md`
+
+Si el hook emite warnings, Claude DEBE comunicarlos al usuario antes de continuar con el trabajo.
+
+### Archivo centralizado de alertas
+
+**Ubicacion:** `C:/claude_context/ALERTS.md`
+
+```markdown
+## Alertas Activas
+| Fecha | Tipo | Mensaje | Accion |
+|-------|------|---------|--------|
+
+## Historial
+| Fecha | Tipo | Mensaje | Resolucion |
+|-------|------|---------|------------|
+```
+
+**Tipos de alerta:**
+- `incidente` - Algo fallo (hook colgado, error en proceso automatico)
+- `recordatorio` - Tarea periodica pendiente (revision trimestral, limpieza, etc.)
+- `hallazgo-ce` - Patron o incidente de Context Engineering detectado en cualquier proyecto
+- `estado` - Cambio relevante en el ecosistema de hooks o herramientas
+
+### Cuando generar alertas
+
+| Situacion | Tipo | Quien genera |
+|-----------|------|--------------|
+| Hook falla o timeout | incidente | El propio hook (log) + Claude al detectar |
+| Revision trimestral pendiente | recordatorio | Claude al detectar fecha |
+| Patron de context engineering detectado | hallazgo-ce | Claude (directiva 12d) |
+| Cambio en hooks o herramientas | estado | Claude al modificar infraestructura |
+| Bug critico en otro proyecto | incidente | Claude al detectar |
+
+### Reglas
+
+1. **Claude SIEMPRE revisa ALERTS.md al inicio de sesion**, sin importar el proyecto
+2. **Alertas activas se comunican al usuario** en los primeros minutos de la sesion
+3. **Alertas resueltas se mueven a Historial** con fecha y resolucion
+4. **No acumular >10 alertas activas** - si se excede, priorizar y archivar las menos urgentes
+5. **El hook automatiza la deteccion**, pero Claude puede agregar alertas manualmente cuando detecta situaciones relevantes
 
 ---
 
@@ -257,8 +602,15 @@ docker run -d \
 9. Code review riguroso pre-PR
 10. Settings centralizados en claude_context
 11. Bases de datos en Docker, siempre
+12. Proteccion de contexto ante interrupciones abruptas de sesion
+    12a. Registro en tiempo real de pruebas manuales
+    12b. Documentar sugerencias y decisiones inmediatamente
+    12c. Checkpoints de estado en el flujo de trabajo
+    12d. Observacion continua de resiliencia de contexto
+13. Permisos amplios por defecto en cada proyecto nuevo
+14. Alertas cross-project (hooks, incidentes, recordatorios, CE)
 ```
 
 ---
 
-**Version:** 3.1 | **Ultima actualizacion:** 2026-02-07
+**Version:** 3.5 | **Ultima actualizacion:** 2026-03-05

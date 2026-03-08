@@ -1,152 +1,50 @@
 # Estado de Tareas - Claude Orchestrator
 
-**Ultima actualizacion:** 2026-02-10 10:00
-**Sesion activa:** Si
+**Ultima actualizacion:** 2026-03-07 18:00
+**Version:** 0.8.0 (pendiente bump)
 
 ---
 
 ## Resumen Ejecutivo
 
-**Proyecto:** MCP Server + WebSocket API para orquestar multiples sesiones de Claude Agent SDK.
-**Fase actual:** Scaffolding completado. Pendiente: npm install, testing, integracion Flutter.
+Backlog completo implementado. 8 historias (ECO-001 a ECO-008) + 4 fixes completados.
+577 tests (23 suites). Code review pasado con fixes aplicados (C-01 a C-03, M-01 a M-03, m-02).
 
----
+## Completado Esta Sesion
 
-## Que YA Esta Hecho
+| ID | Titulo | Pts |
+|----|--------|-----|
+| ECO-002 | Session Health Monitoring | 3 |
+| ECO-003 | Session Activity Log | 3 |
+| ECO-004 | Bulk Session Operations | 2 |
+| ECO-005 | Session Priority Queue | 5 |
+| ECO-006 | Session Events Webhook | 5 |
+| ECO-007 | Inject + Auto-Recovery Pattern | 8 |
+| ECO-008 | Discover External Claude Code Sessions | 5 |
 
-### Documentacion (claude_context)
-- `C:/claude_context/mcp/claude-orchestrator/CLAUDE.md` - Contexto del proyecto
-- `C:/claude_context/mcp/claude-orchestrator/ARCHITECTURE.md` - Arquitectura completa
-- `C:/claude_context/mcp/claude-orchestrator/TASK_STATE.md` - Este archivo
+## Code Review Fixes Aplicados
 
-### Codigo (C:/mcp/claude-orchestrator/)
+C-01/C-02: CliSessionManager missing methods (detectStaleSessions, getActivityLog, activityLog)
+C-03: globalThis -> service-registry.js
+M-01: updateSessionMeta allowlist
+M-02: replaceAll en recovery prompt
+M-03: recoveryLog cleanup on session:ended
+m-02: _recordActivity en CLI sendMessage
 
-| Archivo | Estado | Descripcion |
-|---------|--------|-------------|
-| `package.json` | Completo | Deps: claude-agent-sdk, mcp/sdk, ws, express |
-| `.env.example` | Completo | Template de config |
-| `.gitignore` | Completo | node_modules, .env, etc |
-| `README.md` | Completo | Setup, MCP config, protocolo WebSocket |
-| `.claude/CLAUDE.md` | Completo | Puntero a claude_context |
-| `src/config.js` | Completo | Config loader (env vars) |
-| `src/agents/session-manager.js` | Completo | Core session management con EventEmitter |
-| `src/mcp/tools/sessions.js` | Completo | 6 MCP tools para sesiones |
-| `src/websocket/server.js` | Completo | WebSocket server con protocolo completo |
-| `src/index.js` | Completo | MCP server entry point |
-| `src/server.js` | Completo | WebSocket server standalone |
-| `src/cli.js` | Completo | CLI (server, mcp, status, help) |
+## Proximos Pasos
 
-### MCP Tools Implementados
+1. Bump version a 0.8.0 y commit
+2. Test E2E desde browser (pendiente desde ECO-001)
+3. Definir siguiente epic (autonomous agent, Flutter integration, etc.)
+4. Considerar refactor: extraer clase base para SessionManager y CliSessionManager (M-04)
+5. Considerar: webhook HMAC signature (m-01), backoff cap/jitter (m-04)
 
-| Tool | Descripcion |
-|------|-------------|
-| `list_sessions` | Listar sesiones activas |
-| `create_session` | Crear nueva sesion |
-| `send_instruction` | Enviar prompt y obtener resultado |
-| `get_session` | Obtener detalles de sesion |
-| `stop_session` | Detener query activo |
-| `end_session` | Terminar sesion |
+## Notas para Retomar
 
-### WebSocket Protocol Implementado
-
-**Cliente → Servidor:**
-- list_sessions
-- create_session
-- send_message
-- stop_session
-- end_session
-- subscribe_session
-- unsubscribe_session
-- get_session
-
-**Servidor → Cliente (push):**
-- sessions_list
-- session_created
-- session_updated
-- agent_message
-- agent_complete
-- agent_error
-- session_ended
-- subscribed
-
----
-
-## Que FALTA Hacer
-
-### Fase 1: Setup (inmediato) ✅ COMPLETADO
-1. ✅ **npm install** en `C:/mcp/claude-orchestrator/`
-2. ✅ **Crear .env** con ANTHROPIC_API_KEY
-3. ✅ **Probar WebSocket server:** `npm run server` - Corriendo en ws://localhost:8765
-4. ✅ **Probar MCP server:** `npm start`
-5. ✅ **Inicializar git:** commit bd9e369
-
-### Fase 2: Testing
-1. Test basico de conexion WebSocket
-2. Test de create_session
-3. Test de send_instruction con Agent SDK real
-4. Unit tests para session-manager
-
-### Fase 3: Integracion Flutter (Fase B) - OTRO EQUIPO
-
-**NOTA:** La implementacion en Flutter es responsabilidad del equipo claude-code-monitor-flutter.
-
-**Responsabilidad de este equipo (orchestrator):**
-- Mantener WebSocket API estable
-- Documentar protocolo de mensajes
-- Proveer ejemplos de uso
-- Coordinar testing de integracion
-
-**Responsabilidad del equipo Flutter:**
-- Crear OrchestratorService
-- Integrar en DashboardViewModel
-- Crear UI components
-
-**Documentacion de coordinacion:**
-- Ver `C:/claude_context/apps/claude-code-monitor-flutter/TASK_STATE.md` seccion "Coordinacion entre Equipos"
-
-### Fase 4: Integracion sprint-backlog-manager
-- Conectar ambos MCP servers
-- Asignar stories a sesiones
-- Tracking de progreso
-
----
-
-## Dependencias
-
-### Claude Agent SDK
-- Package: `@anthropic-ai/claude-agent-sdk`
-- API: `query({ prompt, options })` → AsyncGenerator
-- Docs: https://platform.claude.com/docs/en/agent-sdk/overview
-
-### Proyecto Flutter relacionado
-- Path: `C:/claude_context/apps/claude-code-monitor-flutter/`
-- Estado: 96% completo (444 tests)
-- WebSocket client: A implementar en Fase 3
-
----
-
-## Stack
-
-- **Runtime:** Node.js 18+
-- **Agent SDK:** @anthropic-ai/claude-agent-sdk
-- **MCP:** @modelcontextprotocol/sdk
-- **WebSocket:** ws ^8.18.0
-- **HTTP:** express ^4.21.0
-
----
-
-## Notas para Nueva Sesion
-
-1. Leer ARCHITECTURE.md para entender la estructura
-2. Empezar por Fase 1 (npm install, .env, test basico)
-3. El Session Manager ya implementa todo el lifecycle
-4. El WebSocket server ya tiene protocolo completo
-5. Para Flutter, empezar por OrchestratorService
-
----
-
-## Referencias
-
-- Agent SDK Docs: https://platform.claude.com/docs/en/agent-sdk/overview
-- MCP SDK: https://github.com/modelcontextprotocol/sdk
-- Flutter project: C:/claude_context/apps/claude-code-monitor-flutter/
+- `npm test` - 577 tests (23 suites)
+- `npm run server` - WS :8765 + HTTP :3000
+- `bash C:/mcp/ecosystem-start.sh` - levanta todo
+- Nuevos endpoints: GET /health, GET /:id/activity, GET /:id/recovery-log, POST /discover
+- Nuevos MCP tools: bulk_stop_sessions, bulk_end_sessions, update_priority, discover_sessions
+- Nuevos WS handlers: bulk_stop, bulk_end, update_priority
+- Config vars nuevas: WEBHOOK_*, RECOVERY_*, SESSION_STALE_THRESHOLD_MINUTES, SESSION_MAX_ACTIVITY_LOG

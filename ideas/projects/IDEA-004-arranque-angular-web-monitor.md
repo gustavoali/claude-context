@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-02-12
 **Categoria:** projects
-**Estado:** Seed
+**Estado:** In Progress
 **Prioridad:** Alta
 
 ---
@@ -39,3 +39,4 @@ Grande (4 fases: MVP, Sprints, Sessions, Polish)
 | Fecha | Evento |
 |-------|--------|
 | 2026-02-12 | Planificacion completa. Pendiente arranque. |
+| 2026-02-14 | Estado → In Progress. Inicio de desarrollo. |
