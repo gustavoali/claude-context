@@ -27,3 +27,10 @@ Modulo de playlists implementado y funcional. OAuth2 configurado. Reorganizacion
 - recetas-comunes: [creada, 51 videos]
 - Thich Nhat Hanh: PLGPeY3Rcx7vAO7ybMQFfuACVSO0lIoL4d (27 videos)
 - Mindfulness: PLGPeY3Rcx7vDW3ENCWGJ1gdJ34IOsWMwH (12 videos)
+
+## Fix MCP Server (2026-03-09, sesion workspace #6)
+- Bug: logs structlog iban a stdout, corrompiendo protocolo JSON-RPC stdio
+- Bug: `FastMCP.run_async()` no existe, corregido a `run_stdio_async()`
+- Archivos modificados: `observability/logging.py`, `mcp/server.py`, `server.py`
+- Estado: verificado, STDOUT limpio, server arranca OK. Falta reiniciar Claude Code para confirmar carga.
+
