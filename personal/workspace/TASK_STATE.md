@@ -1,20 +1,19 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-09 | **Sesion:** #6
+**Actualizacion:** 2026-03-09 | **Sesion:** #7
 
 ## Completado Esta Sesion
 | # | Descripcion | Resultado |
 |---|-------------|-----------|
-| 1 | Diagnosticar por que YouTube MCP no carga en Claude Code | Encontrados 2 bugs: logs a stdout (corrompe JSON-RPC) + `run_async()` inexistente en FastMCP |
-| 2 | Fix logs stdout -> stderr | structlog configurado con `PrintLoggerFactory(file=sys.stderr)` + import temprano para garantizar config antes de primer log |
-| 3 | Fix `run_async()` -> `run_stdio_async()` | Corregido metodo de arranque en `mcp/server.py` |
-| 4 | Verificacion post-fix | STDOUT limpio (solo JSON-RPC), STDERR con todos los logs. Server arranca correctamente |
+| 1 | Diagnosticar por que Playwright MCP no carga en Claude Code | Causa raiz: `npx` como command falla silenciosamente en Windows. Los servers que funcionan (project-admin, claude-orchestrator) usan `node` con path directo. |
+| 2 | Reconfigurar todos los MCP servers con node + path directo | 4 servers migrados: playwright, playwright-headless, google-drive, youtube-transcript. Instalados globalmente con `npm install -g`. |
+| 3 | Limpiar entries legacy en ~/.claude/settings.json | Removida seccion mcpServers completa (4 entries npx que no funcionaban). |
+| 4 | Actualizar LEARNINGS | Agregado learning sobre npx vs node en Windows para MCP servers. |
 
 ## Proximos Pasos
-1. Reiniciar sesion de Claude Code para que cargue el YouTube MCP con los fixes
-2. Verificar que `mcp__youtube__*` tools aparecen en deferred tools
-3. Probar transcript del video de mandarin: `https://www.youtube.com/watch?v=qT-ZpFRSLeY`
-4. Reintentar migracion Watch Later despues de reset de cuota YouTube API
-5. Limpiar MCP servers legacy en `~/.claude/settings.json` (4 entries que no se usan)
+1. Reiniciar sesion y verificar que los 4 MCP servers cargan (playwright, playwright-headless, youtube-transcript, google-drive)
+2. Si cargan: usar Playwright para verificar cuota YouTube API en Google Cloud Console
+3. Reintentar migracion Watch Later despues de reset de cuota
+4. Probar YouTube MCP propio (transcript del video de mandarin)
 
 ## Decisiones Pendientes
 (ninguna)
