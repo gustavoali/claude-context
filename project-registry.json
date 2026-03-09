@@ -270,6 +270,41 @@
       "path": "C:/research/mcp-whatsapp-research",
       "context": "C:/claude_context/research/mcp-whatsapp-research",
       "category": "research"
+    },
+    "workspace-global": {
+      "name": "Workspace Global",
+      "short": "wg",
+      "path": "C:/claude_context/personal/workspace",
+      "context": "C:/claude_context/personal/workspace",
+      "category": "personal"
+    },
+    "ai-futures-research": {
+      "name": "AI Futures Research",
+      "short": "af",
+      "path": "C:/investigacion/ai-futures-research",
+      "context": "C:/claude_context/investigacion/ai-futures-research",
+      "category": "investigacion"
+    },
+    "mandarin-chinese": {
+      "name": "Mandarin Chinese Research",
+      "short": "mc",
+      "path": "C:/investigacion/mandarin-chinese",
+      "context": "C:/claude_context/investigacion/mandarin-chinese",
+      "category": "investigacion"
+    },
+    "cloud-backup": {
+      "name": "Cloud Backup",
+      "short": "cb",
+      "path": "C:/tools/cloud-backup",
+      "context": "C:/claude_context/tools/cloud-backup",
+      "category": "tools"
+    },
+    "narrador": {
+      "name": "Narrador",
+      "short": "nr",
+      "path": "C:/agentes/narrador",
+      "context": "C:/claude_context/agentes/narrador",
+      "category": "agentes"
     }
   }
 }

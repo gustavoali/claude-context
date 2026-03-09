@@ -26,3 +26,8 @@ Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto espec
 **Learning:** The Google ServiceUsage API (`serviceusage.googleapis.com`) requires its own OAuth scopes, separate from YouTube API scopes. A token with only `youtube.readonly`/`youtube` scopes will get `ACCESS_TOKEN_SCOPE_INSUFFICIENT` when trying to query quota via API. To check quota programmatically, either add `cloud-platform` scope to the OAuth flow or use the Google Cloud Console UI instead.
 **Applies to:** Any project needing to programmatically monitor Google API quota usage
 
+### 2026-03-09 - youtube-transcript-api IP bans: Whisper auto-fallback implemented
+**Context:** `youtube-transcript-api` returned IP ban error for mandarin video. yt-dlp metadata still worked.
+**Learning:** YouTube blocks `youtube-transcript-api` by IP (residential included). Now implemented: (1) **Whisper auto-fallback** in `tools.py` — when transcript-api fails, Whisper downloads audio via yt-dlp and transcribes locally (~1:17 for 15 min video on CPU base model). (2) **Cookie support** via `YOUTUBE_COOKIE_FILE` env var pointing to Netscape-format cookies.txt. (3) `force_whisper=True` bypasses transcript-api entirely. Performance: base model on CPU processes ~12x realtime.
+**Applies to:** YouTube MCP server transcript extraction
+
