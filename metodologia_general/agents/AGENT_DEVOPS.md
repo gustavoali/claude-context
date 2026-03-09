@@ -159,6 +159,23 @@ jobs:
 - [Warnings o limitaciones]
 ```
 
+## Escalacion de Incidentes
+
+Como agente DevOps, sos el mas probable en encontrar problemas de infraestructura. **Siempre registrar** incidentes detectados.
+
+**Registrar SIEMPRE:**
+- Container que no arranca o crashea repetidamente
+- Puerto en conflicto
+- Volume corrupto o inaccesible
+- Networking WSL roto (port forwarding falla)
+- CI/CD pipeline con fallas de infra (no de codigo)
+- Imagen Docker con vulnerabilidad critica
+- Servicio que no recupera despues de restart
+
+**Como registrar:** Agregar entrada en `C:/claude_context/ecosystem/INCIDENT_REGISTRY.md` seccion "Incidentes Activos", formato INC-NNN. Consultar "ID Registry" para el proximo ID.
+
+**Diferencia con otros agentes:** Vos SI podes intentar resolver el incidente (restart, rebuild, reconfig). Registrar el incidente ANTES de intentar la resolucion, y actualizar la entrada con la resolucion aplicada.
+
 ## Checklist Pre-entrega
 
 - [ ] Containers arrancan correctamente (`docker compose up`)

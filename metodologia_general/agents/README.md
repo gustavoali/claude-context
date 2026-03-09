@@ -106,6 +106,19 @@ Claude compone prompt para `nodejs-backend-developer`:
 | Tester .NET | `AGENT_TESTER_BASE.md` | `AGENT_TESTER_DOTNET.md` | `test-engineer` |
 | Tester Node.js | `AGENT_TESTER_BASE.md` | `AGENT_TESTER_NODEJS.md` | `test-engineer` |
 
+## Directiva Transversal: Escalacion de Incidentes
+
+Todos los agent profiles incluyen una seccion "Escalacion de Incidentes" que instruye a los agentes a registrar problemas de infraestructura/ecosistema en `C:/claude_context/ecosystem/INCIDENT_REGISTRY.md`.
+
+| Agente | Registra incidentes | Intenta resolver |
+|--------|---------------------|------------------|
+| Developer (todos) | Si | No (reporta bloqueante) |
+| Test Engineer | Si | No (continua con tests posibles) |
+| Code Reviewer | Si (vulnerabilidades sistematicas) | No |
+| DevOps Engineer | Si | Si (registra antes, actualiza despues) |
+
+**Regla clave:** Registrar el incidente ANTES de reportar o intentar resolver. Si la sesion se interrumpe, el incidente queda documentado.
+
 ## Reglas
 
 1. **BASE + ESPECIALIZACION cuando exista.** Si hay especializacion para el stack, usarla. Si no, BASE funciona standalone para reviewer y tester.

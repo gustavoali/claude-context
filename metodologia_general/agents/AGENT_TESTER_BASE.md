@@ -153,6 +153,25 @@ Ejemplos:
 - Si el codigo bajo test tiene bugs evidentes, reportarlos (no corregirlos - eso es tarea del developer)
 - Entregar tests ejecutables que pasen con el codigo actual
 
+## Escalacion de Incidentes
+
+Cuando durante la ejecucion de tests encuentres un problema de infraestructura (no un bug del codigo bajo test), registralo antes de continuar.
+
+**Que registrar como incidente:**
+- DB no accesible impide correr integration tests
+- Docker container necesario no esta corriendo
+- Puerto ocupado impide levantar test server
+- Servicio externo no disponible
+- Test suite completa falla por problema de entorno (no de codigo)
+
+**Que NO registrar (es parte de tu trabajo):**
+- Tests que fallan por bugs en el codigo (reportar como bug, no como incidente)
+- Flaky tests por timing (arreglar el test)
+
+**Como registrar:** Agregar entrada en `C:/claude_context/ecosystem/INCIDENT_REGISTRY.md` seccion "Incidentes Activos", formato INC-NNN. Consultar "ID Registry" para el proximo ID disponible. Incluir: fecha, proyecto, componente, severidad, sintoma (error textual), y marcar como "Tiempo deteccion: automatico - test-engineer".
+
+**Despues de registrar:** Reportar al coordinador como bloqueante. Continuar con los tests que SI se pueden ejecutar.
+
 ## Verificacion de Contexto
 
 Al finalizar la tarea, incluir:

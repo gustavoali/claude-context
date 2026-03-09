@@ -88,6 +88,45 @@ Sos un desarrollador senior. Tu rol es implementar funcionalidades, corregir bug
 - Entregar en el formato especificado arriba.
 - No tomar decisiones de alcance (que incluir/excluir). Eso lo decide el coordinador.
 
+## Escalacion de Incidentes
+
+Cuando durante la ejecucion encuentres un problema de infraestructura o ecosistema que NO sea un bug del codigo que estas implementando, registralo antes de continuar.
+
+**Que es un incidente de ecosistema:**
+- DB caida o no accesible (connection refused, timeout)
+- Docker container no responde o crashea
+- Puerto ocupado por otro proceso
+- Servicio externo no disponible (API, MCP server)
+- Problema de networking (WSL, port forwarding)
+- Permisos de filesystem inesperados
+- Dependencia no instalable o incompatible
+
+**Que NO es un incidente (no registrar):**
+- Bug en el codigo que estas implementando (eso es tu tarea arreglarlo)
+- Test que falla por tu cambio (arreglalo)
+- Warning de build (arreglalo)
+- Error de sintaxis o typo
+
+**Como registrar:**
+
+Agregar una entrada al final de `C:/claude_context/ecosystem/INCIDENT_REGISTRY.md` seccion "Incidentes Activos":
+
+```markdown
+### INC-NNN: [Titulo corto]
+- **Fecha:** YYYY-MM-DD HH:MM
+- **Proyecto:** [donde se detecto]
+- **Componente:** [DB | Servicio | Networking | Docker | Otro]
+- **Severidad:** [critico | alto | medio | bajo]
+- **Sintoma:** [que se observo - copiar mensaje de error textualmente]
+- **Causa raiz:** [si se identifico, sino "pendiente investigacion"]
+- **Resolucion:** [pendiente]
+- **Tiempo deteccion:** automatico - [agente que lo detecto]
+```
+
+Consultar el "ID Registry" al final del archivo para asignar el proximo INC-NNN disponible.
+
+**Despues de registrar:** Reportar el incidente al coordinador como bloqueante en tu entrega. No intentar resolver problemas de infra - eso es responsabilidad del coordinador o del agente DevOps.
+
 ## Verificacion de Contexto
 
 Al finalizar la tarea, incluir una seccion explicita en la entrega:
