@@ -1,17 +1,18 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-09 | **Sesion:** #4
+**Actualizacion:** 2026-03-09 | **Sesion:** #5
 
 ## Completado Esta Sesion
 | # | Descripcion | Resultado |
 |---|-------------|-----------|
-| 1 | Verificar Playwright MCP post-reinicio | No cargaba. Causa raiz: MCP servers estaban en `~/.claude/settings.json` (archivo incorrecto). Claude CLI lee MCPs de `~/.claude.json`. |
-| 2 | Registrar MCP servers en archivo correcto | Agregados 4 servers via `claude mcp add -s user`: playwright, playwright-headless, youtube-transcript, google-drive (con env vars). |
-| 3 | Actualizar LEARNINGS | Corregido learning sobre config de MCP: el archivo correcto es `~/.claude.json`, no `~/.claude/settings.json`. |
+| 1 | Recordatorio proyecto Chino Mandarin | Creado en ALERTS.md con URL del video base |
+| 2 | Remover MCP youtube-transcript de terceros | Removido `@kimtaeyoon83/mcp-server-youtube-transcript` via `claude mcp remove` |
+| 3 | Registrar nuestro YouTube MCP server | Registrado como `youtube` apuntando a `C:/mcp/youtube/.venv/Scripts/python -m youtube_mcp.server` |
 
 ## Proximos Pasos
-1. Reiniciar sesion y verificar que los 4 MCP servers cargan (playwright, playwright-headless, youtube-transcript, google-drive)
-2. Considerar limpiar las entries duplicadas de MCP en `~/.claude/settings.json` (ya no se usan)
+1. Reiniciar sesion y verificar que el MCP server `youtube` (nuestro) carga correctamente
+2. Probar transcript del video de mandarin con nuestro MCP: `https://www.youtube.com/watch?v=qT-ZpFRSLeY`
 3. Reintentar migracion Watch Later despues de reset de cuota YouTube API
+4. Considerar limpiar entries duplicadas de MCP en `~/.claude/settings.json` (legacy, ya no se usan)
 
 ## Decisiones Pendientes
 (ninguna)
