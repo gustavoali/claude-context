@@ -1,5 +1,5 @@
 # Learnings - YouTube Content Intelligence MCP
-**Actualizacion:** 2026-03-07
+**Actualizacion:** 2026-03-08
 
 ## Patrones del Proyecto
 - Pipeline secuencial: URL -> Metadata -> Transcript (subs o Whisper) -> Processing -> Artifacts
@@ -31,4 +31,24 @@
 **Context:** Setting up OAuth2 for YouTube API access using a Desktop app credential (`client_secret.json` with type `installed`).
 **Learning:** For Desktop/CLI apps, use `google-auth-oauthlib` `InstalledAppFlow.from_client_secrets_file()` with `run_local_server()`. This opens the browser for user consent and spins up a temporary localhost redirect server. Save the resulting credentials to a `token.json` file and reload on subsequent runs to avoid re-authentication. Token includes refresh token when `access_type=offline` is set.
 **Applies to:** Any Python project needing YouTube API or Google API access from CLI/desktop apps
+
+### 2026-03-08 - YouTube Data API v3 quota costs for batch playlist operations
+**Context:** Needed to add 744 videos to new playlists. Each `playlistItems.insert` costs 50 quota units, and the daily limit is 10,000 units, meaning only ~180 video inserts per day are possible.
+**Learning:** YouTube Data API v3 has a daily quota of 10,000 units per project. Read operations (`list`) cost 1 unit, but write operations (`insert`, `create`) cost 50 units each. For batch operations involving hundreds of playlist inserts, plan for multi-day execution (~180 inserts/day max). Quota resets at midnight Pacific Time. Consider fetching all data first (cheap reads), then batching writes across days.
+**Applies to:** Any project doing bulk YouTube Data API v3 write operations (playlist management, video uploads, etc.)
+
+### 2026-03-08 - Google Takeout playlist files have `-videos` suffix in filenames
+**Context:** Trying to import Watch Later from a Takeout ZIP. The `import_watch_later` function searched for a playlist named `"watch later"` but the parsed dict contained `"Watch later-videos"` because the filename was `Watch later-videos.csv`.
+**Learning:** Google Takeout names playlist CSV files as `<playlist_name>-videos.csv` (and `<name>-videos(N).csv` for duplicates). When parsing Takeout exports, strip the `-videos` suffix from the filename stem to recover the original playlist name. Use regex `r"-videos(?:\(\d+\))?$"` to handle both patterns. Without this, playlist name matching (e.g., looking for "Watch Later") will fail because the parsed name retains the suffix.
+**Applies to:** Any project parsing Google Takeout YouTube exports
+
+### 2026-03-08 - YouTube API "Precondition check failed" for unavailable videos
+**Context:** During batch import of Watch Later videos from Takeout, video `et3lsC88iRc` returned HTTP 400 with `"Precondition check failed"` (`failedPrecondition`) when trying to add it to a playlist via `playlistItems.insert`.
+**Learning:** The YouTube Data API v3 returns HTTP 400 with reason `failedPrecondition` when attempting to add a video that is deleted, private, or otherwise unavailable to a playlist. This is distinct from a 404 (video not found) - the API uses 400 with this specific reason. In batch import scripts, catch this as a non-fatal error and skip the video rather than halting the entire import.
+**Applies to:** Any project doing bulk playlist operations via YouTube Data API v3
+
+### 2026-03-09 - SQLite idempotent schema migrations via ALTER TABLE with try/except
+**Context:** Adding source tracking columns (`ingestion_source`, `source_playlist`, `source_added_at`) to an existing SQLite table in the ingestion module. Needed the migration to be safe to run multiple times.
+**Learning:** SQLite does not support `IF NOT EXISTS` for `ALTER TABLE ADD COLUMN`. The idiomatic pattern is to wrap each `ALTER TABLE` statement in its own `try/except sqlite3.OperationalError: pass` block. This makes the migration idempotent - it succeeds on first run and silently skips on subsequent runs. Execute each statement individually (not as a batch via `executescript`) so that one existing column doesn't prevent the others from being added. Commit after all migrations complete.
+**Applies to:** Any Python project using SQLite that needs to evolve schemas without a dedicated migration framework (Alembic, etc.)
 

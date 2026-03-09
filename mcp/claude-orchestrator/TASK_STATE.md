@@ -1,50 +1,37 @@
 # Estado de Tareas - Claude Orchestrator
 
-**Ultima actualizacion:** 2026-03-07 18:00
-**Version:** 0.8.0 (pendiente bump)
+**Ultima actualizacion:** 2026-03-09 03:30
+**Version:** 0.8.2
 
 ---
 
 ## Resumen Ejecutivo
 
-Backlog completo implementado. 8 historias (ECO-001 a ECO-008) + 4 fixes completados.
-577 tests (23 suites). Code review pasado con fixes aplicados (C-01 a C-03, M-01 a M-03, m-02).
+EPIC-ECO-03 (Ecosystem Support Agent) COMPLETADO. Code review aplicado.
+862 tests (32 suites). Build limpio.
 
-## Completado Esta Sesion
+## EPIC-ECO-03 - Completado
 
-| ID | Titulo | Pts |
-|----|--------|-----|
-| ECO-002 | Session Health Monitoring | 3 |
-| ECO-003 | Session Activity Log | 3 |
-| ECO-004 | Bulk Session Operations | 2 |
-| ECO-005 | Session Priority Queue | 5 |
-| ECO-006 | Session Events Webhook | 5 |
-| ECO-007 | Inject + Auto-Recovery Pattern | 8 |
-| ECO-008 | Discover External Claude Code Sessions | 5 |
-
-## Code Review Fixes Aplicados
-
-C-01/C-02: CliSessionManager missing methods (detectStaleSessions, getActivityLog, activityLog)
-C-03: globalThis -> service-registry.js
-M-01: updateSessionMeta allowlist
-M-02: replaceAll en recovery prompt
-M-03: recoveryLog cleanup on session:ended
-m-02: _recordActivity en CLI sendMessage
+| Ola | Historias | Pts | Commit |
+|-----|-----------|-----|--------|
+| Ola 0 | ECO-016 (persistence) | 5 | d42afb4 |
+| Ola 1 | ECO-015 (config) + ECO-009 (health engine) | 8 | 69961a3 |
+| Ola 2 | ECO-010 (docker) + ECO-012 (endpoint) | 8 | 045b4a0 |
+| Ola 3 | ECO-011 (remediation) | 8 | df63d87 |
+| Ola 4 | ECO-013 (maintenance) + ECO-014 (notifications) | 10 | 222dcac |
+| Fixes | Code review Ola 4 (C-01,C-02,M-01..M-05,m-04) | - | d287e3f |
+| **Total** | **8 historias** | **39 pts** | |
 
 ## Proximos Pasos
 
-1. Bump version a 0.8.0 y commit
-2. Test E2E desde browser (pendiente desde ECO-001)
-3. Definir siguiente epic (autonomous agent, Flutter integration, etc.)
-4. Considerar refactor: extraer clase base para SessionManager y CliSessionManager (M-04)
-5. Considerar: webhook HMAC signature (m-01), backoff cap/jitter (m-04)
+1. Test E2E desde browser (pendiente desde ECO-001)
+2. Investigar warning: worker process force exited en tests
+3. Definir siguiente epic
+4. Merge master -> main (master tiene 6 commits ahead)
 
 ## Notas para Retomar
 
-- `npm test` - 577 tests (23 suites)
+- `npm test` - 862 tests (32 suites)
 - `npm run server` - WS :8765 + HTTP :3000
-- `bash C:/mcp/ecosystem-start.sh` - levanta todo
-- Nuevos endpoints: GET /health, GET /:id/activity, GET /:id/recovery-log, POST /discover
-- Nuevos MCP tools: bulk_stop_sessions, bulk_end_sessions, update_priority, discover_sessions
-- Nuevos WS handlers: bulk_stop, bulk_end, update_priority
-- Config vars nuevas: WEBHOOK_*, RECOVERY_*, SESSION_STALE_THRESHOLD_MINUTES, SESSION_MAX_ACTIVITY_LOG
+- Support agent: SUPPORT_AGENT_ENABLED=true para activar
+- 15 MCP tools, 10 HTTP endpoints, full WebSocket protocol

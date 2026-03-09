@@ -1,6 +1,6 @@
 # Claude Orchestrator - Contexto del Proyecto
 
-**Version:** 0.8.0 (pendiente bump)
+**Version:** 0.8.2
 
 ## Descripcion
 
@@ -37,6 +37,16 @@ C:/mcp/claude-orchestrator/
 │   │   ├── server.js          # HTTP REST API
 │   │   ├── routes/            # health.js, sessions.js
 │   │   └── middleware/        # rate-limiter.js, error-handler.js
+│   ├── persistence/
+│   │   └── state-persister.js # Session state persistence to disk
+│   ├── support-agent/
+│   │   ├── index.js           # SupportAgent orchestrator
+│   │   ├── config.js          # Support agent configuration
+│   │   ├── health-checker.js  # HTTP/TCP/Docker health checks
+│   │   ├── docker-monitor.js  # Docker container monitoring
+│   │   ├── remediator.js      # Auto-remediation (restart, commands)
+│   │   ├── maintenance.js     # Scheduled maintenance tasks
+│   │   └── incident-reporter.js # Incident detection & notifications
 │   ├── integrations/
 │   │   └── backlog-client.js  # Sprint backlog MCP client
 │   └── utils/                 # logger.js, metrics.js, rate-limiter.js, serialize.js, message-queue.js, clean-env.js, webhook-emitter.js, auto-recovery.js, session-discovery.js, service-registry.js
@@ -52,7 +62,7 @@ C:/mcp/claude-orchestrator/
 
 Ejecutar: `npm start` o `node src/index.js`
 
-Tools: list_sessions, create_session, send_instruction, get_session, stop_session, end_session, inject_message, bulk_stop_sessions, bulk_end_sessions, update_priority, discover_sessions
+Tools: list_sessions, create_session, send_instruction, get_session, stop_session, end_session, inject_message, bulk_stop_sessions, bulk_end_sessions, update_priority, discover_sessions, ecosystem_health, run_maintenance
 
 ### 2. WebSocket Server (para Flutter/Angular app)
 
@@ -62,7 +72,7 @@ Puerto default: 8765
 ### 3. HTTP REST API
 
 Puerto default: 3000
-Endpoints: GET /api/health, GET /api/sessions, GET /api/sessions/by-project, GET /api/sessions/:id, GET /api/sessions/health, GET /api/sessions/:id/activity, GET /api/sessions/:id/recovery-log, POST /api/sessions/discover
+Endpoints: GET /api/health, GET /api/sessions, GET /api/sessions/by-project, GET /api/sessions/:id, GET /api/sessions/health, GET /api/sessions/:id/activity, GET /api/sessions/:id/recovery-log, POST /api/sessions/discover, GET /api/ecosystem/health, GET /api/ecosystem/health/:serviceName
 
 ## Configuracion
 
@@ -77,6 +87,8 @@ Variables de entorno (ver .env.example):
 - `RECOVERY_*` - Auto-recovery configuration
 - `SESSION_STALE_THRESHOLD_MINUTES` - Stale session detection threshold
 - `SESSION_MAX_ACTIVITY_LOG` - Max activity log entries per session
+- `PERSISTENCE_ENABLED` / `PERSISTENCE_*` - Session state persistence to disk
+- `SUPPORT_AGENT_ENABLED` / `SUPPORT_AGENT_*` - Ecosystem support agent
 
 ## IMPORTANTE: Iniciar sin CLAUDECODE
 
@@ -88,12 +100,12 @@ Usar ecosystem-start.sh o iniciar desde terminal limpia.
 
 - `npm run server` - WS :8765 + HTTP :3000
 - `npm start` - MCP server (stdio)
-- `npm test` - 577 tests (23 suites)
+- `npm test` - 858 tests (32 suites)
 
 ## Estado del Proyecto
 
-**Fase:** Backlog completado. Autonomous Agent Foundation implementada.
-**Tests:** 577 pass, 23 suites
+**Fase:** EPIC-ECO-03 (Ecosystem Support Agent) completado.
+**Tests:** 858 pass, 32 suites
 
 ## Documentacion Relacionada
 

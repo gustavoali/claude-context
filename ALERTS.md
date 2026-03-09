@@ -8,6 +8,7 @@
 | 2026-03-05 | recordatorio | Iniciar preparacion certificacion AWS (IDEA-034) | Revisar roadmap y planificar primeros pasos |
 | 2026-03-05 | recordatorio | Avanzar capacitacion en Anthropic Academy | Continuar cursos pendientes |
 | 2026-03-05 | recordatorio | Avanzar capacitacion en DeepLearning.AI | Relevar cursos y comenzar |
+| 2026-03-08 | recordatorio | Watch Later MCP: 490 videos pendientes (cuota diaria agotada). Ejecutar `python scripts/continue_watch_later_import.py` desde `C:/mcp/youtube` con venv activado. Repetir hasta que diga "Import COMPLETE". | Ejecutar desde cualquier sesion (necesita ~3 dias de cuota) |
 
 ## Historial
 | Fecha | Tipo | Mensaje | Resolucion |

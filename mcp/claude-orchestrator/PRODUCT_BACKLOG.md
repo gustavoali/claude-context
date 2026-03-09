@@ -6,11 +6,11 @@
 
 | Metrica | Valor |
 |---------|-------|
-| Pendientes | 7 |
+| Pendientes | 8 |
 | Completadas | 12 |
-| Story points pendientes | 34 |
+| Story points pendientes | 39 |
 | Story points completados | 36 |
-| Epics | 3 (2 completados, 1 ready) |
+| Epics | 3 (2 completados, 1 ready) + 1 standalone |
 
 ## Vision
 
@@ -28,6 +28,7 @@ Evolucionar el orchestrator de gestor pasivo de sesiones a plataforma capaz de s
 
 | ID | Titulo | Pts | Priority | Deps | Ola |
 |----|--------|-----|----------|------|-----|
+| ECO-016 | Session State Persistence | 5 | Critical | - | 0 (pre-req) |
 | ECO-015 | Support Agent Configuration & Lifecycle | 3 | Critical | - | 1 |
 | ECO-009 | Ecosystem Health Check Engine | 5 | Critical | - | 1 |
 | ECO-010 | Docker Container Monitoring | 5 | High | ECO-009 | 2 |
@@ -41,10 +42,11 @@ Detalle de cada story en: `backlog/stories/ECO-XXX-*.md`
 ### Orden de implementacion
 
 ```
-Ola 1 (paralelo):   ECO-015 (config, 3pts) + ECO-009 (engine, 5pts)
-Ola 2 (paralelo):   ECO-010 (docker, 5pts) + ECO-012 (endpoint, 3pts)
-Ola 3 (secuencial):  ECO-011 (remediation, 8pts)
-Ola 4 (paralelo):   ECO-013 (maintenance, 5pts) + ECO-014 (notifications, 5pts)
+Ola 0 (pre-req):     ECO-016 (persistence, 5pts) - prerequisito de ECO-011
+Ola 1 (paralelo):    ECO-015 (config, 3pts) + ECO-009 (engine, 5pts)
+Ola 2 (paralelo):    ECO-010 (docker, 5pts) + ECO-012 (endpoint, 3pts)
+Ola 3 (secuencial):  ECO-011 (remediation, 8pts) - requiere ECO-016
+Ola 4 (paralelo):    ECO-013 (maintenance, 5pts) + ECO-014 (notifications, 5pts)
 ```
 
 ## Completadas (indice)
@@ -70,4 +72,5 @@ Ola 4 (paralelo):   ECO-013 (maintenance, 5pts) + ECO-014 (notifications, 5pts)
 |-------|--------|
 | ECO-001 a ECO-008 | Completados |
 | ECO-009 a ECO-015 | Pendientes (EPIC-ECO-03) |
-Proximo ID: ECO-016
+| ECO-016 | Pendiente (standalone, pre-req EPIC-ECO-03) |
+Proximo ID: ECO-017
