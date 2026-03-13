@@ -1,14 +1,22 @@
 # Estado de Tareas - Claude Orchestrator
 
-**Ultima actualizacion:** 2026-03-09 03:30
+**Ultima actualizacion:** 2026-03-10 00:20
 **Version:** 0.8.2
 
 ---
 
 ## Resumen Ejecutivo
 
-EPIC-ECO-03 (Ecosystem Support Agent) COMPLETADO. Code review aplicado.
-862 tests (32 suites). Build limpio.
+EPIC-ECO-03 completado. 862 tests (32 suites). Build limpio.
+Sesion 2026-03-10: Resuelto INC-007 (WSL2 crash loop), registrados 4 proyectos en Project Admin.
+
+## Completado Esta Sesion
+
+| Tarea | Resultado |
+|-------|-----------|
+| INC-007: WSL2 auto-suspend crash loop | Resuelto: .wslconfig con 3 settings anti-suspend + containers PG recreados con healthcheck |
+| Registro de 4 proyectos en Project Admin | mandarin-chinese, cloud-backup, narrador, agent-token-economics creados con metadata |
+| Documentacion cross-project | L-012, L-013 en CROSS_PROJECT_LEARNINGS. AGENT_DEVOPS.md actualizado. |
 
 ## EPIC-ECO-03 - Completado
 
@@ -27,7 +35,7 @@ EPIC-ECO-03 (Ecosystem Support Agent) COMPLETADO. Code review aplicado.
 1. Test E2E desde browser (pendiente desde ECO-001)
 2. Investigar warning: worker process force exited en tests
 3. Definir siguiente epic
-4. Merge master -> main (master tiene 6 commits ahead)
+4. Verificar manana que containers PG mantienen uptime alto post-fix INC-007
 
 ## Notas para Retomar
 
@@ -35,3 +43,4 @@ EPIC-ECO-03 (Ecosystem Support Agent) COMPLETADO. Code review aplicado.
 - `npm run server` - WS :8765 + HTTP :3000
 - Support agent: SUPPORT_AGENT_ENABLED=true para activar
 - 15 MCP tools, 10 HTTP endpoints, full WebSocket protocol
+- sprint-backlog-pg: puerto real es 5435 (no 5432)

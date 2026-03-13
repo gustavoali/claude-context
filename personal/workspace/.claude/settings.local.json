@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__youtube-transcript__get_transcript",
+      "WebFetch(domain:www.youtube.com)",
+      "mcp__youtube__youtube_get_transcript",
+      "mcp__youtube__youtube_ingest_video",
+      "mcp__youtube__youtube_get_digest",
+      "mcp__project-admin__pa_create_project",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:online.stevens.edu)",
+      "mcp__project-admin__pa_list_projects",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_close",
+      "mcp__playwright-headless__browser_navigate",
+      "mcp__playwright-headless__browser_close",
+      "mcp__playwright-headless__browser_run_code"
+    ]
+  }
+}

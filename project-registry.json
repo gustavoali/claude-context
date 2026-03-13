@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-02-25"
+    "updated": "2026-03-10"
   },
   "projects": {
     "anthropic-academy": {
@@ -29,9 +29,9 @@
     "atlas": {
       "name": "AtlasOps",
       "short": "ao",
-      "path": "C:/agents/atlasOps",
-      "context": "C:/claude_context/agents/atlasOps",
-      "category": "agents"
+      "path": "C:/agentes/atlasOps",
+      "context": "C:/claude_context/agentes/atlasOps",
+      "category": "agentes"
     },
     "chemical": {
       "name": "Chemical",
@@ -44,8 +44,8 @@
       "name": "Claude Personal",
       "short": "cp",
       "path": "C:/agentes/claude-personal",
-      "context": "C:/claude_context/agents/claude-personal",
-      "category": "agents"
+      "context": "C:/claude_context/agentes/claude-personal",
+      "category": "agentes"
     },
     "orchestrator": {
       "name": "Claude Orchestrator",
@@ -225,9 +225,9 @@
     "atlas-agent": {
       "name": "Atlas Agent",
       "short": "al",
-      "path": "C:/agents/atlas-agent",
-      "context": "C:/claude_context/agents/atlas-agent",
-      "category": "agents"
+      "path": "C:/agentes/atlas-agent",
+      "context": "C:/claude_context/agentes/atlas-agent",
+      "category": "agentes"
     },
     "anyoneai-sprint1": {
       "name": "AnyoneAI Sprint 1",
@@ -305,6 +305,27 @@
       "path": "C:/agentes/narrador",
       "context": "C:/claude_context/agentes/narrador",
       "category": "agentes"
+    },
+    "agent-token-economics": {
+      "name": "Agent Token Economics",
+      "short": "ate",
+      "path": "C:/investigacion/agent-token-economics",
+      "context": "C:/claude_context/investigacion/agent-token-economics",
+      "category": "investigacion"
+    },
+    "skills-development": {
+      "name": "Skills Development",
+      "short": "sd",
+      "path": "C:/personal/skills-development",
+      "context": "C:/claude_context/personal/skills-development",
+      "category": "personal"
+    },
+    "llm-landscape": {
+      "name": "LLM Landscape",
+      "short": "ll",
+      "path": "C:/investigacion/llm-landscape",
+      "context": "C:/claude_context/investigacion/llm-landscape",
+      "category": "investigacion"
     }
   }
 }

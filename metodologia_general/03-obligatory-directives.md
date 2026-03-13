@@ -284,6 +284,36 @@ docker run -d \
 
 ---
 
+## 11b. Registro de MCP Servers en Claude Code
+
+**Al registrar un MCP server en Claude Code, usar SIEMPRE `~/.claude.json`, NUNCA `~/.claude/settings.json`.**
+
+| Archivo | Proposito | MCP servers? |
+|---------|-----------|--------------|
+| `~/.claude.json` | Config principal de Claude Code (MCP, preferencias) | SI - unica ubicacion valida |
+| `~/.claude/settings.json` | Permisos, hooks, config general | NO - se ignoran silenciosamente |
+| `.mcp.json` (raiz del proyecto) | MCP servers de scope proyecto | SI - alternativa por proyecto |
+
+**Formato correcto en `~/.claude.json`:**
+```json
+{
+  "mcpServers": {
+    "nombre-server": {
+      "type": "stdio",
+      "command": "path/al/interprete",
+      "args": ["-m", "modulo.server"],
+      "env": {}
+    }
+  }
+}
+```
+
+**Metodo recomendado:** `claude mcp add --transport stdio --scope user nombre-server -- comando args`
+
+**Sintoma de config incorrecta:** El server arranca bien al probarlo manualmente (`python -m server`), responde al protocolo MCP, pero NO aparece como tool disponible en Claude Code. Si esto ocurre, verificar PRIMERO la ubicacion del registro.
+
+---
+
 ## 12. Proteccion de Contexto ante Interrupciones Abruptas de Sesion
 
 **Principio:** Las sesiones pueden interrumpirse en cualquier momento (limite de contexto, error, cierre accidental). Todo conocimiento valioso que exista solo en la conversacion se pierde irrecuperablemente. Claude DEBE escribir a archivos persistentes cualquier informacion que no pueda permitirse perder.
@@ -583,8 +613,39 @@ Si el hook emite warnings, Claude DEBE comunicarlos al usuario antes de continua
 1. **Claude SIEMPRE revisa ALERTS.md al inicio de sesion**, sin importar el proyecto
 2. **Alertas activas se comunican al usuario** en los primeros minutos de la sesion
 3. **Alertas resueltas se mueven a Historial** con fecha y resolucion
-4. **No acumular >10 alertas activas** - si se excede, priorizar y archivar las menos urgentes
+4. **Cada alerta se muestra max 5 veces por dia** - despues de mostrarse en 5 sesiones del mismo dia, dejar de mostrarla hasta el dia siguiente. Sigue activa, solo se omite del cuadro automatico. Si el usuario la pide, mostrarla siempre.
 5. **El hook automatiza la deteccion**, pero Claude puede agregar alertas manualmente cuando detecta situaciones relevantes
+
+---
+
+## 15. Registro Integral de Proyectos
+
+**Todo proyecto nuevo o actualizado debe estar registrado en AMBOS sistemas. Un proyecto no esta completo si falta alguno.**
+
+### Sistemas de registro
+
+| Sistema | Archivo/Herramienta | Proposito |
+|---------|---------------------|-----------|
+| **project-registry.json** | `C:/claude_context/project-registry.json` | Comando PowerShell `proyecto`/`pj` para navegacion |
+| **Project Admin DB** | MCP tools `pa_create_project`, `pa_set_metadata` | Inventario del ecosistema, health checks, relaciones |
+
+### Al crear un proyecto (via `/sembrar` o manual)
+
+1. Registrar en `project-registry.json`: slug, name, short, path, context, category
+2. Registrar en Project Admin: `pa_create_project` + `pa_set_metadata` (short, context_path)
+3. Verificar que el short code no colisione en ninguno de los dos sistemas
+
+### Al actualizar un proyecto
+
+Si cambian name, path, category o short, actualizar AMBOS registros.
+
+### Si un sistema no esta disponible
+
+Registrar en el que funcione y crear alerta en `ALERTS.md` para completar el registro faltante.
+
+### Automatizacion futura
+
+PA-027 implementara sync automatico desde Project Admin DB hacia project-registry.json, eliminando la necesidad de doble registro manual.
 
 ---
 
@@ -602,6 +663,7 @@ Si el hook emite warnings, Claude DEBE comunicarlos al usuario antes de continua
 9. Code review riguroso pre-PR
 10. Settings centralizados en claude_context
 11. Bases de datos en Docker, siempre
+11b. MCP servers en ~/.claude.json, NUNCA en settings.json
 12. Proteccion de contexto ante interrupciones abruptas de sesion
     12a. Registro en tiempo real de pruebas manuales
     12b. Documentar sugerencias y decisiones inmediatamente
@@ -609,8 +671,9 @@ Si el hook emite warnings, Claude DEBE comunicarlos al usuario antes de continua
     12d. Observacion continua de resiliencia de contexto
 13. Permisos amplios por defecto en cada proyecto nuevo
 14. Alertas cross-project (hooks, incidentes, recordatorios, CE)
+15. Registro integral de proyectos (project-registry.json + Project Admin DB)
 ```
 
 ---
 
-**Version:** 3.5 | **Ultima actualizacion:** 2026-03-05
+**Version:** 3.7 | **Ultima actualizacion:** 2026-03-12

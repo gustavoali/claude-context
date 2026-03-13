@@ -34,7 +34,7 @@
 
 ### 2026-03-08 - YouTube Data API v3 quota costs for batch playlist operations
 **Context:** Needed to add 744 videos to new playlists. Each `playlistItems.insert` costs 50 quota units, and the daily limit is 10,000 units, meaning only ~180 video inserts per day are possible.
-**Learning:** YouTube Data API v3 has a daily quota of 10,000 units per project. Read operations (`list`) cost 1 unit, but write operations (`insert`, `create`) cost 50 units each. For batch operations involving hundreds of playlist inserts, plan for multi-day execution (~180 inserts/day max). Quota resets at midnight Pacific Time. Consider fetching all data first (cheap reads), then batching writes across days.
+**Learning:** YouTube Data API v3 has a daily quota of 10,000 units per project. Read operations (`list`) cost 1 unit, but write operations (`insert`, `create`) cost 50 units each. `playlistItems.delete` also costs 50 units. For batch operations involving hundreds of playlist inserts, plan for multi-day execution (~180 inserts/day max). Quota resets at midnight Pacific Time (follows DST: PDT in summer, PST in winter). In Argentina (ART, UTC-3 fijo): reset a ~04:00 ART durante PDT, ~05:00 ART durante PST. **Nota:** durante el cambio DST (segundo domingo de Marzo en USA) puede haber desfase. Considerar also que delete operations (mover videos = delete + insert) consumen cuota doble. Consider fetching all data first (cheap reads), then batching writes across days. Monitor via Google Cloud Console > IAM & Admin > Quotas.
 **Applies to:** Any project doing bulk YouTube Data API v3 write operations (playlist management, video uploads, etc.)
 
 ### 2026-03-08 - Google Takeout playlist files have `-videos` suffix in filenames

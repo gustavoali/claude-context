@@ -1,36 +1,29 @@
 # Estado - YouTube Content Intelligence MCP
-**Actualizacion:** 2026-03-08 | **Version:** 0.2.0
+**Actualizacion:** 2026-03-09 | **Version:** 0.2.0
 
 ## Resumen
-Modulo de playlists implementado y funcional. OAuth2 configurado. Reorganizacion de playlists completada. Modulo library implementado (sesion anterior). Google Takeout pendiente.
+Proyecto estable. Modulos library, playlists e ingestion operativos. Recetas (744 videos) ingestadas. Watch Later pendiente por cuota API.
 
 ## Completado Esta Sesion
 | ID | Descripcion | Resultado |
 |----|-------------|-----------|
-| - | Playlist MCP tools (10 tools) | Commit c9d221f |
-| - | OAuth2 configuracion E2E | Funcional, 58 playlists listadas |
-| - | GitHub repos creados | youtube-mcp + claude-context (privados) |
-| - | Takeout import script | takeout_import.py implementado |
-| - | Clasificar Recetas (744 videos) | 51 carne -> "recetas-comunes", 693 quedan en "Recetas" |
-| - | Extraer TNH de Pendientes | 27 videos -> playlist "Thich Nhat Hanh" |
-| - | Extraer mindfulness de Pendientes | 12 videos -> playlist "Mindfulness" |
 
-## Pendiente
-1. Watch Later MCP: 490 videos restantes por agregar (cuota agotada hoy). Datos en `C:/tmp/watch_later_remaining.json`, playlist ID: `PLGPeY3Rcx7vB3_fAHb9EcopZ1h2Vu0Dna`
-2. Fix: video `et3lsC88iRc` fallo con "Precondition check failed" (probablemente privado/eliminado)
-3. Pendientes playlist 1 (~147 videos) - revisar contenido restante
-4. Pendientes playlist 2 (~62 videos) - revisar contenido restante
-5. Actualizar Docker/README con modulo playlists
-6. Verificar tests pasan con todas las dependencias actuales
+## Proximos Pasos
+1. Watch Later import: 490 videos en `C:/tmp/watch_later_remaining.json`, playlist `PLGPeY3Rcx7vB3_fAHb9EcopZ1h2Vu0Dna` (esperar reset cuota API)
+2. Ingestar otras playlists del Takeout (56 playlists disponibles)
+3. Tests para modulo ingestion (no hay test suite aun)
+4. Pendientes playlist 1 (~147 videos) y 2 (~62 videos) - revisar contenido
+5. Actualizar Docker/README con modulos playlists + ingestion
+6. Configurar cookies YouTube para evitar IP ban (ver alerta)
+7. Verificar Whisper fallback operativo en sesion actual
+
+## Datos de Referencia
+- Takeout ZIP: `C:\Users\gdali\Downloads\takeout-20260308T183203Z-3-001.zip` (56 playlists)
+- youtube.db: 744 videos, 21 transcripts, 37.2h contenido, 349 canales, 16 idiomas
+- Video privado error: `oD8xbhjIVBc`
+- Fix MCP Server (sesion anterior): logs structlog a stderr, run_stdio_async() corregido
 
 ## Playlists Creadas (YouTube IDs)
 - recetas-comunes: [creada, 51 videos]
 - Thich Nhat Hanh: PLGPeY3Rcx7vAO7ybMQFfuACVSO0lIoL4d (27 videos)
 - Mindfulness: PLGPeY3Rcx7vDW3ENCWGJ1gdJ34IOsWMwH (12 videos)
-
-## Fix MCP Server (2026-03-09, sesion workspace #6)
-- Bug: logs structlog iban a stdout, corrompiendo protocolo JSON-RPC stdio
-- Bug: `FastMCP.run_async()` no existe, corregido a `run_stdio_async()`
-- Archivos modificados: `observability/logging.py`, `mcp/server.py`, `server.py`
-- Estado: verificado, STDOUT limpio, server arranca OK. Falta reiniciar Claude Code para confirmar carga.
-

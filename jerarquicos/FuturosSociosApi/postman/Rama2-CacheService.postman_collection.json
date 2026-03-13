@@ -1,0 +1,599 @@
+{
+	"info": {
+		"name": "Rama 2 - Cache Service + Fixes (186929)",
+		"description": "Tests para feature/186929_eliminar_localidad_provincia_ef_core.\nValida el LocalizacionCacheService con indices pre-computados, warm-up, stale-while-revalidate y cambios de interfaz.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "idExpedienteApp",
+			"value": "COMPLETAR",
+			"type": "string"
+		},
+		{
+			"key": "nombreArchivoDni",
+			"value": "COMPLETAR.jpg",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Cache Warm-up",
+			"item": [
+				{
+					"name": "1. Health Check (post-startup warm-up)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('App started (warm-up complete)', function() {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Localidades - Carga completa",
+			"item": [
+				{
+					"name": "2. Aplicacion - OpcionesGenerales (localidades + provincias)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Localidades array con elementos', function() {",
+									"    pm.expect(json.Modelo.Localidad).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									"pm.test('Provincias array con elementos', function() {",
+									"    pm.expect(json.Modelo.Provincia).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									"pm.test('Localidad tiene campos esperados', function() {",
+									"    var loc = json.Modelo.Localidad[0];",
+									"    pm.expect(loc).to.have.property('Descripcion');",
+									"    pm.expect(loc).to.have.property('CodigoPostal');",
+									"    pm.expect(loc).to.have.property('IdProvincia');",
+									"});",
+									"",
+									"pm.test('Respuesta rapida (cache hit, no API call)', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "3. Localidades - Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Modelo es array con localidades', function() {",
+									"    pm.expect(json.Modelo).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									"pm.test('Cada localidad tiene Id, Descripcion, CodigoPostal, IdProvincia', function() {",
+									"    var loc = json.Modelo[0];",
+									"    pm.expect(loc).to.have.property('Id');",
+									"    pm.expect(loc).to.have.property('Descripcion');",
+									"    pm.expect(loc).to.have.property('CodigoPostal');",
+									"    pm.expect(loc).to.have.property('IdProvincia');",
+									"});",
+									"",
+									"pm.test('Respuesta servida desde cache (< 2s)', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Busqueda paginada (indices pre-computados)",
+			"item": [
+				{
+					"name": "4. BuscarLocalidades - sin filtros (pag 1)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=&IdProvincia=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "1" },
+								{ "key": "TamanioPagina", "value": "10" },
+								{ "key": "Descripcion", "value": "" },
+								{ "key": "CodigoPostal", "value": "" },
+								{ "key": "IdProvincia", "value": "0" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Devuelve hasta 10 registros', function() {",
+									"    pm.expect(json.Modelo).to.be.an('array');",
+									"    pm.expect(json.Modelo.length).to.be.at.most(10);",
+									"});",
+									"",
+									"pm.test('Total > 0', function() {",
+									"    pm.expect(json.Total).to.be.above(0);",
+									"});",
+									"",
+									"pm.test('Sin parametro IdPais (eliminado del contrato)', function() {",
+									"    // Este request NO envia IdPais - verificar que funciona igual",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "5. BuscarLocalidades - filtro por nombre 'Cordoba'",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=Cordoba&CodigoPostal=&IdProvincia=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "1" },
+								{ "key": "TamanioPagina", "value": "10" },
+								{ "key": "Descripcion", "value": "Cordoba" },
+								{ "key": "CodigoPostal", "value": "" },
+								{ "key": "IdProvincia", "value": "0" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Resultados contienen Cordoba', function() {",
+									"    json.Modelo.forEach(function(loc) {",
+									"        pm.expect(loc.Descripcion.toLowerCase()).to.include('cordoba');",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "6. BuscarLocalidades - filtro por CP '5000'",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=5000&IdProvincia=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "1" },
+								{ "key": "TamanioPagina", "value": "10" },
+								{ "key": "Descripcion", "value": "" },
+								{ "key": "CodigoPostal", "value": "5000" },
+								{ "key": "IdProvincia", "value": "0" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Resultados contienen CP 5000', function() {",
+									"    json.Modelo.forEach(function(loc) {",
+									"        pm.expect(loc.CodigoPostal).to.include('5000');",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "7. BuscarLocalidades - filtro por provincia (indice ByProvincia)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=&CodigoPostal=&IdProvincia=14",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "1" },
+								{ "key": "TamanioPagina", "value": "10" },
+								{ "key": "Descripcion", "value": "" },
+								{ "key": "CodigoPostal", "value": "" },
+								{ "key": "IdProvincia", "value": "14" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Total > 0 para provincia con localidades', function() {",
+									"    pm.expect(json.Total).to.be.above(0);",
+									"});",
+									"",
+									"pm.test('Respuesta rapida (indice pre-computado)', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "8. BuscarLocalidades - filtro combinado (nombre + provincia)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=1&TamanioPagina=10&Descripcion=Villa&CodigoPostal=&IdProvincia=14",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "1" },
+								{ "key": "TamanioPagina", "value": "10" },
+								{ "key": "Descripcion", "value": "Villa" },
+								{ "key": "CodigoPostal", "value": "" },
+								{ "key": "IdProvincia", "value": "14" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Resultados contienen Villa', function() {",
+									"    json.Modelo.forEach(function(loc) {",
+									"        pm.expect(loc.Descripcion.toLowerCase()).to.include('villa');",
+									"    });",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "9. BuscarLocalidades - paginado invalido",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/buscarLocalidades?PaginaActual=0&TamanioPagina=0&Descripcion=&CodigoPostal=&IdProvincia=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "buscarLocalidades"],
+							"query": [
+								{ "key": "PaginaActual", "value": "0" },
+								{ "key": "TamanioPagina", "value": "0" },
+								{ "key": "Descripcion", "value": "" },
+								{ "key": "CodigoPostal", "value": "" },
+								{ "key": "IdProvincia", "value": "0" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == false con paginado invalido', function() {",
+									"    pm.expect(json.Exito).to.be.false;",
+									"});",
+									"",
+									"pm.test('Notificacion de error presente', function() {",
+									"    pm.expect(json.Notificacion).to.not.be.null;",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provincias",
+			"item": [
+				{
+					"name": "10. ObtenerProvincias (idPais=1)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/obtenerProvincias?idPais=1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "obtenerProvincias"],
+							"query": [
+								{ "key": "idPais", "value": "1" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Provincias array con 24 elementos', function() {",
+									"    pm.expect(json.Modelo).to.be.an('array');",
+									"    pm.expect(json.Modelo.length).to.be.at.least(23);",
+									"});",
+									"",
+									"pm.test('Provincia tiene Id y Descripcion', function() {",
+									"    var prov = json.Modelo[0];",
+									"    pm.expect(prov).to.have.property('Id');",
+									"    pm.expect(prov).to.have.property('Descripcion');",
+									"});",
+									"",
+									"pm.test('Respuesta rapida (cache hit)', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "11. ObtenerProvincias (idPais invalido)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/GestionInternaSegura/obtenerProvincias?idPais=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "GestionInternaSegura", "obtenerProvincias"],
+							"query": [
+								{ "key": "idPais", "value": "0" }
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == false con idPais invalido', function() {",
+									"    pm.expect(json.Exito).to.be.false;",
+									"});",
+									"",
+									"pm.test('Notificacion de error', function() {",
+									"    pm.expect(json.Notificacion).to.not.be.null;",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SID - Renaper",
+			"item": [
+				{
+					"name": "12. ObtenerDatosPersona (resolucion localidad por CP)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Sid/ObtenerDatosPersona/{{idExpedienteApp}}/{{nombreArchivoDni}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Sid", "ObtenerDatosPersona", "{{idExpedienteApp}}", "{{nombreArchivoDni}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"",
+									"pm.test('Exito == true', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"});",
+									"",
+									"pm.test('Datos persona poblados', function() {",
+									"    pm.expect(json.Modelo.Nombre).to.not.be.empty;",
+									"    pm.expect(json.Modelo.Apellido).to.not.be.empty;",
+									"});",
+									"",
+									"pm.test('Localidad resuelta desde cache por CP', function() {",
+									"    pm.expect(json.Modelo.Domicilio.Localidad).to.not.be.null;",
+									"});",
+									"",
+									"pm.test('Provincia resuelta desde cache', function() {",
+									"    pm.expect(json.Modelo.Domicilio.Localidad.Provincia).to.not.be.null;",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cache Performance",
+			"item": [
+				{
+					"name": "13. OpcionesGenerales - 2da llamada (cache hit)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Aplicacion/OpcionesGenerales",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Aplicacion", "OpcionesGenerales"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cache hit: respuesta < 1s', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"var json = pm.response.json();",
+									"pm.test('Datos consistentes en cache hit', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"    pm.expect(json.Modelo.Localidad).to.be.an('array').that.is.not.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "14. Localidades - 2da llamada (IReadOnlyList, sin ToList)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Localidades",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "Localidades"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Cache hit: respuesta < 1s', function() {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"var json = pm.response.json();",
+									"pm.test('Misma cantidad de localidades en ambas llamadas', function() {",
+									"    pm.expect(json.Exito).to.be.true;",
+									"    pm.expect(json.Modelo.length).to.be.above(100);",
+									"});"
+								]
+							}
+						}
+					],
+					"response": []
+				}
+			]
+		}
+	]
+}

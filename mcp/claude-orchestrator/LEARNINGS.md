@@ -15,6 +15,16 @@
 **Learning:** Express evaluates routes in registration order. A `POST /discover` registered after `GET /:id` would match the `:id` parameter with value "discover" on GET requests (not POST, but confusing for debugging). More critically, if both are the same HTTP method, the parameterized route would shadow the named one. Always register specific named routes before parameterized catch-all routes like `/:id`.
 **Applies to:** Express routers with mixed named and parameterized routes
 
+### 2026-03-09 - Windows: `taskkill /PID` fails in Git Bash due to path expansion
+**Context:** Trying to kill a Windows process from Git Bash using `taskkill /PID 28324 /F`
+**Learning:** In Git Bash (MINGW64), forward-slash arguments like `/PID` get interpreted as Unix paths and expanded (e.g., `/PID` becomes `C:/Program Files/Git/PID`). Use double-slash `//PID` to escape this behavior: `taskkill //PID 28324 //F`. This applies to all Windows commands with `/flag` syntax when run from Git Bash.
+**Applies to:** Any Windows CLI commands (taskkill, net, sc, etc.) run from Git Bash/MINGW64
+
+### 2026-03-09 - Docker `--format` with Go templates fails on Windows shells
+**Context:** Docker health checker using `docker ps --filter name=X --format {{json .}}` failed on Windows with "docker ps accepts no arguments"
+**Learning:** Docker's Go template syntax `{{json .}}` uses double braces that get interpreted/consumed by Windows shells (cmd, PowerShell, and Git Bash all handle them differently). The fix must properly quote/escape the format string. Using `docker inspect` (which returns JSON by default) is a more portable alternative that avoids template syntax entirely. This affects any Docker CLI command using `--format` with Go templates.
+**Applies to:** Any project using Docker CLI commands with `--format` on Windows (health checkers, monitoring, CI scripts)
+
 ### 2026-03-08 - WSL2 Docker: Port forwarding may silently fail; use `docker exec` as workaround
 **Context:** Debugging PostgreSQL connectivity - container running, port mapping correct (`0.0.0.0:5434->5432`), `pg_isready` OK inside container, but `ECONNREFUSED` from Windows on `127.0.0.1:5434`
 **Learning:** WSL2 Docker port forwarding can silently stop working even when containers are running with correct port mappings. Diagnosis chain: (1) check container status via `wsl docker inspect`, (2) check port mapping via `wsl docker port`, (3) verify DB health inside container via `docker exec pg_isready`, (4) check Windows port via `netstat`. If ports aren't forwarded, use `docker exec` to interact with the DB directly as a workaround. Fix: restart WSL (`wsl --shutdown`) or check Hyper-V firewall rules.

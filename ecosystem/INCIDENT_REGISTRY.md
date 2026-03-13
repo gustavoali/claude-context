@@ -34,6 +34,18 @@ Cualquier agente/sesion que detecte un incidente del ecosistema debe agregar una
 
 ## Historial de Incidentes
 
+### INC-007: WSL2 auto-suspend causa crash loops en todos los Docker containers
+- **Fecha:** 2026-03-09 (recurrente, en curso desde semanas)
+- **Proyecto:** ecosistema completo (todos los containers Docker)
+- **Componente:** Docker
+- **Severidad:** critico
+- **Sintoma:** Todos los containers muestran "Up X seconds" simultaneamente. PostgreSQL logs: 150+ "not properly shut down" en project-admin-pg, 152 en sprint-backlog-pg. Ciclo exacto de ~70 segundos entre kills. 55 restarts el 9 de marzo.
+- **Causa raiz:** WSL2 se auto-suspende cuando la maquina esta idle. Tres mecanismos contribuyen: (1) vmIdleTimeout default 60s apaga la VM, (2) instanceIdleTimeout apaga instancias WSL individuales, (3) autoMemoryReclaim=gradual reclama paginas de memoria de servicios activos causando crashes silenciosos.
+- **Resolucion:** Configuracion triple en `C:/Users/gdali/.wslconfig`: `vmIdleTimeout=-1` + `autoMemoryReclaim=disabled` + `instanceIdleTimeout=-1` (bajo seccion [general]). Containers PG recreados con Docker healthcheck (`pg_isready`). Verificado: containers sobreviven 5+ min sin restart (antes no pasaban 70s).
+- **Tiempo deteccion:** manual - detectado al investigar logs de PG
+- **Tiempo resolucion:** ~25 min
+- **Recurrente:** si - relacionado con INC-001 (mismo root cause: WSL suspend). Este fix deberia resolver ambos.
+
 ### INC-001: WSL2 port forwarding silenciosamente deja de funcionar
 - **Fecha:** 2026-03-08 (recurrente, multiples ocurrencias previas)
 - **Proyecto:** claude-orchestrator (detectado), afecta todo el ecosistema
@@ -117,11 +129,12 @@ Cualquier agente/sesion que detecte un incidente del ecosistema debe agregar una
 | Hook | 1 | 1 | 0 |
 | Servicio | 2 | 2 | 0 |
 | DB | 1 | 1 | 0 |
+| Docker | 1 | 1 | 1 (INC-007, mismo root cause que INC-001) |
 
 ### Por Severidad
 | Severidad | Total | Recurrentes |
 |-----------|-------|-------------|
-| Critico | 1 | 0 |
+| Critico | 2 | 1 |
 | Alto | 3 | 1 |
 | Medio | 2 | 0 |
 
@@ -129,8 +142,9 @@ Cualquier agente/sesion que detecte un incidente del ecosistema debe agregar una
 | Periodo | Incidentes | Recurrentes | Deteccion automatica |
 |---------|-----------|-------------|---------------------|
 | Pre-supervisor (hasta 2026-03-08) | 6 | 1 | 0% |
+| 2026-03-09 | 1 (INC-007) | 1 | 0% |
 
 ---
 
 ## ID Registry
-Proximo ID: INC-007
+Proximo ID: INC-008

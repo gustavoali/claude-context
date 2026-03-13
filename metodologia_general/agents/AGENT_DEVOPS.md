@@ -124,7 +124,7 @@ jobs:
 - **Docker corre via WSL**, NO via Docker Desktop
 - **El daemon Docker esta en WSL.** Si no responde, verificar que WSL esta corriendo
 - **Verificar con `docker info`** antes de operar (puede tardar en arrancar)
-- **WSL puede suspenderse.** Containers se reinician cuando WSL vuelve. Esto es normal, no un crash.
+- **WSL puede suspenderse.** Verificar que `.wslconfig` tiene `vmIdleTimeout=-1`, `autoMemoryReclaim=disabled` (seccion [wsl2]) e `instanceIdleTimeout=-1` (seccion [general]). Sin esto, containers entran en crash loop cada ~70s.
 - **Puertos:** Verificar conflictos con `netstat -an | grep LISTEN` antes de asignar
 - **Paths:** Usar paths Linux dentro de WSL (`/mnt/c/...`), paths Windows desde el host (`C:\...`)
 

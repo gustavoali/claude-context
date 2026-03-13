@@ -4,8 +4,8 @@
 ## Resumen
 | Metrica | Valor |
 |---------|-------|
-| Total stories (Fase 1+1b) | 26 |
-| Total puntos (Fase 1+1b) | 80 |
+| Total stories (Fase 1+1b+standalone) | 27 |
+| Total puntos (Fase 1+1b+standalone) | 83 |
 | Epics completados | 5 (Fase 1 + 1b) |
 | Epics totales (todas las fases) | 8 |
 
@@ -35,12 +35,18 @@ Project Admin es el backend central del ecosistema de desarrollo. Registra, cata
 | PA-026 | REST endpoints github-sync | 3 | 2026-02-15 |
 
 ## Pendientes
-Ninguna historia pendiente. Proxima fase: Fase 2 (SBM/CO Integration).
+
+### PA-027: Auto-sync project-registry.json on project changes
+**Points:** 3 | **Priority:** Medium | **MoSCoW:** Should Have
+As a developer using the PowerShell `proyecto` command, I want project-admin to auto-sync `project-registry.json` when projects change, so that new projects are immediately navigable without manual JSON editing.
+**AC:** 8 criterios (create, update, delete, metadata short/context_path, file integrity, missing file, atomic write)
+**Detalle:** `backlog/stories/PA-027-sync-project-registry-json.md`
 
 ## ID Registry
 | Rango | Estado |
 |-------|--------|
 | PA-001 a PA-022 | Done (Fase 1) |
 | PA-023 a PA-026 | Done (Fase 1b) |
-| PA-027+ | Reservado para Fase 2+ |
-Proximo ID: PA-027
+| PA-027 | Pendiente (standalone, quality-of-life) |
+| PA-028+ | Reservado para Fase 2+ |
+Proximo ID: PA-028

@@ -1,5 +1,5 @@
 # Cross-Project Learnings
-**Version:** 1.0 | **Actualizacion:** 2026-03-01
+**Version:** 1.2 | **Actualizacion:** 2026-03-12
 
 Patrones reutilizables extraidos de proyectos del ecosistema. Se carga via @import en todos los proyectos.
 
@@ -30,6 +30,14 @@ Acceptance criteria, configuracion flexible, metadata variable: usar JSONB en lu
 ### L-005: Puertos Docker - evitar conflictos
 **Fuente:** Sprint Backlog Manager | **Aplica a:** Todos con Docker
 Documentar puerto usado por cada container en CLAUDE.md del proyecto. Conflictos de puertos causan errores silenciosos o confusos.
+
+### L-012: WSL2 auto-suspend mata Docker containers silenciosamente
+**Fuente:** Claude Orchestrator (INC-007) | **Aplica a:** Todos con Docker en WSL2
+Windows 11 + WSL2 suspende la VM cuando esta idle, matando todos los containers sin shutdown graceful. Configurar en `C:/Users/<user>/.wslconfig`: `vmIdleTimeout=-1` (seccion [wsl2]), `autoMemoryReclaim=disabled` (seccion [wsl2]), `instanceIdleTimeout=-1` (seccion [general]). Las tres son necesarias (solo vmIdleTimeout no alcanza, ver WSL issue #13291).
+
+### L-013: Containers PostgreSQL siempre con healthcheck
+**Fuente:** Claude Orchestrator (INC-007) | **Aplica a:** Todos con Docker + PG
+Al crear containers PG standalone, agregar `--health-cmd "pg_isready -U postgres -d <db>" --health-interval=30s --health-timeout=5s --health-retries=3 --health-start-period=10s`. Sin healthcheck, Docker no tiene visibilidad del estado real de PG y reporta "Up" incluso durante recovery.
 
 ---
 
@@ -62,6 +70,14 @@ Firebase.initializeApp() sin config crashea toda la app. Hacer dependencias de F
 ### L-010: File change detection por modification date
 **Fuente:** Claude Monitor | **Aplica a:** Apps que leen archivos periodicamente
 Antes de leer un archivo, verificar si lastModified cambio. Evita I/O innecesario en polling.
+
+---
+
+## Claude Code / MCP
+
+### L-014: MCP servers se configuran en ~/.claude.json, NO en ~/.claude/settings.json
+**Fuente:** Narrador, YouTube MCP | **Aplica a:** Todos los proyectos MCP
+Claude Code lee MCP servers exclusivamente de `~/.claude.json` (clave `mcpServers`). El archivo `~/.claude/settings.json` es para permisos, hooks y config general; si se pone `mcpServers` ahi, se ignora silenciosamente. El server arranca correctamente al probarlo manualmente pero nunca aparece como tool disponible. Usar `claude mcp add` o editar `~/.claude.json` directamente. Formato requerido: `{"type": "stdio", "command": "...", "args": [...], "env": {}}`.
 
 ---
 

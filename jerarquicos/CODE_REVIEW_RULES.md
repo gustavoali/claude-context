@@ -1,7 +1,7 @@
 # Code Review Rules - Jerarquicos
 
-**Version:** 1.6
-**Ultima actualizacion:** 2026-03-04
+**Version:** 1.7
+**Ultima actualizacion:** 2026-03-12
 **Origen:** Observaciones de code review de Guillermo Loinaz + convenciones del equipo
 
 ---
@@ -390,6 +390,22 @@ await Task.WhenAll(localidadesTask, provinciasTask);
 var localidades = localidadesTask.Result;
 var provincias = provinciasTask.Result;
 ```
+
+---
+
+### R018: Cache services en memoria deben documentar estrategia warmup + fallback
+**Severidad:** Media
+**Aplica a:** Servicios Singleton que mantienen datos de catalogo en IMemoryCache
+
+Todo cache service en memoria para datos de catalogo debe implementar y documentar las tres capas de disponibilidad:
+1. **Cache caliente** (IMemoryCache con TTL)
+2. **Stale-while-revalidate** (servir datos stale + trigger background refresh)
+3. **Fallback a disco o fuente** (para primer arranque o recuperacion tras fallo)
+
+Ademas debe tener un `IHostedService` de warmup que precargue el cache al iniciar la app, y un `BackgroundService` de refresh periodico.
+
+**Referencia de implementacion:** `BackendServices/ApiLocalizacion/Services/LocalizacionCacheService.cs`
+**Documentacion del patron:** `C:/claude_context/jerarquicos/FuturosSociosApi/features/cache-service-localizacion.md`
 
 ---
 

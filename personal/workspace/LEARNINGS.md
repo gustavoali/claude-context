@@ -1,5 +1,5 @@
 # Learnings - Workspace Global
-**Actualizacion:** 2026-03-09
+**Actualizacion:** 2026-03-10
 
 Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto especifico.
 
@@ -30,4 +30,57 @@ Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto espec
 **Context:** `youtube-transcript-api` returned IP ban error for mandarin video. yt-dlp metadata still worked.
 **Learning:** YouTube blocks `youtube-transcript-api` by IP (residential included). Now implemented: (1) **Whisper auto-fallback** in `tools.py` — when transcript-api fails, Whisper downloads audio via yt-dlp and transcribes locally (~1:17 for 15 min video on CPU base model). (2) **Cookie support** via `YOUTUBE_COOKIE_FILE` env var pointing to Netscape-format cookies.txt. (3) `force_whisper=True` bypasses transcript-api entirely. Performance: base model on CPU processes ~12x realtime.
 **Applies to:** YouTube MCP server transcript extraction
+
+### 2026-03-09 - Claude Code JSONL session transcripts as token consumption proxy
+**Context:** Needed to understand where Claude Code token budget was being spent across projects. No direct API for token usage per project.
+**Learning:** Claude Code stores full conversation transcripts as JSONL files in `~/.claude/projects/*/`. File sizes are proportional to token consumption. Aggregate by project directory to identify top consumers: `find ~/.claude/projects -name "*.jsonl" -newer <date>` then sum sizes per project folder. Not exact tokens, but effective for relative comparison and identifying outliers.
+**Applies to:** Any Claude Code usage monitoring or cost analysis
+
+### 2026-03-09 - Claude Agent SDK continuous loop has significant idle token cost
+**Context:** Atlas agent uses Agent SDK `query()` with `maxTurns: Infinity` running a polling loop (`sleep 30` between iterations). Generated 112 sessions and 39MB of JSONL in one week.
+**Learning:** A Claude Agent SDK meta-session running a continuous loop (poll Telegram, check orchestrator, sleep 30) consumes ~50-200 tokens per iteration even when idle. At 30s intervals, that's ~2880 iterations/day = ~288K-576K tokens/day in idle overhead. The `sleep 30` bash command itself is free, but each loop iteration requires the model to process context and decide next action. Consider pausing the agent when not actively needed, or increasing the sleep interval significantly for idle periods.
+**Applies to:** Any always-on agent built with Claude Agent SDK or similar continuous-loop patterns
+
+### 2026-03-10 - Extracting media from saved HTML when sites block headless browsers
+**Context:** NYT blocked Playwright headless access (bot detection). Needed to download podcast audio and video from the article.
+**Learning:** When a site blocks headless browser access, media URLs (audio/video) embedded in saved HTML are often still directly downloadable from CDNs. Use `grep -oE 'https://[^"'"'"' ]*\.(mp3|mp4|m3u8)[^"'"'"' ]*'` on saved HTML to extract media URLs, then download with `curl -L`. CDN URLs (e.g., `nyt.simplecastaudio.com`, `vp.nyt.com`) typically don't require authentication or bot checks. This bypasses the article paywall/bot protection while still obtaining the media content.
+**Applies to:** Any web scraping or media download task where the main site blocks automated access
+
+### 2026-03-10 - Playwright MCP browser_run_code for web-to-PDF conversion
+**Context:** Needed to generate a PDF from a Mashable article loaded in Playwright headless browser.
+**Learning:** Use `mcp__playwright-headless__browser_run_code` with `page.pdf()` to generate PDFs from loaded web pages. The code pattern is: `async (page) => { await page.pdf({ path: 'output.pdf', format: 'A4', printBackground: true, margin: { top: '1cm', bottom: '1cm', left: '1cm', right: '1cm' } }); return 'PDF saved'; }`. This works well for archiving articles. Note: the PDF will include ads, cookie banners, and other page elements - consider removing them first with `page.evaluate` if needed.
+**Applies to:** Any task requiring web page archival as PDF via Claude Code with Playwright MCP
+
+### 2026-03-11 - Claude Code /usage, /cost, /stats are interactive-only commands
+**Context:** Wanted to programmatically check quota consumption from within a running session. Tried `claude usage` via Bash tool.
+**Learning:** Claude Code's built-in commands (`/usage`, `/cost`, `/stats`) are interactive-only and cannot be invoked programmatically. Running `claude usage` from Bash inside a session fails with "Claude Code cannot be launched inside another Claude Code session." There is no environment variable, status file, or internal API that exposes current quota percentage within a session. The three commands serve different purposes: `/usage` shows plan rate limits (TPM/RPM), `/cost` shows session token consumption in USD, `/stats` shows daily usage patterns and streaks. For programmatic access, the options are: (1) OpenTelemetry export (`CLAUDE_CODE_ENABLE_TELEMETRY=1`) to an external backend like Prometheus, (2) `/statusline` for live context window % in the terminal footer, or (3) JSONL file size analysis as a rough proxy.
+**Applies to:** Any attempt to build automated quota/usage monitoring within Claude Code sessions
+
+### 2026-03-11 - Claude Code OpenTelemetry for programmatic usage tracking
+**Context:** Researching how to build a custom `/cuota` skill for real-time quota visibility.
+**Learning:** Claude Code can export detailed metrics via OpenTelemetry by setting `CLAUDE_CODE_ENABLE_TELEMETRY=1` plus configuring an exporter (`OTEL_METRICS_EXPORTER=otlp|prometheus|console`). Available metrics include `claude_code.token.usage` (by type: input/output/cacheRead/cacheCreation), `claude_code.cost.usage` (USD), `claude_code.session.count`, `claude_code.lines_of_code.count`, `claude_code.active_time.total`. Events include per-prompt and per-tool-use logging. For quick debugging, use `OTEL_METRICS_EXPORTER=console` with `OTEL_METRIC_EXPORT_INTERVAL=1000` to see metrics in terminal. This is the most precise approach for tracking usage across sessions but requires an external metrics backend for aggregation.
+**Applies to:** Building usage dashboards, cost monitoring, or quota alerting for Claude Code
+
+### 2026-03-13 - Launching Claude Code in a new Windows Terminal tab via PowerShell
+**Context:** Needed a reusable script to create a new project directory, configure permissions, and open Claude Code in a new terminal tab for running `/sembrar`.
+**Learning:** Use `wt.exe new-tab` with `--startingDirectory` and a Base64-encoded PowerShell script (`-EncodedCommand`) to open a new Windows Terminal tab that automatically runs Claude Code in a specific project directory. Pattern: (1) Create dir + `.claude/settings.local.json` with broad permissions, (2) build inner script as here-string, (3) encode with `[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($script))`, (4) `Start-Process "wt.exe" -ArgumentList "new-tab --title '...' --startingDirectory '...' -- powershell.exe -NoExit -EncodedCommand $encoded"`. Tool lives at `C:\claude_context\tools\sembrar.ps1`. Usage: `powershell -File C:\claude_context\tools\sembrar.ps1 -ProjectSlug "investigacion/llm-landscape" [-SourceDoc "C:\path\to\doc.md"]`.
+**Applies to:** Any workflow requiring automated project bootstrap + Claude Code launch in a new terminal session on Windows
+
+### 2026-03-13 - Launching Claude Code from within a Claude Code session: CLAUDECODE env var must be unset
+
+**Context:** Created `sembrar-remoto.ps1` to open a new Windows Terminal tab and launch Claude Code automatically. When invoked from inside a running Claude Code session, the new process inherited the `CLAUDECODE` environment variable and failed with "Claude Code cannot be launched inside another Claude Code session."
+
+**Learning:** Claude Code sets a `CLAUDECODE` environment variable to detect nested sessions and refuse to start. When spawning a new Claude Code process from a script (e.g., via `wt.exe new-tab` + PowerShell), the child process inherits this env var from the parent. Fix: add `Remove-Item Env:CLAUDECODE -ErrorAction SilentlyContinue` before calling `claude` in the inner script. This must happen in the child process's environment, not the parent's. The tool `sembrar-remoto.ps1` at `C:\claude_context\tools\sembrar-remoto.ps1` implements this pattern for project bootstrapping.
+
+**Applies to:** Any PowerShell/batch script that needs to launch a fresh Claude Code session from within an existing one on Windows.
+
+### 2026-03-13 - Persistent Windows Terminal tab title via inline C# TitleLocker
+**Context:** The `sembrar-remoto.ps1` tool needed to lock the new terminal tab title to the project name, but `$host.UI.RawUI.WindowTitle` gets overridden by Claude Code's ANSI title updates. The `proyecto`/`pj` PowerShell function already solved this.
+**Learning:** Use an inline C# class compiled via `Add-Type` in the PowerShell profile to run a `System.Threading.Timer` that restores the title every 100ms. This survives Claude Code and any other program that writes ANSI title escape sequences. Pattern: `[TitleLocker]::Lock('title')` to lock, `[TitleLocker]::Unlock()` to release, `[TitleLocker]::ChangeTitle('new')` to update while still locked. Override the `$function:global:prompt` as a secondary safety mechanism. The class is defined once in the profile (`Microsoft.PowerShell_profile.ps1`) and available in all new terminal tabs. Any inner script spawned via `wt.exe new-tab` can call `[TitleLocker]::Lock(...)` directly.
+**Applies to:** Any PowerShell script that opens a new Windows Terminal tab and needs the tab title to remain fixed regardless of what Claude Code or other processes write to it.
+
+### 2026-03-13 - Reconstructing interrupted session context via git diff
+**Context:** Session #9 started after an abrupt interruption. TASK_STATE was stale (last updated 2026-03-09), but the git working tree had uncommitted changes from the interrupted session.
+**Learning:** When TASK_STATE is stale after an interruption, `git status` + `git diff HEAD` reliably reconstructs what work was done. Technique: (1) `git status` to identify modified/deleted/untracked files, (2) `git diff HEAD --stat` for a quantitative overview, (3) `git diff HEAD -- <file>` to understand the nature of individual changes. The set of uncommitted changes is a complete record of everything that happened since the last commit, regardless of what the conversation contained. This is a reliable recovery complement to TASK_STATE ÔÇö it shows *what changed* even when the session log is unavailable.
+**Applies to:** Any Claude Code session recovery after abrupt interruption where TASK_STATE is stale but code/file changes exist in the working tree.
 

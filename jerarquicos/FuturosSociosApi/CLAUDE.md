@@ -76,3 +76,11 @@ Al iniciar sesion en una feature, cargar su TASK_STATE.md para retomar.
 ## Docs
 @C:/claude_context/jerarquicos/FuturosSociosApi/TASK_STATE.md
 @C:/claude_context/jerarquicos/FuturosSociosApi/PRODUCT_BACKLOG.md
+
+## Convenciones Grupales Jerarquicos
+@C:/claude_context/jerarquicos/DEVELOPMENT_BEST_PRACTICES.md
+@C:/claude_context/jerarquicos/API_STANDARDS.md
+@C:/claude_context/jerarquicos/COMMIT_CONVENTION.md
+@C:/claude_context/jerarquicos/API_ERROR_CODES.md
+@C:/claude_context/jerarquicos/CODING_GUIDELINES.md
+@C:/claude_context/jerarquicos/SHARED_RULES.md

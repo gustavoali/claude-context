@@ -1,5 +1,5 @@
 # Mandarin Chinese Research - Project Context
-**Version:** 0.2.0 | **Inicio:** 2026-03-09
+**Version:** 1.0.0 | **Inicio:** 2026-03-09
 **Ubicacion:** C:/investigacion/mandarin-chinese
 **Tipo:** Investigacion / Aprendizaje personal
 
