@@ -1,6 +1,19 @@
 # Jerarquicos - Reglas Compartidas
 **Aplica a TODOS los proyectos bajo `C:/claude_context/jerarquicos/`**
-**Ultima actualizacion:** 2026-02-14
+**Ultima actualizacion:** 2026-03-13
+
+## Alertas (OBLIGATORIO en TODA sesion jerarquicos)
+
+Al iniciar cada sesion en un proyecto jerarquicos, leer `C:/claude_context/jerarquicos/ALERTS.md`
+y presentar TODAS las alertas activas en tabla completa:
+
+| Fecha | Proyecto | Tipo | Mensaje | Accion |
+|-------|----------|------|---------|--------|
+
+No omitir alertas por no estar relacionadas al proyecto actual. Mostrar el cuadro completo.
+Alertas resueltas moverlas a Historial con fecha y resolucion.
+
+@C:/claude_context/jerarquicos/ALERTS.md
 
 ## Git
 
