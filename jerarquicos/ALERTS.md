@@ -5,6 +5,10 @@
 | Fecha | Proyecto | Tipo | Mensaje | Accion |
 |-------|----------|------|---------|--------|
 
+## Deadlines
+| Proyecto | Descripcion | Deadline | Prioridad |
+|----------|-------------|----------|-----------|
+
 ## Historial
 | Fecha | Proyecto | Tipo | Mensaje | Resolucion |
 |-------|----------|------|---------|------------|
