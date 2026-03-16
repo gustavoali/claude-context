@@ -39,17 +39,17 @@ $ContextBase  = "C:\claude_context"
 # ── 1. Resolver slug desde short code o slug directo ────────────────────────
 
 function Resolve-ProjectSlug {
-    param([string]$Input)
+    param([string]$Id)
 
     # Si contiene "/" asumimos slug directo
-    if ($Input -match "/") { return $Input }
+    if ($Id -match "/") { return $Id }
 
-    # Buscar en registry por short code
+    # Buscar en registry por short code o por clave de registry
     if (Test-Path $RegistryPath) {
         $registry = Get-Content $RegistryPath -Raw | ConvertFrom-Json
         foreach ($key in $registry.projects.PSObject.Properties.Name) {
             $proj = $registry.projects.$key
-            if ($proj.short -eq $Input) {
+            if ($proj.short -eq $Id -or $key -eq $Id) {
                 # context tiene formato: C:/claude_context/clasificador/proyecto
                 # extraer el slug desde context
                 $ctx = $proj.context -replace "^C:/claude_context/", "" -replace "^C:\\claude_context\\", ""
@@ -59,10 +59,10 @@ function Resolve-ProjectSlug {
     }
 
     # Fallback: asumir slug directo
-    return $Input
+    return $Id
 }
 
-$slug        = Resolve-ProjectSlug -Input $Project
+$slug        = Resolve-ProjectSlug -Id $Project
 $contextPath = Join-Path $ContextBase ($slug -replace "/", "\")
 $projectName = Split-Path $slug -Leaf
 
@@ -217,5 +217,5 @@ $wtArgs  = "new-tab --title `"$actionLabel`: $projectName`" --startingDirectory 
 Start-Process "wt.exe" -ArgumentList $wtArgs
 
 Write-Host "[OK] Nueva terminal abierta." -ForegroundColor Green
-Write-Host "     Ve a esa ventana — Claude ejecutara la accion automaticamente." -ForegroundColor Gray
+Write-Host "     Ve a esa ventana - Claude ejecutara la accion automaticamente." -ForegroundColor Gray
 Write-Host ""
