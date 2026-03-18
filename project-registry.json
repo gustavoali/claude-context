@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-03-17"
+    "updated": "2026-03-18"
   },
   "projects": {
     "anthropic-academy": {
@@ -340,6 +340,13 @@
       "path": "C:/apps/ecosystem-hub",
       "context": "C:/claude_context/apps/ecosystem-hub",
       "category": "web"
+    },
+    "llm-router": {
+      "name": "LLM Router",
+      "short": "lr",
+      "path": "C:/investigacion/llm-router",
+      "context": "C:/claude_context/mcp/llm-router",
+      "category": "mcp"
     }
   }
 }
