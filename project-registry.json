@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-03-10"
+    "updated": "2026-03-17"
   },
   "projects": {
     "anthropic-academy": {
@@ -325,7 +325,21 @@
       "short": "ll",
       "path": "C:/investigacion/llm-landscape",
       "context": "C:/claude_context/investigacion/llm-landscape",
-      "category": "investigacion"
+      "category": "tool"
+    },
+    "ai-dev-cost-model": {
+      "name": "AI Development Cost Model",
+      "short": "aicm",
+      "path": "C:/investigacion/ai-dev-cost-model",
+      "context": "C:/claude_context/investigacion/ai-dev-cost-model",
+      "category": "tool"
+    },
+    "ecosystem-hub": {
+      "name": "Ecosystem Hub",
+      "short": "eh",
+      "path": "C:/apps/ecosystem-hub",
+      "context": "C:/claude_context/apps/ecosystem-hub",
+      "category": "web"
     }
   }
 }

@@ -1,31 +1,42 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-09 | **Sesion:** #8
+**Actualizacion:** 2026-03-17 12:00 | **Sesion:** #10
 
 ## Completado Esta Sesion
 | # | Descripcion | Resultado |
 |---|-------------|-----------|
-| 1 | Verificar YouTube MCP tools en Claude Code | OK - tools cargadas via ToolSearch |
-| 2 | Implementar Whisper fallback + cookies en YouTube MCP | Whisper auto-fallback + force_whisper + cookie support via `YOUTUBE_COOKIE_FILE` |
-| 3 | Instalar openai-whisper en YouTube MCP venv | OK: openai-whisper 20250625, torch 2.10.0, ffmpeg 7.1.1 |
-| 4 | Test E2E video mandarin con Whisper fallback | OK: 159 segments, 1065 words, ~1:17 CPU. Transcript almacenado en ingestion DB |
-| 5 | Sembrar proyecto Mandarin Chinese Research | `pj mc`, repo: github.com/gustavoali/mandarin-chinese |
-| 6 | Sembrar proyecto Cloud Backup | `pj cb`, repo: github.com/gustavoali/cloud-backup. Inventario completo de datos no-git (~400-550M) |
+| 1 | Analisis profundo de Everything Claude Code (ECC) | Inventario: 25 agents, 57 commands, 108 skills, hooks system |
+| 2 | Comparativa ECC vs ecosistema propio | 8 mejoras priorizadas en 2 olas |
+| 3 | Hook suggest-compact.ps1 | PreToolUse. Sugiere /compact a las 50 tool calls, recuerda cada 25 |
+| 4 | Hook cost-tracker.ps1 | Stop. Estima costo por sesion a ~/.claude/metrics/costs.jsonl |
+| 5 | Skill /verify | Pipeline: build, lint, typecheck, tests, security. Multi-stack |
+| 6 | Skill /plan | Planning estructurado con approval gate, 7 pasos |
+| 7 | Skill /checkpoint | Snapshots git-based: crear, comparar, listar, ultimo |
+| 8 | Hook profiling system | HOOK_PROFILE env var (minimal/standard/strict) + helper compartido |
+
+## Inventario de Cambios
+**Archivos nuevos:**
+- `~/.claude/hooks/suggest-compact.ps1`
+- `~/.claude/hooks/cost-tracker.ps1`
+- `~/.claude/hooks/lib/hook-profile.ps1`
+- `~/.claude/commands/verify.md`
+- `~/.claude/commands/plan.md`
+- `~/.claude/commands/checkpoint.md`
+
+**Archivos modificados:**
+- `~/.claude/settings.json` (2 hooks nuevos registrados: suggest-compact en PreToolUse, cost-tracker en Stop)
+- `~/.claude/hooks/suggest-compact.ps1` (profile gate agregado)
+- `~/.claude/hooks/session-health-check.ps1` (profile gate agregado)
 
 ## Proximos Pasos
-1. Reintentar migracion Watch Later (cuota YouTube API)
-2. Items reasignados a proyectos/alertas: Whisper reload (alerta), cookies export (alerta), backup.ps1 (pj cb), PA DB (alerta orchestrator)
+1. Reiniciar sesion de Claude Code para activar hooks nuevos
+2. Completar sembrado de `investigacion/ai-dev-cost-model`
+3. Reintentar migracion Watch Later (cuota YouTube API)
 
 ## Decisiones Pendientes
 (ninguna)
 
 ## Sugerencias Pendientes
-- [2026-03-09] Considerar CUDA para Whisper si transcripciones frecuentes (CPU tarda ~1:17 para 15 min de audio)
+- [2026-03-09] Considerar CUDA para Whisper si transcripciones frecuentes
 - [2026-03-09] Agregar historia al backlog YouTube MCP para exponer cookies export como tool MCP
-
-## Pre-Compaction Snapshot
-**Timestamp:** 2026-03-09 23:48
-**Trigger:** auto
-**Project:** Workspace Global
-**Note:** Auto-summary unavailable. Transcript path: C:\Users\gdali\.claude\projects\C--CLAUDE-CONTEXT-personal-workspace\409a8e9b-aabd-4529-b131-fd46b00524d0.jsonl
-**Action required:** Review conversation above and update TASK_STATE manually.
-
+- [2026-03-17] Considerar incorporar patron ECC "session save/resume" como mejora a /close-session
+- [2026-03-17] Evaluar AgentShield para proyectos con MCP servers publicos

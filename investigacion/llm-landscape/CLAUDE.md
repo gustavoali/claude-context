@@ -1,5 +1,5 @@
 # LLM Landscape - Project Context
-**Version:** 0.1.0 | **Estado:** Semilla | **Categoria:** investigacion
+**Version:** 1.0.0 | **Estado:** Primera version completa | **Categoria:** investigacion
 **Ubicacion:** `C:/investigacion/llm-landscape`
 **Context:** `C:/claude_context/investigacion/llm-landscape`
 
@@ -44,5 +44,6 @@ llm-landscape/
 
 ## Documentacion
 
-@C:/claude_context/investigacion/llm-landscape/SEED_DOCUMENT.md
 @C:/claude_context/investigacion/llm-landscape/TASK_STATE.md
+@C:/claude_context/investigacion/llm-landscape/PRODUCT_BACKLOG.md
+@C:/claude_context/investigacion/llm-landscape/ARCHITECTURE_ANALYSIS.md

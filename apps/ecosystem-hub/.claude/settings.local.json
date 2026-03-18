@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "mcp__project-admin__pa_create_project",
+      "mcp__project-admin__pa_set_metadata"
+    ]
+  }
+}

@@ -37,6 +37,8 @@ cloud-backup/
 
 ## Documentacion
 @C:/claude_context/tools/cloud-backup/SEED_DOCUMENT.md
+@C:/claude_context/tools/cloud-backup/ARCHITECTURE_ANALYSIS.md
+@C:/claude_context/tools/cloud-backup/PRODUCT_BACKLOG.md
 @C:/claude_context/tools/cloud-backup/LEARNINGS.md
 
 ## Reglas

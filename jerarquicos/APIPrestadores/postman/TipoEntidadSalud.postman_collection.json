@@ -1,0 +1,145 @@
+{
+	"info": {
+		"name": "APIPrestadores - TipoEntidadSalud",
+		"description": "Colección para probar el endpoint GET /api/v1/tipos-entidad-salud",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8311",
+			"type": "string"
+		},
+		{
+			"key": "apiVersion",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Find - Sin filtros (todos)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"]
+				},
+				"description": "Devuelve todos los tipos de entidad de salud sin aplicar filtros."
+			},
+			"response": []
+		},
+		{
+			"name": "Find - Por Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud?id=1",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"],
+					"query": [
+						{
+							"key": "id",
+							"value": "1",
+							"description": "Identificador del tipo de entidad de salud"
+						}
+					]
+				},
+				"description": "Devuelve el tipo de entidad de salud con el identificador especificado."
+			},
+			"response": []
+		},
+		{
+			"name": "Find - Por nombre (parcial)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud?nombre=hospital",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "hospital",
+							"description": "Filtro por coincidencia parcial de nombre"
+						}
+					]
+				},
+				"description": "Filtra tipos de entidad de salud cuyo nombre contenga el texto indicado."
+			},
+			"response": []
+		},
+		{
+			"name": "Find - Orden descendente",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud?orderByDesc=true",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"],
+					"query": [
+						{
+							"key": "orderByDesc",
+							"value": "true",
+							"description": "Ordena resultados por nombre de forma descendente"
+						}
+					]
+				},
+				"description": "Devuelve todos los tipos ordenados por nombre de forma descendente."
+			},
+			"response": []
+		},
+		{
+			"name": "Find - Filtros combinados",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud?nombre=cl&orderByDesc=false",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"],
+					"query": [
+						{
+							"key": "nombre",
+							"value": "cl",
+							"description": "Filtro parcial de nombre"
+						},
+						{
+							"key": "orderByDesc",
+							"value": "false",
+							"description": "Orden ascendente (default)"
+						}
+					]
+				},
+				"description": "Combina filtro por nombre con orden especifico."
+			},
+			"response": []
+		},
+		{
+			"name": "Find - Id inexistente",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v{{apiVersion}}/tipos-entidad-salud?id=99999",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "v{{apiVersion}}", "tipos-entidad-salud"],
+					"query": [
+						{
+							"key": "id",
+							"value": "99999",
+							"description": "Id que no existe - debe devolver lista vacia"
+						}
+					]
+				},
+				"description": "Verifica que un id inexistente devuelve lista vacia (no error)."
+			},
+			"response": []
+		}
+	]
+}

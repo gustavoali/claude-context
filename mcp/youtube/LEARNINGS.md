@@ -52,3 +52,20 @@
 **Learning:** SQLite does not support `IF NOT EXISTS` for `ALTER TABLE ADD COLUMN`. The idiomatic pattern is to wrap each `ALTER TABLE` statement in its own `try/except sqlite3.OperationalError: pass` block. This makes the migration idempotent - it succeeds on first run and silently skips on subsequent runs. Execute each statement individually (not as a batch via `executescript`) so that one existing column doesn't prevent the others from being added. Commit after all migrations complete.
 **Applies to:** Any Python project using SQLite that needs to evolve schemas without a dedicated migration framework (Alembic, etc.)
 
+
+
+### 2026-03-18 - yt-dlp --cookies-from-browser fails on Windows with Chrome v127+ App-Bound Encryption
+**Context:** Trying to extract YouTube cookies from Chrome using `yt-dlp --cookies-from-browser chrome` to configure authenticated requests. Chrome was closed first to unlock the cookie DB.
+**Learning:** Chrome v127+ on Windows uses App-Bound Encryption (DPAPI) for cookies, which prevents `yt-dlp --cookies-from-browser chrome` (and `edge`) from decrypting them. Even with the latest yt-dlp (2026.3.17), the error persists: `ERROR: Failed to decrypt with DPAPI`. Edge has the same issue plus a DB copy lock problem. The reliable workaround is to manually export cookies using a browser extension like "Get cookies.txt LOCALLY" and save the Netscape-format `cookies.txt` file. See yt-dlp issue #10927.
+**Applies to:** Any project using yt-dlp cookie extraction on Windows with Chromium-based browsers (Chrome, Edge)
+
+### 2026-03-18 - Windows tasklist.exe /FI flag broken in Git Bash
+**Context:** Running `tasklist /FI "IMAGENAME eq chrome.exe"` in Git Bash to check Chrome processes.
+**Learning:** The `tasklist.exe` `/FI` filter flag gets mangled by Git Bash's path conversion - `/FI` is interpreted as a path and converted to `C:/Program Files/Git/FI`. Use `tasklist.exe | grep -i chrome` as a workaround instead of native tasklist filters. Similarly, `taskkill.exe` flags need `//F //IM` (double slash) instead of `/F /IM` in Git Bash to prevent path conversion.
+**Applies to:** Any Windows CLI tool with slash-prefixed flags run from Git Bash (affects tasklist, taskkill, and similar Windows utilities)
+
+### 2026-03-18 - Playwright MCP browser is isolated from user's real Chrome
+**Context:** Attempted to install the "Get cookies.txt LOCALLY" Chrome extension via Playwright MCP tools (browser_navigate, browser_click) to help user export YouTube cookies. The extension installed successfully in Playwright's browser instance.
+**Learning:** Playwright MCP opens its own isolated Chromium browser instance, completely separate from the user's real Chrome. Extensions installed via Playwright's Chrome Web Store interaction only install in Playwright's browser, not the user's actual Chrome. This means you cannot use Playwright to install extensions, export cookies, or interact with the user's logged-in browser sessions. For tasks requiring the user's real browser (cookie export, extension installation, accessing logged-in sessions), provide manual step-by-step instructions instead.
+**Applies to:** Any workflow using Playwright MCP tools that requires interaction with the user's actual browser state (cookies, extensions, logged-in sessions)
+

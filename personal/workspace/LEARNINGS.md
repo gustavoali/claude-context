@@ -1,5 +1,5 @@
 # Learnings - Workspace Global
-**Actualizacion:** 2026-03-10
+**Actualizacion:** 2026-03-13
 
 Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto especifico.
 
@@ -83,4 +83,49 @@ Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto espec
 **Context:** Session #9 started after an abrupt interruption. TASK_STATE was stale (last updated 2026-03-09), but the git working tree had uncommitted changes from the interrupted session.
 **Learning:** When TASK_STATE is stale after an interruption, `git status` + `git diff HEAD` reliably reconstructs what work was done. Technique: (1) `git status` to identify modified/deleted/untracked files, (2) `git diff HEAD --stat` for a quantitative overview, (3) `git diff HEAD -- <file>` to understand the nature of individual changes. The set of uncommitted changes is a complete record of everything that happened since the last commit, regardless of what the conversation contained. This is a reliable recovery complement to TASK_STATE ÔÇö it shows *what changed* even when the session log is unavailable.
 **Applies to:** Any Claude Code session recovery after abrupt interruption where TASK_STATE is stale but code/file changes exist in the working tree.
+
+### 2026-03-13 - Three-layer in-memory cache pattern for catalog data (.NET)
+**Context:** Implementing a cache service for localization catalog data in FuturosSociosApi. Codified as code review rule R018.
+**Learning:** In-memory cache services for catalog data (singleton, IMemoryCache) should implement three availability layers: (1) **Hot cache** ÔÇö IMemoryCache with TTL as primary path, (2) **Stale-while-revalidate** ÔÇö serve stale data + trigger background refresh when TTL expires, (3) **Fallback to disk or source** ÔÇö for cold start or recovery after failure. Additionally requires: `IHostedService` warmup to preload cache at app startup, and `BackgroundService` for periodic refresh. Without warmup, first request after startup hits the source directly, causing latency spike.
+**Applies to:** Any .NET singleton service that caches catalog/reference data in IMemoryCache ÔÇö localization tables, config catalogs, lookup tables, etc.
+
+### 2026-03-13 - TCP connect is more efficient than Docker subprocess for DB health checks
+**Context:** Claude Orchestrator health checker used `child_process.execFile` to run `docker ps --filter name=...` for PostgreSQL container liveness checks, adding 50-130ms overhead per check every 60 seconds.
+**Learning:** For health checks on TCP-based services (PostgreSQL, Redis, etc.), a direct TCP connect via `net.createConnection` (Node.js) is ~1-5ms with zero subprocess overhead. Use `type: 'tcp'` with `host`/`port` instead of `type: 'docker'` when the goal is just "is the service accepting connections?" - which is what most health checks need. Reserve Docker subprocess checks for scenarios requiring container-specific metadata (status, resource usage).
+**Applies to:** Any Node.js service that health-checks databases or TCP services periodically
+
+### 2026-03-13 - `setTimeout(fn, NaN)` fires immediately in Node.js (treated as 0ms delay)
+**Context:** Session GC implementation used `config.sessions.endedGcMinutes * 60 * 1000` to calculate the delay. E2E test mock config omitted `endedGcMinutes`, making the value `undefined`. `undefined * 60 * 1000 = NaN`, and `setTimeout(fn, NaN)` fires immediately, causing GC to evict sessions before HTTP responses arrived.
+**Learning:** `setTimeout(fn, NaN)` does NOT throw or use a default - it fires immediately (equivalent to 0ms). Always guard TTL/delay calculations with `Number.isFinite(delay) ? delay : DEFAULT_MS`. This is particularly dangerous when config values come from external sources (env vars, mock objects, incomplete config structs) that might be `undefined`.
+**Applies to:** Any Node.js code computing setTimeout delays from config or user-provided values
+
+### 2026-03-13 - Use `timer.unref()` for background GC timers to avoid keeping process alive
+**Context:** Implementing auto-eviction of `ended`/`error` sessions from an in-memory Map using `setTimeout` as a TTL mechanism.
+**Learning:** When using `setTimeout` for background cleanup tasks (GC, cache expiry, TTL eviction), call `.unref()` on the returned timer handle. This prevents Node.js from keeping the process alive just because there are pending GC timers. Without `.unref()`, a process with only GC timers pending will not exit naturally. Pattern: `const t = setTimeout(fn, delay); if (t.unref) t.unref();` (the `if` guard handles environments where `unref` may not exist, e.g. browser polyfills).
+**Applies to:** Any Node.js service implementing in-memory GC, cache TTL, or session expiry via setTimeout
+
+### 2026-03-13 - EventEmitter payload mismatch masked by test mock emitting wrong shape
+**Context:** Debugging `session:error` GC listener in Claude Orchestrator. The base class listener used `(session) => gc(session.id)` but `session:error` is emitted by subclasses as `{ sessionId, error }`, not the session object. Tests passed because the test mock also emitted the wrong shape (the full session object), so both sides had the same bug.
+**Learning:** When writing test mocks for EventEmitter events, always verify that the mock emits the *exact same payload shape* as the real production emitter. If the mock emits a superset of the real payload (e.g., the full object when reality sends `{ id, error }`), listeners that destructure the wrong key will silently pass tests but fail in production. Fix requires both: (1) correcting the listener to destructure the real payload, and (2) correcting the mock to emit the real shape. Pattern for Node.js EventEmitter: document the payload type in a `@event` JSDoc comment on the `emit()` call so it's visible to listener authors.
+**Applies to:** Any Node.js codebase using EventEmitter with structured event payloads, especially when base class listens to events emitted by subclasses with different payload shapes.
+
+### 2026-03-13 - Smart project state detection for automated Claude Code session routing
+**Context:** Created `proyecto-remoto.ps1` (`pjr`) as a smarter replacement for `sembrar-remoto.ps1`. Needed a single tool that handles any project regardless of its lifecycle stage.
+**Learning:** Detect project state before launching Claude Code by inspecting the claude_context directory for marker files: (1) no `CLAUDE.md` ÔåÆ new project, launch `/sembrar`; (2) `SEED_DOCUMENT.md` exists but no `PRODUCT_BACKLOG.md` ÔåÆ seeded, launch `/brotar [name]`; (3) `PRODUCT_BACKLOG.md` + `TASK_STATE.md` ÔåÆ in progress, load TASK_STATE next steps as context; (4) `PRODUCT_BACKLOG.md` without `TASK_STATE` ÔåÆ active project, open and wait for instructions. This state machine pattern eliminates the need for separate per-lifecycle scripts. Tool accepts both slug (`investigacion/ai-dev-cost-model`) and short code (`adc`) as input, using the same project registry lookup as `pj`. Lives at `C:\claude_context\tools\proyecto-remoto.ps1`, aliased as `pjr`.
+**Applies to:** Any workflow requiring smart project bootstrap that handles multiple lifecycle stages ÔÇö applicable to any Claude Code project tooling that needs to route to the correct starting action based on project maturity.
+
+### 2026-03-13 - PowerShell tab completion for custom tools via Register-ArgumentCompleter
+**Context:** Added tab completion for the `pjr` command so it could accept both project slugs and short codes, with descriptions shown in the completion menu.
+**Learning:** Use `Register-ArgumentCompleter` in the PowerShell profile to add tab completion to custom functions/scripts. To integrate with a JSON project registry: (1) lazy-load the registry into a `$global:_ProjectRegistry` variable on first access via a `_Load-ProjectRegistry` helper, (2) iterate `PSObject.Properties` of the parsed JSON, (3) return `[System.Management.Automation.CompletionResult]::new($value, $listText, 'ParameterValue', $tooltip)` for each match. Pattern supports prefix matching on both the key (slug) and a short-code field. Validate after adding with: `powershell.exe -Command "& { . 'C:\path\profile.ps1'; Write-Host 'Profile OK' }"` to catch syntax errors before reloading the terminal.
+**Applies to:** Any PowerShell custom tool (`pjr`, `pj`, or similar) that needs tab-completed arguments sourced from a JSON registry or other structured data source.
+
+### 2026-03-13 - Hierarchical alerts propagation via SHARED_RULES @import chain
+**Context:** Setting up a cross-project alerts system for the "jerarquicos" project group, where alerts needed to be visible when working on any of the projects in the group (FuturosSociosApi, APIJsMobile, repositorio-apimovil).
+**Learning:** Use a shared rules file as an intermediary to propagate group-level alerts automatically to all projects in a classifier. Pattern: (1) Create `C:/claude_context/[classifier]/ALERTS.md` with a `Proyecto` column for cross-project tracking, (2) Add alert display directive + `@import` to `SHARED_RULES.md`, (3) Each project's `CLAUDE.md` already imports `SHARED_RULES.md` ÔÇö new projects just need to add that one import and inherit the full alert system. This avoids duplicating the alerts directive in every project's CLAUDE.md and ensures new projects get the alert system automatically. The chain is: `project CLAUDE.md` ÔåÆ `@SHARED_RULES.md` ÔåÆ `@ALERTS.md`.
+**Applies to:** Any project group (classifier) with 2+ projects that need cross-project visibility of alerts, incidents, or reminders. Applicable whenever a `SHARED_RULES.md` pattern exists within a classifier.
+
+### 2026-03-16 - PowerShell reserved variable `$Input` silently shadows function parameters
+**Context:** Debugging `proyecto-remoto.ps1` where `Resolve-ProjectSlug` function returned empty string instead of the slug passed as argument. Debug output showed `slug=[]` despite `Project=[mcp/claude-orchestrator]` being passed correctly.
+**Learning:** `$Input` is an automatic variable in PowerShell that represents the pipeline input enumerator. Naming a `param([string]$Input)` in a function causes the parameter to be silently overridden by the automatic variable, returning an empty string instead of the bound argument. Renaming to any non-reserved name (e.g., `$Id`, `$Value`) fixes the issue immediately. Other PowerShell automatic variables to avoid as param names: `$Args`, `$PSItem` (`$_`), `$PSBoundParameters`, `$MyInvocation`, `$Error`, `$Host`, `$PID`, `$PSScriptRoot`, `$PSCommandPath`.
+**Applies to:** Any PowerShell function or script that defines parameters ÔÇö especially helper functions inside larger scripts. The bug is silent: no error, just wrong behavior, making it hard to diagnose without debug output.
 
