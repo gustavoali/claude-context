@@ -1,8 +1,8 @@
 # Tareas de Mejora Continua - Sistema Claude
 
-**Ultima actualizacion:** 2026-01-26
+**Ultima actualizacion:** 2026-03-19
 **Responsable:** Claude (Asistente de Direccion)
-**Directiva:** `metodologia_general/21-continuous-improvement-directive.md`
+**Directiva:** `metodologia_general/03-obligatory-directives.md` (seccion 6)
 
 ---
 
@@ -10,41 +10,27 @@
 
 ### [PENDIENTE] Revisar definiciones de agentes custom
 - **Prioridad:** Media
-- **Ubicacion:** `C:/Users/gdali/.claude/agents/`
-- **Trigger:** Cuando haya momento apropiado (fin de sprint, baja actividad)
-- **Alcance:**
-  1. Revisar consistencia entre definiciones de agentes
-  2. Identificar gaps (agentes que faltan)
-  3. Identificar redundancias (agentes que se solapan)
-  4. Proponer mejoras en prompts y responsabilidades
-  5. Optimizar uso de contexto (reducir longitud sin perder calidad)
-  6. Verificar que ejemplos sean claros y utiles
-  7. Estandarizar formato entre todos los agentes
-- **Output:** Documento con propuestas para aprobacion del usuario
+- **Ubicacion:** `C:/Users/gdali/.claude/agents/` (26 agentes)
+- **Alcance:** Revisar consistencia, gaps, redundancias, optimizar prompts
+- **Trigger:** Sesion dedicada cuando haya baja actividad
 
-### [PENDIENTE] Consolidar documentos de metodologia
-- **Prioridad:** Baja
-- **Observacion:** Se identifico que hay ~15 @imports en User Memory
-- **Propuesta:** Crear resumen compacto que reduzca carga de contexto
-- **Trigger:** Cuando se detecte que el contexto esta muy cargado
-
-### [PENDIENTE] Limpiar carpeta methodology vs metodologia_general
-- **Prioridad:** Baja
-- **Observacion:** Parecen ser duplicados o versiones anteriores
-- **Accion:** Verificar y consolidar si corresponde
-
-### [PENDIENTE] Evolucionar sistema de agentes especializados y delegacion
+### [PENDIENTE] Evolucionar sistema de agentes con herencia
 - **Prioridad:** Media
 - **Fecha:** 2026-02-15
-- **Observacion:** Se implemento v1.0 del sistema de herencia de perfiles (BASE + ESPECIALIZACION) para architects. Hay oportunidades de mejora:
-  1. Extender a otros roles: developers (angular, dotnet, nodejs), reviewers, testers
-  2. Mejorar el mecanismo de composicion de prompts (actualmente manual, podria automatizarse via skill)
-  3. Evaluar si los perfiles deberian incluir ejemplos de prompts compuestos exitosos
-  4. Considerar perfiles por proyecto ademas de por dominio (ej: un developer que ya conoce el contexto del proyecto)
-  5. Evaluar metricas de calidad de delegacion (el agente entendio bien? el output fue util?)
-  6. Explorar si un skill `/delegate` podria automatizar la lectura de perfiles y composicion
-- **Ubicacion actual:** `claude_context/metodologia_general/agents/`
-- **Trigger:** Cuando se complete Fase A del Web Monitor o cuando se detecte friccion en delegacion
+- **Estado:** v1.0 implementada (BASE + ESPECIALIZACION para architects y developers)
+- **Pendiente:** Automatizar composicion via skill `/delegate`, metricas de calidad de delegacion
+- **Ubicacion:** `claude_context/metodologia_general/agents/`
+
+### [PENDIENTE] Agregar sync de repos a /close-session
+- **Prioridad:** Alta
+- **Fecha:** 2026-03-19
+- **Observacion:** En la revision trimestral se detecto que muchos repos tenian commits sin pushear. Agregar paso de push a claude-context y proyecto activo en close-session.
+
+### [PENDIENTE] Resolver findings criticos code review en jerarquicos
+- **Prioridad:** Alta
+- **Fecha:** 2026-03-19
+- **Proyectos:** APIJsMobile (feature/176505), FuturosSociosApi (feature/185688)
+- **Issues:** Error handling en catch blocks, early returns on error
 
 ---
 
@@ -52,22 +38,38 @@
 
 | Fecha | Tarea | Resultado |
 |-------|-------|-----------|
+| 2026-03-19 | Revision trimestral Marzo 2026 | Auditoria de 15 directivas, 25 learnings nuevos agregados a CROSS_PROJECT, CONTINUOUS_IMPROVEMENT actualizado |
+| 2026-03-19 | Sync de todos los repos a GitHub | 40+ repos sincronizados, 9 repos nuevos creados, guia multi-equipo creada |
+| 2026-03-19 | Backup AnyoneAI sprints + swift a Google Drive | 5 archivos subidos (~5 GB total) |
+| 2026-02-15 | Implementar sistema de herencia de perfiles para agentes | BASE + ESPECIALIZACION para architects y developers |
+| 2026-02-04 | Consolidar metodologia v3.0 | 17 archivos (7351 lineas) -> 6 archivos (809 lineas core). Reduccion 89% |
 | 2026-01-26 | Crear agente flutter-developer | Creado en ~/.claude/agents/ |
+
+---
+
+## Revision Trimestral - Marzo 2026
+
+### Auditoria de Directivas
+- **Alto cumplimiento (10/15):** Coordinacion, TASK_STATE, rigor intelectual, extension sin eliminacion, Docker, MCP config, proteccion contexto, alertas, settings centralizados, bug fixing
+- **Medio cumplimiento (4/15):** Contexto al delegar (L-001/L-002 persisten), backlog (bypass en tareas rapidas), code review (findings sin resolver), registro integral (repos desactualizados)
+- **Bajo cumplimiento (1/15):** Mejora continua (CONTINUOUS_IMPROVEMENT sin actualizar desde enero - corregido hoy)
+
+### Learnings Procesados
+- 73 learnings nuevos identificados en proyectos del ecosistema
+- 25 seleccionados como mas reutilizables e incorporados a CROSS_PROJECT_LEARNINGS v2.0
+- Categorias nuevas agregadas: Windows/CLI, Context Engineering, LLM Providers, Unity
+
+### Acciones Tomadas
+1. CROSS_PROJECT_LEARNINGS actualizado de v1.2 (14 items) a v2.0 (39 items)
+2. CONTINUOUS_IMPROVEMENT limpiado y actualizado
+3. Agregar sync de repos a /close-session (pendiente implementacion)
+4. Alerta para impulsar ecosystem-hub agregada
 
 ---
 
 ## Criterios para Ejecutar Mejoras
 
-1. **Fin de sprint** - Momento natural de reflexion
+1. **Fin de sprint / revision trimestral** - Momento natural de reflexion
 2. **Baja actividad** - Cuando no hay tareas urgentes
-3. **Deteccion de problema** - Si se identifica gap o issue durante trabajo
+3. **Deteccion de problema** - Si se identifica gap durante trabajo
 4. **Solicitud del usuario** - Cuando el usuario lo pida explicitamente
-
----
-
-## Notas
-
-- Estas tareas NO son urgentes, son de mejora continua
-- Siempre consultar con el usuario antes de implementar cambios
-- Documentar propuestas antes de ejecutar
-- Priorizar trabajo del proyecto sobre mejoras del sistema

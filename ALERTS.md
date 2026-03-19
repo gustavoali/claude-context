@@ -1,10 +1,10 @@
 # Alertas del Ecosistema
-**Ultima revision:** 2026-03-10
+**Ultima revision:** 2026-03-19
 
 ## Alertas Activas
 | Fecha | Tipo | Mensaje | Accion |
 |-------|------|---------|--------|
-| 2026-03-05 | recordatorio | Revision trimestral Marzo 2026 pendiente (directiva 6) | Iniciar en sesion dedicada |
+| 2026-03-19 | recordatorio | Ecosystem Hub (`pj eh`): impulsar proyecto, tiene seed + backlog (22 stories) + scaffold Angular + backend con parsers. Avanzar con implementacion | Sesion dedicada: revisar backlog, priorizar, arrancar Sprint 1 |
 | 2026-03-05 | recordatorio | Iniciar preparacion certificacion AWS (IDEA-034) | Revisar roadmap y planificar primeros pasos |
 | 2026-03-05 | recordatorio | Avanzar capacitacion en Anthropic Academy | Continuar cursos pendientes |
 | 2026-03-05 | recordatorio | Avanzar capacitacion en DeepLearning.AI | Relevar cursos y comenzar |
@@ -14,6 +14,7 @@
 | 2026-03-09 | recordatorio | Mandarin Chinese: iniciar Fase 1 del roadmap de aprendizaje (pinyin + pictogramas + pronunciacion). Investigacion v1.0 completa (15 docs). Ver `resources/roadmap-aprendizaje.md` | Instalar Pleco + HelloChinese + Anki, arrancar 20 min/dia. Evaluar ampliacion de investigacion al completar Fase 4 (~semana 12) |
 | 2026-03-10 | recordatorio | Ordenamiento general de carpetas de proyectos y contexto. Incluye: limpiar legacy en `C:/agents/` (linkedin_rag, youtube_rag*, youtube_jupyter + video suelto 396MB), unificar nomenclatura de carpetas (agents->agentes ya hecho), verificar consistencia entre paths reales y registry, actualizar referencias legacy en docs de project-admin e ideas | Sesion dedicada de limpieza y reorganizacion |
 | 2026-03-10 | recordatorio | Agent Token Economics (`pj ate`): impulsar proyecto, avanzar con investigacion/implementacion | Revisar semilla y definir proximos pasos |
+| 2026-03-19 | estado | AI Dev Transformation (`pj adt`): proyecto creado, pendiente registrar en Project Admin DB (container PA caido) | Levantar PA container y ejecutar pa_create_project |
 | 2026-03-10 | recordatorio | Narrador TTS (`pj nr`): impulsar proyecto, avanzar con investigacion/implementacion | Revisar semilla y definir proximos pasos |
 | 2026-03-10 | recordatorio | AI Futures Research (`pj af`): 3 materiales nuevos en `pending/` (Era IA 2022, Karen Hao Imperio IA, NYT Amodei consciencia). Ampliar investigacion. | Procesar pendientes: leer, analizar, integrar con reading_notes |
 | 2026-03-11 | recordatorio | Capacitacion Ingles: iniciar proyecto para alcanzar nivel C1. Paso 1: nivelacion (determinar nivel actual). Paso 2: disenar roadmap de avance con hitos intermedios (B1->B2->C1). Considerar sembrar proyecto dedicado en investigacion/ | Sesion dedicada: test de nivelacion + roadmap personalizado |
@@ -21,6 +22,7 @@
 | 2026-03-11 | recordatorio | Analizar infografia Udemy "Top 100 Skills 2026" (`C:/Users/gdali/Downloads/CON25Q4_Infographic _ Trends Top 100 Skills_ESXL.pdf`). Extraer insights relevantes para capacitacion personal y proyectos del ecosistema | Sesion dedicada: leer PDF, cruzar con roadmaps de capacitacion existentes (AWS, AI, etc.) |
 
 ## Historial
+| 2026-03-19 | recordatorio | Revision trimestral Marzo 2026 pendiente (directiva 6) | Completado: auditoria 15 directivas, 25 learnings nuevos en CROSS_PROJECT v2.0, CONTINUOUS_IMPROVEMENT actualizado, sync repos a /close-session |
 | 2026-03-13 | incidente | Project Admin DB ECONNREFUSED (port 5434). llm-landscape y ai-dev-cost-model sin registrar. | Resuelto: container levantado, ambos proyectos registrados en PA DB (#357, #358) con short y context_path. |
 | 2026-03-12 | recordatorio | Watch Later MCP: importacion completa (435/440, 12 skipped). | Completado: 82 videos agregados en ultima corrida. 3 fallos por videos eliminados/privados. |
 | Fecha | Tipo | Mensaje | Resolucion |
