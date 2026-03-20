@@ -1,5 +1,5 @@
 # Alertas del Ecosistema
-**Ultima revision:** 2026-03-19
+**Ultima revision:** 2026-03-20
 
 ## Alertas Activas
 | Fecha | Tipo | Mensaje | Accion |
@@ -20,6 +20,7 @@
 | 2026-03-11 | recordatorio | Investigar setup de OpenTelemetry para monitoreo automatizado de consumo de tokens en Claude Code. Motivacion: deteccion tardia de consumo excesivo por componentes en prueba (ej: Atlas agent idle loops). Evaluar: (1) OTEL_METRICS_EXPORTER=console como MVP rapido, (2) Prometheus+Grafana como solucion completa, (3) script de alertas por umbral. Considerar integrarlo al proyecto Agent Token Economics (`pj ate`) | Sesion dedicada: configurar OTEL, validar metricas, definir umbrales de alerta |
 | 2026-03-20 | recordatorio | Crear MCP server de generacion de PDF. Necesidad detectada en FuturosSociosApi: generar documentos tecnicos con fragmentos de codigo. Librerias disponibles: fpdf2, reportlab. Skills `/pdf` y `/code-screenshot` creados como MVP | Sembrar proyecto, definir scope (md-to-pdf, html-to-pdf, code-screenshot-to-pdf), registrar en project-admin |
 | 2026-03-20 | recordatorio | Incorporar herramienta de captura de codigo (code-screenshot) al MCP server de Playwright. Actualmente funciona via skill con flujo manual (HTML + base64 data URL + navigate + screenshot). Ideal: tool nativa `code_screenshot(file, start_line, end_line, language, theme)` que genere PNG directamente | Evaluar si extender playwright MCP existente o crear tool independiente. Considerar integracion con el MCP server de PDF |
+| 2026-03-20 | recordatorio | Evaluar mover PostgreSQL (sprint-backlog-pg, project-admin-pg) a otra maquina Windows como DB server dedicado. Opciones: Docker en WSL2 o PG nativo. Ventaja: liberar WSL local | Cuando la otra maquina este disponible, armar setup |
 | 2026-03-11 | recordatorio | Analizar infografia Udemy "Top 100 Skills 2026" (`C:/Users/gdali/Downloads/CON25Q4_Infographic _ Trends Top 100 Skills_ESXL.pdf`). Extraer insights relevantes para capacitacion personal y proyectos del ecosistema | Sesion dedicada: leer PDF, cruzar con roadmaps de capacitacion existentes (AWS, AI, etc.) |
 
 ## Historial
