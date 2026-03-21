@@ -1,5 +1,5 @@
 # Cannabis Medicinal Argentina - Project Context
-**Version:** 0.1.0 | **Fase:** Seed
+**Version:** 1.0.0 | **Fase:** Complete
 **Ubicacion:** C:/personal/cannabis-medicinal
 **Repo:** https://github.com/gustavoali/cannabis-medicinal
 
@@ -9,13 +9,21 @@ Investigacion sobre cultivo legal de cannabis para uso personal medicinal en Arg
 ## Tipo
 Investigacion personal. Sin componente de software. Documentacion en markdown.
 
+## Metricas
+| Metrica | Valor |
+|---------|-------|
+| Historias | 12 |
+| Puntos | 34 |
+| Epics | 4 |
+| Completadas | 12 |
+
 ## Fases
-| Fase | Descripcion | Estado |
-|------|-------------|--------|
-| 1 | Certificado REPROCANN (proceso, requisitos, medicos) | Investigacion inicial completa |
-| 2 | Marco legal (leyes, resoluciones, limites) | Investigacion inicial completa |
-| 3 | Cultivo (tecnicas, geneticas, produccion) | Pendiente |
-| 4 | Red de recursos (medicos, ONGs, proveedores) | Pendiente |
+| Fase | Descripcion | Stories | Estado |
+|------|-------------|---------|--------|
+| 1 | Certificado REPROCANN (proceso, requisitos, medicos) | CMA-001 a 003 (7 pts) | Done |
+| 2 | Marco legal (leyes, resoluciones, limites) | CMA-004 a 006 (8 pts) | Done |
+| 3 | Cultivo (tecnicas, geneticas, produccion) | CMA-007 a 010 (13 pts) | Done |
+| 4 | Red de recursos (medicos, ONGs, proveedores) | CMA-011 a 012 (6 pts) | Done |
 
 ## Agentes Recomendados
 | Tarea | Agente |
@@ -25,3 +33,4 @@ Investigacion personal. Sin componente de software. Documentacion en markdown.
 
 ## Docs
 @C:/claude_context/personal/cannabis-medicinal/SEED_DOCUMENT.md
+@C:/claude_context/personal/cannabis-medicinal/PRODUCT_BACKLOG.md

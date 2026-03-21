@@ -56,7 +56,7 @@ Investigacion completa sobre el cultivo legal de cannabis para uso personal medi
 - Proceso REPROCANN: 7 pasos desde conseguir medico hasta descargar certificado
 - Aprobacion automatizada activa desde feb 2026 (15 dias estimados)
 - Medicos habilitados: ~1.000 de 5.800 en REFEPS (cuello de botella principal)
-- Categorias: paciente, responsable, tercero cultivador, profesional, persona juridica
+- Categorias (Res. 1780/2025): autocultivador, tercero cultivador, persona juridica (3, no 5 como en normativa anterior)
 - Tramite sin costo
 - Limites: 9 plantas floracion, 40g flores secas, 6 goteros 30ml, 6m2 indoor, 15m2 outdoor
 
