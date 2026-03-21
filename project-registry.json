@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-03-20"
+    "updated": "2026-03-21"
   },
   "projects": {
     "anthropic-academy": {
@@ -361,6 +361,20 @@
       "path": "C:/personal/cannabis-medicinal",
       "context": "C:/claude_context/personal/cannabis-medicinal",
       "category": "tool"
+    },
+    "project-management": {
+      "name": "Project Management Tools",
+      "short": "pm",
+      "path": "C:/capacitacion/project-management",
+      "context": "C:/claude_context/capacitacion/project-management",
+      "category": "capacitacion"
+    },
+    "quimera": {
+      "name": "Quimera",
+      "short": "qm",
+      "path": "C:/personal/quimera",
+      "context": "C:/claude_context/personal/quimera",
+      "category": "personal"
     }
   }
 }
