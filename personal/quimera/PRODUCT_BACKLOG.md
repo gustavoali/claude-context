@@ -5,9 +5,9 @@
 | Metrica | Valor |
 |---------|-------|
 | Total stories | 48 |
-| Fase 1 (detalladas) | 28 |
-| Fase 2-4 (alto nivel) | 20 |
-| Total puntos Fase 1 | 99 |
+| Completadas | 48 (100%) |
+| Tests backend | 372 |
+| Fecha completado | 2026-03-21 |
 
 ## Vision
 Plataforma de entretenimiento AI para publico infantil/adolescente argentino (4-19). Cuatro productos integrados (cuentos, historias interactivas, roasts, memes/stickers) con identidad rioplatense, segura para menores, mobile-first.
@@ -15,20 +15,20 @@ Plataforma de entretenimiento AI para publico infantil/adolescente argentino (4-
 ## Epics
 | Epic | Historias | Puntos | Status |
 |------|-----------|--------|--------|
-| E-01: Project Setup & Infra | QM-001..003 | 8 | Pendiente |
-| E-02: Auth & Profiles | QM-004..006 | 13 | Pendiente |
-| E-03: Security Core | QM-007..011 | 16 | Pendiente |
-| E-04: LLM & Image Services | QM-012..014 | 13 | Pendiente |
-| E-05: Cuentos (Tales) | QM-015..018 | 18 | Pendiente |
-| E-06: Roasts AI | QM-019..021 | 11 | Pendiente |
-| E-07: Payments | QM-022..024 | 13 | Pendiente |
-| E-08: Frontend MVP | QM-025..027 | 13 | Pendiente |
-| E-09: QA & Hardening | QM-028 | 5 | Pendiente |
-| E-10: Historias Interactivas | QM-029..033 | - | Fase 2 |
-| E-11: Memes & Stickers | QM-034..036 | - | Fase 2 |
-| E-12: TTS & Audio | QM-037..038 | - | Fase 2 |
-| E-13: Suscripciones & Growth | QM-039..043 | - | Fase 3 |
-| E-14: PWA & Expansion | QM-044..048 | - | Fase 4 |
+| E-01: Project Setup & Infra | QM-001..003 | 8 | Done |
+| E-02: Auth & Profiles | QM-004..006 | 13 | Done |
+| E-03: Security Core | QM-007..011 | 16 | Done |
+| E-04: LLM & Image Services | QM-012..014 | 13 | Done |
+| E-05: Cuentos (Tales) | QM-015..018 | 18 | Done |
+| E-06: Roasts AI | QM-019..021 | 11 | Done |
+| E-07: Payments | QM-022..024 | 13 | Done |
+| E-08: Frontend MVP | QM-025..027 | 13 | Done |
+| E-09: QA & Hardening | QM-028 | 5 | Done |
+| E-10: Historias Interactivas | QM-029..033 | - | Done |
+| E-11: Memes & Stickers | QM-034..036 | - | Done |
+| E-12: TTS & Audio | QM-037..038 | - | Done |
+| E-13: Suscripciones & Growth | QM-039..043 | - | Done |
+| E-14: PWA & Expansion | QM-044..048 | - | Done |
 
 ## Fase 1 - MVP Cuentos + Roasts (sem 1-4)
 ### QM-001: Project Scaffold & Docker Setup

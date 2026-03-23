@@ -1,6 +1,6 @@
 # Quimera - Project Context
-**Version:** 0.2.0-brote | **Tests:** 0 | **Coverage:** 0%
-**Estado:** BROTE (arquitectura + backlog listos, listo para desarrollar)
+**Version:** 1.0.0 | **Tests:** 372 backend | **Frontend:** build OK
+**Estado:** IMPLEMENTADO (4 fases completas, pre-deploy)
 **Ubicacion proyecto:** C:/personal/quimera
 **Ubicacion contexto:** C:/claude_context/personal/quimera
 
@@ -24,35 +24,36 @@ Identidad: espanol rioplatense, humor argentino, cultura local.
 ## Componentes
 | Componente | Ubicacion | Estado |
 |------------|-----------|--------|
-| FastAPI App | backend/app/main.py | Pendiente |
-| API Routers | backend/app/api/v1/ | Pendiente |
-| Auth Module | backend/app/auth/ | Pendiente |
-| Moderation | backend/app/services/moderation.py | Pendiente |
-| LLM Service | backend/app/services/llm.py | Pendiente |
-| Image Service | backend/app/services/image_gen.py | Pendiente |
-| TTS Service | backend/app/services/tts.py | Pendiente |
-| PDF Service | backend/app/services/pdf.py | Pendiente |
-| Payment Service | backend/app/services/payments.py | Pendiente |
-| Content Generators | backend/app/generators/ | Pendiente |
-| Frontend PWA | frontend/ | Pendiente |
+| FastAPI App | backend/app/main.py | Implementado |
+| API Routers (8) | backend/app/api/v1/ | Implementado |
+| Auth + IDOR | backend/app/auth/ | Implementado |
+| Moderation | backend/app/services/moderation.py | Implementado |
+| LLM Service | backend/app/services/llm.py | Implementado |
+| Image Service | backend/app/services/image_gen.py | Implementado |
+| TTS Service | backend/app/services/tts.py | Implementado |
+| PDF Service | backend/app/services/pdf.py | Implementado |
+| Payment Service | backend/app/services/payments.py | Implementado |
+| Content Generators (4) | backend/app/generators/ | Implementado |
+| Frontend PWA | frontend/ | Implementado |
+| CI Pipeline | .github/workflows/ci.yml | Implementado |
 
 ## Comandos
 ```bash
+# Infra
+docker compose up -d                          # PG (5436) + Redis (6379)
+
 # Backend
 cd C:/personal/quimera/backend
 pip install -r requirements.txt
+cp ../.env.example ../.env                    # Configurar API keys
 uvicorn app.main:app --reload --port 8000
+pytest --tb=short                             # 372 tests
 
 # Frontend
 cd C:/personal/quimera/frontend
 npm install
-npm run dev
-
-# DB
-docker run -d --name quimera-pg -p 5436:5432 \
-  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=quimera \
-  -v quimera-pgdata:/var/lib/postgresql/data \
-  --restart unless-stopped postgres:17
+npm run dev                                   # localhost:3000
+npm run build                                 # Verificar build
 ```
 
 ## Agentes Recomendados
