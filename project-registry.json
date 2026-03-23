@@ -375,6 +375,13 @@
       "path": "C:/personal/quimera",
       "context": "C:/claude_context/personal/quimera",
       "category": "personal"
+    },
+    "screen-capture": {
+      "name": "Screen Capture MCP",
+      "short": "sc",
+      "path": "C:/tools/screen-capture",
+      "context": "C:/claude_context/tools/screen-capture",
+      "category": "tools"
     }
   }
 }

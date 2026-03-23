@@ -17,7 +17,8 @@
       "mcp__playwright-headless__browser_run_code",
       "mcp__claude-orchestrator__ecosystem_health",
       "mcp__claude-orchestrator__create_session",
-      "mcp__claude-orchestrator__send_instruction"
+      "mcp__claude-orchestrator__send_instruction",
+      "mcp__narrador__narrate_text"
     ]
   }
 }

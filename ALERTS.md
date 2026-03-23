@@ -27,6 +27,7 @@
 | 2026-03-20 | recordatorio | Crear instruccion/tool para que Claude interprete correctamente pedidos de "terminal remota", "abrir en remoto", "crear sesion remota con X". Debe mapear a `pjr <proyecto>` automaticamente. Considerar: (1) feedback memory, (2) skill dedicado, o (3) instruccion en CLAUDE.md global | Definir mejor approach e implementar |
 | 2026-03-21 | recordatorio | Registrar quimera en Project Admin DB (slug: quimera, short: qm, context_path: C:/claude_context/personal/quimera, category: web, stack: python/fastapi/nextjs/pg/redis). PA DB caida (WSL off) | Levantar WSL, ejecutar pa_create_project + pa_set_metadata |
 | 2026-03-21 | recordatorio | Quimera (`pj qm`): proyecto brotado, arquitectura + backlog listos. Arrancar implementacion Sprint 1 (Fase 1 MVP: Cuentos + Roasts). Verificar que /brotar haya completado correctamente en la terminal remota | Sesion dedicada: revisar backlog, priorizar, comenzar desarrollo |
+| 2026-03-23 | recordatorio | Registrar screen-capture en Project Admin DB (slug: screen-capture, short: sc, context_path: C:/claude_context/tools/screen-capture, category: tool, stack: python/mcp/mss/pillow). PA DB caida (WSL off) | Levantar WSL, ejecutar pa_create_project + pa_set_metadata |
 
 ## Historial
 | 2026-03-19 | recordatorio | Revision trimestral Marzo 2026 pendiente (directiva 6) | Completado: auditoria 15 directivas, 25 learnings nuevos en CROSS_PROJECT v2.0, CONTINUOUS_IMPROVEMENT actualizado, sync repos a /close-session |
