@@ -19,9 +19,9 @@
     Path absoluto al documento fuente. Solo se usa si el estado detectado es 'sembrar'.
 
 .EXAMPLE
-    .\proyecto-remoto.ps1 -Project "investigacion/ai-dev-cost-model"
-    .\proyecto-remoto.ps1 -Project "adc"
-    .\proyecto-remoto.ps1 -Project "investigacion/ai-dev-cost-model" -SourceDoc "C:\docs\seed.md"
+    .\proyecto-paralelo.ps1 -Project "investigacion/ai-dev-cost-model"
+    .\proyecto-paralelo.ps1 -Project "adc"
+    .\proyecto-paralelo.ps1 -Project "investigacion/ai-dev-cost-model" -SourceDoc "C:\docs\seed.md"
 #>
 
 param(
@@ -174,7 +174,7 @@ $statusColors = @{
 $statusColor = $statusColors[$status]
 
 Write-Host ""
-Write-Host "=== proyecto-remoto ===" -ForegroundColor Cyan
+Write-Host "=== proyecto-paralelo ===" -ForegroundColor Cyan
 Write-Host "Proyecto  : $projectName" -ForegroundColor White
 Write-Host "Slug      : $slug" -ForegroundColor Gray
 Write-Host "Contexto  : $contextPath" -ForegroundColor Gray
