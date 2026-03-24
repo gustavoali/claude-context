@@ -1,10 +1,11 @@
-# AnyoneAI - ML Developer Career
-**Programa:** ML Developer Career de AnyoneAI
+# AnyoneAI - Programas de Formacion
+**Programas:** ML Developer Career + Especializaciones
 **Estudiante:** gdali
 **Contenidos:** Distribuidos en cada sprint (`sprint_N/contenidos/`)
 **Ubicacion proyectos:** `C:/Anyone_AI/`
 
 ## Descripcion
+### ML Developer Career
 Programa de formacion en Machine Learning con 4 sprints progresivos:
 - Sprint 1: Data Analysis & Engineering (Python, Pandas, SQL, APIs, Airflow, EDA, Feature Engineering)
 - Sprint 2: Machine Learning (Supervised/Unsupervised Learning, Neural Networks, Model Evaluation)
@@ -38,8 +39,15 @@ Programa de formacion en Machine Learning con 4 sprints progresivos:
 - Hugging Face Transformers
 - pytest, black, isort, flake8
 
-## Contexto por Sprint
+### Especializacion: Developing LLM-Based Applications
+Curso enfocado en desarrollo de apps con LLMs: fundamentos, prompt engineering, RAG, agents, monitoreo.
+Proyecto final: LLM-based Recruitment Tool (Gemini + LangChain + Chainlit + Chroma).
+- Estado: NUEVO
+- Path: `C:/Anyone_AI/developing-llm-apps/`
+
+## Contexto por Sprint/Curso
 @C:/claude_context/anyoneai/sprint_1/CLAUDE.md
 @C:/claude_context/anyoneai/sprint_2/CLAUDE.md
 @C:/claude_context/anyoneai/sprint_3/CLAUDE.md
 @C:/claude_context/anyoneai/sprint_4/CLAUDE.md
+@C:/claude_context/anyoneai/developing-llm-apps/CLAUDE.md

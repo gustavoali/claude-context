@@ -1,17 +1,17 @@
 # Estado - Screen Capture MCP
-**Actualizacion:** 2026-03-23 13:30 | **Version:** 1.0.0
+**Actualizacion:** 2026-03-23 13:20 | **Version:** 1.0.0
 
-## Fase: Implementacion completada
-
-## Completado Esta Sesion
-| Tarea | Resultado |
-|-------|-----------|
-| Estructura proyecto | venv + requirements.txt + src/ + tests/ |
-| MCP server con 5 tools | sc_capture_screen, sc_capture_region, sc_capture_window, sc_list_monitors, sc_list_windows |
-| Registro en Claude Code | ~/.claude.json con stdio transport |
+## Fase: Operativo, mejoras pendientes
 
 ## Proximos Pasos
-1. Testing manual post-restart de Claude Code (necesario para cargar MCP server nuevo)
+1. Testear SetForegroundWindow (requiere restart de Claude Code para recargar MCP)
 2. Registrar en Project Admin DB (alerta #30 en ALERTS.md, requiere WSL)
 3. Agregar tests automatizados (pytest)
 4. Considerar: tool para capturar y leer imagen inline (sin guardar a disco)
+
+## Completado
+| Fecha | Tarea | Resultado |
+|-------|-------|-----------|
+| 2026-03-23 | Implementacion completa | 5 tools MCP operativas |
+| 2026-03-23 | Testing manual 5/5 tools | Todas OK |
+| 2026-03-23 | SetForegroundWindow | bring_window_to_front() en windows.py, integrado en sc_capture_window |

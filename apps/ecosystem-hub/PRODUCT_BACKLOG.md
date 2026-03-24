@@ -1,5 +1,5 @@
 # Backlog - Ecosystem Hub
-**Version:** 1.0 | **Actualizacion:** 2026-03-17
+**Version:** 1.1 | **Actualizacion:** 2026-03-23
 
 ## Resumen
 | Metrica | Valor |
@@ -7,8 +7,8 @@
 | Total Stories | 22 |
 | Total Puntos | 67 |
 | Epics | 4 |
-| Pendientes | 22 |
-| Completadas | 0 |
+| Pendientes | 5 |
+| Completadas | 17 |
 
 ## Vision
 Dashboard web unificado para administrar proyectos, ideas y alertas del ecosistema personal. MVP lee archivos MD/JSON directamente (sin DB para ideas/alertas). Extiende Project Admin (backend) y Web Monitor (frontend).
@@ -16,38 +16,16 @@ Dashboard web unificado para administrar proyectos, ideas y alertas del ecosiste
 ## Epics
 | Epic | Historias | Puntos | Status |
 |------|-----------|--------|--------|
-| EPIC-01: Backend - File Parsers & REST | EH-001 a EH-005 | 15 | Pendiente |
-| EPIC-02: Dashboard + Alertas UI | EH-006 a EH-012 | 22 | Pendiente |
-| EPIC-03: Ideas UI | EH-013 a EH-017 | 17 | Pendiente |
+| EPIC-01: Backend - File Parsers & REST | EH-001 a EH-005 | 15 | Done |
+| EPIC-02: Dashboard + Alertas UI | EH-006 a EH-012 | 22 | Done |
+| EPIC-03: Ideas UI | EH-013 a EH-017 | 17 | En Progreso |
 | EPIC-04: Polish & Integracion | EH-018 a EH-022 | 13 | Pendiente |
 
 ## Pendientes (indice)
 
-### EPIC-01: Backend - File Parsers & REST (~3 dias)
+### EPIC-03: Ideas UI
 | ID | Titulo | Pts | Prioridad | Deps |
 |----|--------|-----|-----------|------|
-| EH-001 | Parser de ALERTS.md | 3 | Critical | - |
-| EH-002 | Parser de IDEAS_INDEX.md e ideas individuales | 5 | Critical | - |
-| EH-003 | REST endpoints alertas | 3 | Critical | EH-001 |
-| EH-004 | REST endpoints ideas | 3 | Critical | EH-002 |
-| EH-005 | REST endpoint proyectos agregado | 2 | High | - |
-
-### EPIC-02: Dashboard + Alertas UI (~4 dias)
-| ID | Titulo | Pts | Prioridad | Deps |
-|----|--------|-----|-----------|------|
-| EH-006 | Scaffold Angular app con routing y PrimeNG | 3 | Critical | - |
-| EH-007 | Servicios HTTP Angular (alertas, ideas, proyectos) | 3 | Critical | EH-003, EH-004, EH-005 |
-| EH-008 | Dashboard - resumen ejecutivo | 5 | Critical | EH-007 |
-| EH-009 | Modulo Alertas - listado con tabs y filtros | 5 | High | EH-007 |
-| EH-010 | Modulo Alertas - resolver/crear desde UI | 3 | High | EH-009 |
-| EH-011 | Deadlines - CRUD con urgencia automatica | 3 | Medium | EH-009 |
-| EH-012 | Proyectos - tabla con filtros y health | 3 | High | EH-007 |*nota: hereda vista de web-monitor*
-
-### EPIC-03: Ideas UI (~3 dias)
-| ID | Titulo | Pts | Prioridad | Deps |
-|----|--------|-----|-----------|------|
-| EH-013 | Modulo Ideas - listado con filtros | 5 | High | EH-007 |
-| EH-014 | Ideas - formulario creacion/edicion inline | 3 | High | EH-013 |
 | EH-015 | Ideas - transicion idea a proyecto | 5 | Medium | EH-014 |
 | EH-016 | Ideas - vinculacion con proyectos existentes | 2 | Medium | EH-013 |
 | EH-017 | Ideas - vista por proyecto (ideas relacionadas) | 2 | Low | EH-016 |
@@ -64,7 +42,20 @@ Dashboard web unificado para administrar proyectos, ideas y alertas del ecosiste
 ## Completadas (indice)
 | ID | Titulo | Puntos | Fecha | Detalle |
 |----|--------|--------|-------|---------|
-| - | - | - | - | - |
+| EH-001 | Parser de ALERTS.md | 3 | 2026-03-20 | Backend DB-backed (alert-parser.js ya existia) |
+| EH-002 | Parser de IDEAS_INDEX.md | 5 | 2026-03-20 | Backend DB-backed (idea-parser.js ya existia) |
+| EH-003 | REST endpoints alertas | 3 | 2026-03-20 | CRUD + resolve/reopen |
+| EH-004 | REST endpoints ideas | 3 | 2026-03-20 | CRUD completo |
+| EH-005 | REST endpoint deadlines | 2 | 2026-03-20 | CRUD + days_until_due computado |
+| EH-006 | Scaffold Angular app | 3 | 2026-03-20 | App standalone con routing + PrimeNG |
+| EH-007 | Servicios HTTP Angular | 3 | 2026-03-23 | Wiring completo a API real + mappers |
+| EH-008 | Dashboard resumen ejecutivo | 5 | 2026-03-20 | Summary cards + alertas urgentes + ideas |
+| EH-009 | Modulo Alertas - listado | 5 | 2026-03-20 | Tabs por scope + filtros + tabla |
+| EH-010 | Alertas - resolver/crear UI | 3 | 2026-03-23 | Resolve/reopen + crear dialog |
+| EH-011 | Deadlines CRUD | 3 | 2026-03-23 | Feature completa con semaforo |
+| EH-012 | Proyectos - tabla con filtros | 3 | 2026-03-23 | Conectado a PA API |
+| EH-013 | Ideas - listado con filtros | 5 | 2026-03-20 | Tabla + filtros + summary cards |
+| EH-014 | Ideas - crear/editar inline | 3 | 2026-03-20 | Dialog reactivo + toast |
 
 ## ID Registry
 | Rango | Estado |

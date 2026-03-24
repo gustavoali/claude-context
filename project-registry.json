@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-03-21"
+    "updated": "2026-03-23"
   },
   "projects": {
     "anthropic-academy": {
@@ -257,6 +257,13 @@
       "context": "C:/claude_context/anyoneai/sprint_4",
       "category": "capacitacion"
     },
+    "anyoneai-llm-apps": {
+      "name": "Developing LLM-Based Applications",
+      "short": "a5",
+      "path": "C:/Anyone_AI/developing-llm-apps",
+      "context": "C:/claude_context/anyoneai/developing-llm-apps",
+      "category": "capacitacion"
+    },
     "mcp-telegram-research": {
       "name": "MCP Telegram Research",
       "short": "rt",
@@ -363,25 +370,32 @@
       "category": "tool"
     },
     "project-management": {
-      "name": "Project Management Tools",
+      "name": "Project Management",
       "short": "pm",
-      "path": "C:/capacitacion/project-management",
+      "path": "C:/claude_context/capacitacion/project-management",
       "context": "C:/claude_context/capacitacion/project-management",
-      "category": "capacitacion"
+      "category": "tool"
     },
     "quimera": {
       "name": "Quimera",
       "short": "qm",
       "path": "C:/personal/quimera",
       "context": "C:/claude_context/personal/quimera",
-      "category": "personal"
+      "category": "web"
     },
     "screen-capture": {
-      "name": "Screen Capture MCP",
+      "name": "Screen Capture",
       "short": "sc",
       "path": "C:/tools/screen-capture",
       "context": "C:/claude_context/tools/screen-capture",
-      "category": "tools"
+      "category": "tool"
+    },
+    "anyoneai-final": {
+      "name": "AnyoneAI Final Project",
+      "short": "fp",
+      "path": "C:/Anyone_AI/final_project",
+      "context": "C:/claude_context/anyoneai/final_project",
+      "category": "capacitacion"
     }
   }
 }
