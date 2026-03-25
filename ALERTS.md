@@ -1,14 +1,14 @@
 # Alertas del Ecosistema
-**Ultima revision:** 2026-03-20
+**Ultima revision:** 2026-03-25
 
 ## Alertas Activas
 | Fecha | Tipo | Mensaje | Accion |
 |-------|------|---------|--------|
-| 2026-03-19 | recordatorio | Ecosystem Hub (`pj eh`): impulsar proyecto, tiene seed + backlog (22 stories) + scaffold Angular + backend con parsers. Avanzar con implementacion | Sesion dedicada: revisar backlog, priorizar, arrancar Sprint 1 |
-| 2026-03-05 | recordatorio | Iniciar preparacion certificacion AWS (IDEA-034) | Revisar roadmap y planificar primeros pasos |
-| 2026-03-05 | recordatorio | Avanzar capacitacion en Anthropic Academy | Continuar cursos pendientes |
-| 2026-03-05 | recordatorio | Avanzar capacitacion en DeepLearning.AI | Relevar cursos y comenzar |
-| 2026-03-09 | recordatorio | Capacitacion Gen AI Training de Intive (Become AI Ready). URL: https://smtsoftwareservices.sharepoint.com/SitePages/Gen-AI-Training-at-intive--Become-AI-Ready.aspx | Revisar contenido y planificar avance |
+| 2026-03-24 | recordatorio | Ecosystem Hub (`pj eh`): 77% completo (17/22 stories, epics 1-2 done). Pendiente: Epic 3 Ideas UI (EH-015/016/017) + Epic 4 Polish (sync, E2E, docs). Continuar implementacion | Sesion dedicada: EH-015 transicion idea->proyecto (5 pts, mas compleja), luego EH-016/017 |
+| 2026-03-25 | recordatorio | AWS DVA-C02: roadmap definido (3 fases + exam prep, ~7 sem). Account setup en progreso (AWS-001 parcial: IAM user creado, faltan keys+billing). Contexto: `C:/claude_context/personal/aws-serverless-training/` | Retomar AWS-001: asignar AdministratorAccess, crear access key, configurar CLI, billing alert $5 |
+| 2026-03-25 | recordatorio | Anthropic Academy: roadmap definido (13 cursos, 5 fases, ~42h, gratis). 0/13 completados. Contexto: `C:/claude_context/capacitacion/anthropic-academy/` | Iniciar Fase 1: Claude 101 + Claude Code in Action (~4h) |
+| 2026-03-25 | recordatorio | DeepLearning.AI: roadmap definido (17 cursos, 5 fases, ~45h, ~$49). Curso estrella: "Agentic AI with Andrew Ng". Contexto: `C:/claude_context/capacitacion/deeplearning-ai/` | Iniciar Fase 1: 4 short courses Anthropic/MCP (~4h). Luego Agentic AI (Fase 2) |
+| 2026-03-25 | recordatorio | Intive Gen AI Training (Become AI Ready): programa interno, requiere acceso a SharePoint para relevar modulos. Contexto: `C:/claude_context/capacitacion/intive-gen-ai/` | Acceder a SharePoint, catalogar modulos, compartir indice para triage. Est. 4-8h total |
 | 2026-03-09 | recordatorio | Cloud Backup (`pj cb`): implementar backup.ps1 con rclone + Google Drive | Instalar rclone, configurar GDrive, implementar script, primer backup manual |
 | 2026-03-09 | recordatorio | YouTube MCP: exportar cookies del browser para youtube-transcript-api | Evita IP ban sin depender de Whisper. Configurar `YOUTUBE_COOKIE_FILE` en .env |
 | 2026-03-09 | recordatorio | Mandarin Chinese: iniciar Fase 1 del roadmap de aprendizaje (pinyin + pictogramas + pronunciacion). Investigacion v1.0 completa (15 docs). Ver `resources/roadmap-aprendizaje.md` | Instalar Pleco + HelloChinese + Anki, arrancar 20 min/dia. Evaluar ampliacion de investigacion al completar Fase 4 (~semana 12) |
@@ -16,7 +16,7 @@
 | 2026-03-10 | recordatorio | Agent Token Economics (`pj ate`): impulsar proyecto, avanzar con investigacion/implementacion | Revisar semilla y definir proximos pasos |
 | 2026-03-10 | recordatorio | Narrador TTS (`pj nr`): impulsar proyecto, avanzar con investigacion/implementacion | Revisar semilla y definir proximos pasos |
 | 2026-03-10 | recordatorio | AI Futures Research (`pj af`): 3 materiales nuevos en `pending/` (Era IA 2022, Karen Hao Imperio IA, NYT Amodei consciencia). Ampliar investigacion. | Procesar pendientes: leer, analizar, integrar con reading_notes |
-| 2026-03-11 | recordatorio | Capacitacion Ingles: iniciar proyecto para alcanzar nivel C1. Paso 1: nivelacion (determinar nivel actual). Paso 2: disenar roadmap de avance con hitos intermedios (B1->B2->C1). Considerar sembrar proyecto dedicado en investigacion/ | Sesion dedicada: test de nivelacion + roadmap personalizado |
+| 2026-03-25 | recordatorio | English C1: roadmap definido, target Cambridge CAE (Nov/Dic 2026, ~USD 350). Requiere placement test para calibrar timeline (B1=12m, B2=5m, B2+=3m). Contexto: `C:/claude_context/capacitacion/english-c1/` | Hacer placement tests: EF SET (efset.org) + British Council. Con resultado, ajustar fases y contratar tutor |
 | 2026-03-11 | recordatorio | Investigar setup de OpenTelemetry para monitoreo automatizado de consumo de tokens en Claude Code. Motivacion: deteccion tardia de consumo excesivo por componentes en prueba (ej: Atlas agent idle loops). Evaluar: (1) OTEL_METRICS_EXPORTER=console como MVP rapido, (2) Prometheus+Grafana como solucion completa, (3) script de alertas por umbral. Considerar integrarlo al proyecto Agent Token Economics (`pj ate`) | Sesion dedicada: configurar OTEL, validar metricas, definir umbrales de alerta |
 | 2026-03-20 | recordatorio | Crear MCP server de generacion de PDF. Necesidad detectada en FuturosSociosApi: generar documentos tecnicos con fragmentos de codigo. Librerias disponibles: fpdf2, reportlab. Skills `/pdf` y `/code-screenshot` creados como MVP | Sembrar proyecto, definir scope (md-to-pdf, html-to-pdf, code-screenshot-to-pdf), registrar en project-admin |
 | 2026-03-20 | recordatorio | Incorporar herramienta de captura de codigo (code-screenshot) al MCP server de Playwright. Actualmente funciona via skill con flujo manual (HTML + base64 data URL + navigate + screenshot). Ideal: tool nativa `code_screenshot(file, start_line, end_line, language, theme)` que genere PNG directamente | Evaluar si extender playwright MCP existente o crear tool independiente. Considerar integracion con el MCP server de PDF |
