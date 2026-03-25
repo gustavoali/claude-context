@@ -26,6 +26,17 @@
 - **Fecha:** 2026-03-19
 - **Observacion:** En la revision trimestral se detecto que muchos repos tenian commits sin pushear. Agregar paso de push a claude-context y proyecto activo en close-session.
 
+### [PENDIENTE] Aplicar patrones de OpenViking a metodologia de contexto
+- **Prioridad:** Media
+- **Fecha:** 2026-03-25
+- **Origen:** Investigacion OpenViking (ByteDance context DB)
+- **Ideas priorizadas:**
+  1. A2: Structured summary format para observation masking (quick win)
+  2. A3: Retrieval trajectory log (que contexto se cargo y se uso)
+  3. A1: Formalizar categorias de memoria (agregar cases/patterns)
+- **Detalle completo:** `C:/claude_context/investigacion/OpenViking/ANALYSIS_OPENVIKING.md` seccion 8
+- **Patron clave:** Separacion razonar/ejecutar en memory management. LLM decide operaciones, updater las aplica mecanicamente. Evaluar si podemos aplicar esto a como los agentes interactuan con auto-memory.
+
 ### [PENDIENTE] Resolver findings criticos code review en jerarquicos
 - **Prioridad:** Alta
 - **Fecha:** 2026-03-19
