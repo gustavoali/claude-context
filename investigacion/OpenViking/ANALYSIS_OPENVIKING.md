@@ -225,10 +225,119 @@ No necesitamos la complejidad de OpenViking, pero sus PATRONES de diseño
 
 ---
 
-## 7. Próximos Pasos de Investigación
+## 7. Deep Dive: Algoritmos Core
 
-1. [ ] Leer implementación de `hierarchical_retriever.py` para entender el algoritmo en detalle
-2. [ ] Revisar `memory_updater.py` para entender el flow de dedup
-3. [ ] Analizar `compressor.py` para comparar con nuestro observation masking
-4. [ ] Evaluar IDEA-A1 (formalizar categorías de memoria) como primer cambio concreto
-5. [ ] Documentar hallazgos en LEARNINGS.md del proyecto
+### 7.1 Hierarchical Retriever - Algoritmo Detallado
+
+**Archivo:** `openviking/retrieve/hierarchical_retriever.py`
+
+**Constantes clave:**
+- `SCORE_PROPAGATION_ALPHA = 0.5` (50% embedding + 50% parent score)
+- `MAX_CONVERGENCE_ROUNDS = 3` (para si topk no cambia en 3 rondas)
+- `GLOBAL_SEARCH_TOPK = 5` (candidatos iniciales)
+- `HOTNESS_ALPHA = 0.2` (80% semántico + 20% recencia/frecuencia)
+
+**Algoritmo:**
+1. Generar vector de la query (dense + sparse)
+2. Búsqueda global → top 5 entry points
+3. Separar archivos L2 (hits directos) de directorios (para recursión)
+4. Priority queue (max-heap por score):
+   - Pop directorio con mayor score
+   - Buscar hijos en vector index
+   - Para cada hijo: `score = 0.5 * vector_score + 0.5 * parent_score`
+   - Si supera threshold y NO es hoja → push a la queue
+   - Convergencia: si topk no cambió en 3 rondas → stop
+5. Hotness boost final: `(1 - 0.2) * semantic + 0.2 * hotness(frequency, recency)`
+
+**Hotness score:** `sigmoid(log1p(access_count)) * exp(-decay * age_days)` con half-life 7 días.
+
+**Insight para nosotros:** El score propagation es simple pero efectivo. Si alguna vez
+necesitamos buscar en claude_context/ (>50 proyectos), este patrón de "explorar
+directorios con herencia de score" es adoptable sin vector DB.
+
+### 7.2 Memory Extraction Pipeline - Compressor
+
+**Archivo:** `openviking/session/compressor.py` (SessionCompressor)
+
+**Pipeline completo:**
+```
+Messages → [1] Extract (LLM, 6+2 categorías) → Candidates
+  → [2a] Profile? → siempre merge (sin dedup)
+  → [2b] Tool/Skill? → merge por nombre (determinístico)
+  → [2c] Otros? → Vector pre-filter → LLM dedup decision
+  → [3] Apply (create/merge/delete)
+  → [4] Index (chunk + vectorize)
+  → [5] Queue semantic regeneration (L0/L1)
+```
+
+**8 categorías reales** (no 6 como dice la doc):
+
+| Categoría | Owner | Mergeable | Storage |
+|-----------|-------|-----------|---------|
+| profile | user | Si (siempre) | `memories/profile.md` (singleton) |
+| preferences | user | Si | `memories/preferences/` |
+| entities | user | Si | `memories/entities/` |
+| events | user | No | `memories/events/` |
+| cases | agent | No | `memories/cases/` |
+| patterns | agent | Si | `memories/patterns/` |
+| tools | agent | Si | `memories/tools/` (por nombre) |
+| skills | agent | Si | `memories/skills/` (por nombre) |
+
+**Dedup flow (MemoryDeduplicator):**
+1. Embed candidate (abstract + content)
+2. Vector search en categoría → top 5 similares
+3. Check batch-internal (evita duplicados en misma extracción)
+4. LLM decide: SKIP (duplicado) / CREATE (nuevo) / NONE (solo modificar existentes)
+5. Per-existing actions: MERGE (incorporar) o DELETE (conflicto)
+
+**Chunking:** Memorias largas se dividen en chunks con overlap, cada chunk
+tiene su propio vector. Break preferido en párrafos (\n\n).
+
+### 7.3 Memory Updater - Operaciones Mecánicas
+
+**Archivo:** `openviking/session/memory/memory_updater.py`
+
+4 operaciones: WRITE, EDIT, EDIT_OVERVIEW, DELETE
+
+**3 estrategias de merge por campo:**
+- **PATCH:** Para strings, usa SEARCH/REPLACE blocks
+- **SUM:** Para numéricos, suma al valor actual
+- **IMMUTABLE:** Una vez seteado, no cambia (created_at)
+
+**Insight para nosotros:** La separación entre "razonar" (LLM) y "ejecutar" (updater)
+es limpia. Nuestro auto-memory hace ambas cosas en un paso. El pattern de merge ops
+es interesante para memorias que evolucionan (ej: perfil del usuario).
+
+---
+
+## 8. Evaluación de Ideas para Implementar
+
+### Criterios de Evaluación
+
+| Criterio | Peso |
+|----------|------|
+| Valor inmediato para productividad | 40% |
+| Esfuerzo de implementación | 30% |
+| Riesgo de romper algo existente | 20% |
+| Alineación con dirección futura | 10% |
+
+### Ranking Final
+
+| # | Idea | Valor | Esfuerzo | Riesgo | Score |
+|---|------|-------|----------|--------|-------|
+| 1 | A2: Structured summary format | Alto | Bajo | Nulo | 9/10 |
+| 2 | A3: Retrieval trajectory log | Medio-Alto | Bajo | Nulo | 8/10 |
+| 3 | A1: Formalizar categorías memoria | Alto | Bajo-Medio | Bajo | 7/10 |
+| 4 | B1: Auto-generación abstracts | Alto | Medio | Bajo | 6/10 |
+| 5 | B2: Intent-based loading | Alto | Medio-Alto | Medio | 5/10 |
+| 6 | C1: Filesystem virtual MCP | Alto | Alto | Medio | 3/10 |
+
+### Recomendación: Implementar A2 primero
+
+**A2 (Structured summary format)** es el quick win más claro:
+- Cero riesgo (solo cambia un template en la metodología)
+- Mejora inmediata en la calidad de TASK_STATE al cerrar sesión
+- Inspirado directamente en el formato de summary de OpenViking
+- Compatible con nuestro observation masking existente
+
+**Siguiente:** A3 (log de retrieval) como hook, luego A1 (categorías) como mejora al auto-memory.

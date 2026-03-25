@@ -1,6 +1,13 @@
 # AnyoneAI Final Project - Financial Advisor Chatbot
-**Version:** 0.0.0 | **Tests:** 0 | **Coverage:** 0%
-**Ubicacion:** C:/Anyone_AI/final_project
+**Version:** 0.2.0 | **Tests:** 13 passing | **Coverage:** 0%
+**Inicio:** 2026-03-24
+
+## Repositorios
+| Repo | Ubicacion | Remote | Proposito |
+|------|-----------|--------|-----------|
+| **Team (Elloisa)** | C:/Anyone_AI/final_project-team | github.com/Elloisa/Financial_advisor_chatbot | Trabajo colaborativo del equipo |
+| **Personal** | C:/Anyone_AI/final_project-personal | github.com/gustavoali/anyoneai-final-project (private) | Nuestro trabajo en paralelo |
+| **Assignment** | C:/Anyone_AI/final_project | (sin remote) | Template original + contenidos del curso |
 
 ## Stack
 - Python 3.11, LangChain, ChromaDB, sentence-transformers/all-MiniLM-L6-v2
@@ -11,13 +18,14 @@
 ## Componentes
 | Componente | Ubicacion | Estado |
 |------------|-----------|--------|
-| EDA Notebook | notebooks/eda.ipynb | Pendiente |
-| PDF Extraction | src/extraction.py | Pendiente |
-| Chunking + Indexing | src/indexing.py | Pendiente |
-| RAG Pipeline | src/rag.py | Pendiente |
-| FastAPI | src/api.py | Pendiente |
-| Chainlit UI | src/app.py | Pendiente |
-| Docker | docker-compose.yml | Pendiente |
+| EDA Notebook | notebooks/01_eda.ipynb | Completado |
+| PDF Extraction | src/preprocessing.py | Completado (141/141 PDFs) |
+| Chunking + Indexing | src/indexing.py | Completado (~75K chunks) |
+| RAG Pipeline | src/rag.py | Completado |
+| FastAPI | src/api.py | Completado |
+| Chainlit UI | src/app.py | Completado |
+| Docker | docker-compose.yml | Completado |
+| Tests | tests/test_preprocessing.py | 13 passing |
 
 ## Dataset S3
 - Bucket: s3://anyoneai-datasets/nasdaq_annual_reports/
