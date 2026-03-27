@@ -1,34 +1,34 @@
 # Estado - OpenViking Research
-**Actualizacion:** 2026-03-25 | **Sesion:** #2
+**Actualizacion:** 2026-03-26 | **Sesion:** #4
 
-## Completado
+## Completado Esta Sesion
 
-| Paso | Resultado |
-|------|-----------|
-| Explorar estructura del repo | 15+ directorios, docs/en/concepts/ completos |
-| Analizar componentes core Python | openviking/ (client, retrieve, session, storage, service) |
-| Revisar docs conceptuales (8/10) | layers, retrieval, session, extraction, URI, storage |
-| Deep dive: hierarchical_retriever.py | Algoritmo completo documentado (score propagation, convergence, hotness) |
-| Deep dive: compressor.py (SessionCompressor) | Pipeline de 5 fases, 8 categorias reales, dedup flow completo |
-| Deep dive: memory_updater.py | 4 operaciones, 3 merge strategies (PATCH/SUM/IMMUTABLE) |
-| Documentar analisis comparativo | ANALYSIS_OPENVIKING.md v1.0 completo (8 secciones) |
-| Evaluar ideas accionables | 6 ideas rankeadas, A2 recomendada como primera |
+**Overview:** OpenViking research: ideas A2/A3 implementadas + learnings + evaluacion escalabilidad | Completado
+
+**Pasos clave (sesion #3-#4 consolidado):**
+- A2: structured summary format en 07-project-memory-management.md
+- A3: directiva 12e (retrieval trajectory log) en 03-obligatory-directives.md
+- Learnings L-040 a L-044 en CROSS_PROJECT_LEARNINGS v2.1
+- A1: evaluada y descartada (feedback ya cubre cases/patterns)
+- SCALING_EVALUATION.md: roadmap de escalabilidad multi-developer (Fases 0-3)
+
+**Conceptos clave:**
+- Fase 1 (2-3 devs): TASK_STATE per-dev, backlog con owner, memory scoping. Trigger: se suma un dev
+- Fase 2 (4+ devs): MCP server de contexto, embeddings, auto-gen L0. Trigger: grep no alcanza
+- Fase 3 (9+ devs): build vs buy (OpenViking, custom MCP, SaaS)
 
 ## Decisiones
-
-- **A2 primero:** Structured summary format es el quick win con mayor relacion valor/esfuerzo
-- **8 categorias (no 6):** La doc dice 6 pero el codigo tiene 8 (tools + skills adicionales)
-- **Separacion razonar/ejecutar:** Patron valioso: LLM decide, updater aplica mecanicamente
+- A1 descartada: 4 tipos de memoria suficientes para 1 dev
+- Escalabilidad: no implementar nada hasta que se active el trigger de cada fase
+- Todo lo de Fase 0 completado (structured summary, retrieval trajectory, learnings, docs)
 
 ## Proximos Pasos
-
-1. Implementar IDEA-A2: actualizar template de observation masking en metodologia
-2. Implementar IDEA-A3: mecanismo de retrieval trajectory log
-3. Revisar IDEA-A1: evaluar si agregar `cases` y `patterns` al auto-memory
-4. Crear LEARNINGS cross-project con patrones de OpenViking
-5. Opcional: deep dive en intent_analyzer.py para entender query decomposition
+1. Opcional: deep dive en intent_analyzer.py (query decomposition)
+2. Evaluar B1 (auto-generacion de abstracts) cuando haya sesion dedicada
+3. Evaluar B2 (intent-based loading) como investigacion futura
 
 ## Archivos del Proyecto
-- `ANALYSIS_OPENVIKING.md` - Analisis completo con deep dive y evaluacion de ideas
+- `ANALYSIS_OPENVIKING.md` - Analisis completo con deep dive y evaluacion
+- `SCALING_EVALUATION.md` - Roadmap de escalabilidad multi-developer (Fases 0-3)
 - `TASK_STATE.md` - Este archivo
 - `CLAUDE.md` - Contexto del proyecto

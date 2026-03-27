@@ -54,6 +54,42 @@ Error: "Cannot find module '@/utils/hash'" - resuelto corrigiendo import path.
 Decision: bcrypt (no argon2) porque ya es dependencia del proyecto.
 ```
 
+### Structured Summary al Cerrar Sesion
+
+Al cerrar sesion o archivar, comprimir el trabajo en un summary estructurado:
+
+```markdown
+**Overview:** [Tema]: [Intent] | [Resultado] | [Estado]
+
+**Pasos clave:**
+- [Accion 1 → resultado]
+- [Accion 2 → resultado]
+
+**Objetivo principal:** [Que se buscaba lograr]
+
+**Conceptos clave:** [Terminos tecnicos o decisiones arquitectonicas relevantes]
+
+**Pendiente:** [Tareas no terminadas, si las hay]
+```
+
+**Ejemplo:**
+```markdown
+**Overview:** Auth refactor: migrar de session cookies a JWT | Completado | Merge pendiente
+
+**Pasos clave:**
+- Reemplazar express-session por jsonwebtoken en 3 endpoints
+- Agregar middleware de validacion JWT con refresh token
+- Tests: 12/12 pasando, coverage 78%
+
+**Objetivo principal:** Eliminar dependencia de estado server-side para habilitar scaling horizontal
+
+**Conceptos clave:** JWT con refresh rotation, blacklist en Redis para revocacion
+
+**Pendiente:** Code review + merge a develop
+```
+
+Este formato aplica a: seccion "Completado Esta Sesion" en TASK_STATE, archivos en archive/sessions/, y summaries de close-session.
+
 ---
 
 ## 2. Que Mantener vs Que Archivar
@@ -163,8 +199,10 @@ limpieza explicita con: "limpia la memoria del proyecto".
 [Detalle de lo que se esta haciendo, max 30 lineas]
 
 ## Completado Esta Sesion
-| ID | Titulo | Resultado |
-|----|--------|-----------|
+**Overview:** [Tema]: [Intent] | [Resultado] | [Estado]
+**Pasos clave:**
+- [Accion → resultado]
+**Conceptos clave:** [Decisiones o terminos relevantes para retomar]
 
 ## Proximos Pasos
 1. [Max 5 items]
@@ -238,9 +276,20 @@ Proximo ID: LTE-NNN
 
 ```markdown
 # Sesion YYYY-MM-DD - [Descripcion]
-## Historias: [ID]: [resultado 1 linea]
-## Cambios: | Archivo | Cambio |
-## Decisiones: [Decision]: [razon]
+**Overview:** [Tema]: [Intent] | [Resultado] | [Estado]
+
+## Pasos clave
+- [Accion → resultado]
+
+## Conceptos clave
+[Decisiones, terminos tecnicos, o patrones relevantes]
+
+## Archivos modificados
+| Archivo | Cambio |
+|---------|--------|
+
+## Pendiente al cerrar
+[Items que quedaron para la proxima sesion]
 ```
 
 ---

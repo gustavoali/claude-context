@@ -116,12 +116,16 @@ Para archivos de código, usa tree-sitter para extraer esqueleto estructural
 ### 4.1 ADOPTAR (alto valor, bajo esfuerzo)
 
 #### IDEA-A1: Formalizar categorías de memoria
-Nuestro auto-memory es free-form. OpenViking usa 6 categorías con semántica clara.
+Nuestro auto-memory es free-form. OpenViking usa 8 categorías con semántica clara.
 Podríamos formalizar nuestras categorías (ya tenemos user, feedback, project, reference)
 y agregar `cases` (problema + solución) y `patterns` (patrones reutilizables).
 
-**Acción:** Revisar si las categorías de auto-memory de Claude Code cubren el mismo espacio.
-Considerar agregar `cases` para debugging recurrente.
+**Evaluación (2026-03-25):** DESCARTADA como cambio de tipos. Nuestro `feedback` ya cubre
+cases ("cuando X, hacer Y") y patterns ("preferir approach X"). Agregar tipos nuevos
+complejiza sin beneficio claro para 1 developer. OpenViking lo necesita porque tiene
+dedup automático por categoría — nosotros no. La simpleza de 4 tipos es ventaja.
+Lo que SI vale: mejorar la guía de `feedback` para que capture el "por qué" y el "cómo"
+(ya está en body_structure con Why/How to apply).
 
 #### IDEA-A2: Observation masking mejorado con formato de summary
 OpenViking genera summaries estructurados al comprimir sesiones:

@@ -562,6 +562,50 @@ Esto incluye:
 
 Esta responsabilidad es **transversal a todos los proyectos** y se ejerce de forma continua, no solo cuando ocurre un incidente.
 
+### 12e. Retrieval Trajectory Log
+
+**Registrar que contexto se cargo y que se uso realmente en cada sesion.**
+
+Inspirado en OpenViking (ByteDance): su DebugService/observer loguea que informacion consulto el agente. Nosotros aplicamos una version liviana basada en TASK_STATE.
+
+#### Al inicio de sesion
+
+Registrar mentalmente (no escribir aun) que archivos de contexto se cargaron:
+- CLAUDE.md del proyecto + @imports
+- TASK_STATE.md
+- Archivos adicionales leidos para retomar trabajo
+
+#### Al cerrar sesion (en /close-session)
+
+Agregar seccion opcional en TASK_STATE o en el summary de cierre:
+
+```markdown
+## Contexto Cargado
+| Archivo | Cargado | Referenciado | Util |
+|---------|---------|-------------|------|
+| CLAUDE.md | Si | Si | Si |
+| TASK_STATE.md | Si | Si | Si |
+| ARCHITECTURE.md | Si | No | No - no se necesitaba para esta tarea |
+| LEARNINGS.md | Si | Si (L-015) | Si |
+```
+
+**Util:** Si = informo una decision. No = se cargo pero no aporto valor.
+
+#### Cuando registrar
+
+| Situacion | Accion |
+|-----------|--------|
+| Sesion corta (<30 min) | Opcional |
+| Sesion larga (>1h) | Recomendado |
+| Se detecto contexto innecesario cargado | Obligatorio (feedback para optimizar @imports) |
+| Se necesito contexto que no estaba cargado | Obligatorio (feedback para agregar @imports) |
+
+#### Para que sirve
+
+1. **Optimizar @imports:** Si un archivo se carga siempre pero nunca se usa, sacarlo del @import
+2. **Detectar gaps:** Si se necesita leer archivos extra frecuentemente, agregarlos al @import
+3. **Medir eficiencia:** Ratio archivos_utiles / archivos_cargados como proxy de precision de contexto
+
 ---
 
 ## 14. Alertas Cross-Project
@@ -669,6 +713,7 @@ PA-027 implementara sync automatico desde Project Admin DB hacia project-registr
     12b. Documentar sugerencias y decisiones inmediatamente
     12c. Checkpoints de estado en el flujo de trabajo
     12d. Observacion continua de resiliencia de contexto
+    12e. Retrieval trajectory log (que contexto se cargo y se uso)
 13. Permisos amplios por defecto en cada proyecto nuevo
 14. Alertas cross-project (hooks, incidentes, recordatorios, CE)
 15. Registro integral de proyectos (project-registry.json + Project Admin DB)

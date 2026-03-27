@@ -1,5 +1,5 @@
 # Cross-Project Learnings
-**Version:** 2.0 | **Actualizacion:** 2026-03-19
+**Version:** 2.1 | **Actualizacion:** 2026-03-25
 
 Patrones reutilizables extraidos de proyectos del ecosistema. Se carga via @import en todos los proyectos.
 
@@ -206,3 +206,27 @@ Retorna null silenciosamente para objetos inactivos. Para encontrar inactivos: `
 ### L-039: `EditorApplication.isPlaying = true` es asincrono
 **Fuente:** Gaia Protocol | **Aplica a:** Automatizacion Unity Editor
 La transicion ocurre en el siguiente frame. Herramientas que setean Play Mode deben documentar que el caller necesita esperar.
+
+---
+
+## Context Engineering (patrones de gestion de contexto)
+
+### L-040: Tiered loading L0/L1/L2 reduce tokens 90%+
+**Fuente:** OpenViking (ByteDance) | **Aplica a:** Sistemas de contexto para agentes AI
+Organizar contexto en 3 capas: L0 abstract (~100 tokens, para filtrado rapido), L1 overview (~2K tokens, para navegacion), L2 contenido completo (bajo demanda). Generacion bottom-up: hojas -> padres -> raiz. Nuestro CLAUDE.md/TASK_STATE/archive/ es un L0/L1/L2 informal; la diferencia es que OpenViking lo auto-genera con LLM.
+
+### L-041: Score propagation jerarquico para busqueda de contexto
+**Fuente:** OpenViking | **Aplica a:** Busqueda en repositorios de contexto grandes (>50 items)
+Formula: `final_score = 0.5 * vector_score + 0.5 * parent_score`. Explorar directorios con priority queue, propagar relevancia del padre a hijos. Convergencia: parar si top-K no cambia en 3 rondas. Mas eficiente que flat search cuando la jerarquia de directorios tiene semantica.
+
+### L-042: Separar razonamiento de ejecucion en memory management
+**Fuente:** OpenViking | **Aplica a:** Automatizacion de memorias de proyecto
+OpenViking separa el pipeline en: (1) LLM extrae candidatos de memoria, (2) LLM decide dedup (skip/create/merge), (3) Updater aplica mecanicamente las operaciones. El Updater no llama LLM — solo ejecuta WRITE/EDIT/DELETE con merge ops (PATCH para strings, SUM para numericos, IMMUTABLE para campos fijos). Patron aplicable a cualquier sistema donde LLM genera acciones estructuradas.
+
+### L-043: Categorizar memorias formalmente mejora dedup y retrieval
+**Fuente:** OpenViking | **Aplica a:** Sistemas de memoria para agentes
+8 categorias: profile (singleton, siempre merge), preferences (por topico), entities (personas/proyectos), events (inmutables), cases (problema+solucion), patterns (procesos reutilizables), tools (estadisticas de uso), skills (workflows). Las categorias mergeables se fusionan con existentes; las inmutables se acumulan. Nuestro auto-memory tiene 4 tipos (user, feedback, project, reference); podria beneficiarse de agregar cases y patterns.
+
+### L-044: Intent analysis pre-retrieval elimina busquedas innecesarias
+**Fuente:** OpenViking | **Aplica a:** Sistemas que cargan contexto al inicio de sesion
+Antes de buscar, analizar el intent de la query y generar 0-5 typed queries con tipo (memory/resource/skill) y prioridad. Si el intent es chitchat → 0 queries (no cargar nada). Si es complejo → multiples queries a diferentes scopes. Nosotros cargamos todo via @imports sin filtrar por intent; para proyectos con mucho contexto, pre-filtrar ahorraría tokens.
