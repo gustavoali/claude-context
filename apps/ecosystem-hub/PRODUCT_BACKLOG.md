@@ -1,5 +1,5 @@
 # Backlog - Ecosystem Hub
-**Version:** 1.1 | **Actualizacion:** 2026-03-23
+**Version:** 1.2 | **Actualizacion:** 2026-03-27
 
 ## Resumen
 | Metrica | Valor |
@@ -8,7 +8,7 @@
 | Total Puntos | 67 |
 | Epics | 4 |
 | Pendientes | 5 |
-| Completadas | 17 |
+| Completadas | 20 |
 
 ## Vision
 Dashboard web unificado para administrar proyectos, ideas y alertas del ecosistema personal. MVP lee archivos MD/JSON directamente (sin DB para ideas/alertas). Extiende Project Admin (backend) y Web Monitor (frontend).
@@ -18,17 +18,10 @@ Dashboard web unificado para administrar proyectos, ideas y alertas del ecosiste
 |------|-----------|--------|--------|
 | EPIC-01: Backend - File Parsers & REST | EH-001 a EH-005 | 15 | Done |
 | EPIC-02: Dashboard + Alertas UI | EH-006 a EH-012 | 22 | Done |
-| EPIC-03: Ideas UI | EH-013 a EH-017 | 17 | En Progreso |
+| EPIC-03: Ideas UI | EH-013 a EH-017 | 17 | Done |
 | EPIC-04: Polish & Integracion | EH-018 a EH-022 | 13 | Pendiente |
 
 ## Pendientes (indice)
-
-### EPIC-03: Ideas UI
-| ID | Titulo | Pts | Prioridad | Deps |
-|----|--------|-----|-----------|------|
-| EH-015 | Ideas - transicion idea a proyecto | 5 | Medium | EH-014 |
-| EH-016 | Ideas - vinculacion con proyectos existentes | 2 | Medium | EH-013 |
-| EH-017 | Ideas - vista por proyecto (ideas relacionadas) | 2 | Low | EH-016 |
 
 ### EPIC-04: Polish & Integracion (~2 dias)
 | ID | Titulo | Pts | Prioridad | Deps |
@@ -56,6 +49,9 @@ Dashboard web unificado para administrar proyectos, ideas y alertas del ecosiste
 | EH-012 | Proyectos - tabla con filtros | 3 | 2026-03-23 | Conectado a PA API |
 | EH-013 | Ideas - listado con filtros | 5 | 2026-03-20 | Tabla + filtros + summary cards |
 | EH-014 | Ideas - crear/editar inline | 3 | 2026-03-20 | Dialog reactivo + toast |
+| EH-015 | Ideas - transicion idea a proyecto | 5 | 2026-03-27 | Dialog pre-llenado, createProject, slug validation |
+| EH-016 | Ideas - vinculacion proyectos | 2 | 2026-03-27 | Link/unlink, columna proyecto, filtro |
+| EH-017 | Ideas - vista por proyecto | 2 | 2026-03-27 | Seccion en detalle proyecto, navegacion cruzada |
 
 ## ID Registry
 | Rango | Estado |
