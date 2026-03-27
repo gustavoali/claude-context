@@ -25,3 +25,23 @@
 **Learning:** The `@piotr-agier/google-drive-mcp` npm package only provides read/search capabilities for Google Drive, not file upload. For uploading files to Google Drive programmatically, you need either a custom Python script using the Google Drive API, or manual upload via the browser. The MCP setup effort was wasted for the upload use case.
 **Applies to:** Choosing tools for Google Drive integration, MCP server selection
 
+### 2026-03-24 - sec_edgar_downloader v5+ renamed `save_path` to `download_folder`
+**Context:** Setting up SEC EDGAR 10-K filing downloads for financial advisor chatbot project
+**Learning:** The `sec_edgar_downloader` library renamed the `Downloader` constructor parameter from `save_path` to `download_folder` in recent versions. Using the old parameter name fails silently (no error, but files may go to unexpected location). Always check `help(Downloader.__init__)` when using pinned vs latest versions.
+**Applies to:** Projects using `sec_edgar_downloader` library, SEC EDGAR data pipelines
+
+### 2026-03-24 - sec_edgar_downloader saves under `sec-edgar-filings/` subdirectory
+**Context:** Download script reported 0 files downloaded despite successful API calls because file count logic looked in `output_dir/TICKER/10-K/` instead of actual path
+**Learning:** `sec_edgar_downloader` creates an intermediate `sec-edgar-filings/` directory inside the download folder. Actual file structure is `download_folder/sec-edgar-filings/TICKER/FORM_TYPE/ACCESSION_NUMBER/{full-submission.txt, primary-document.html}`. File counting/processing logic must account for this extra directory level.
+**Applies to:** SEC EDGAR download pipelines, file post-processing scripts
+
+### 2026-03-24 - SEC 10-K filings come as HTML+TXT, not PDF
+**Context:** Planning to use PyMuPDF/pdfplumber for text extraction from SEC filings
+**Learning:** SEC EDGAR 10-K filings downloaded via `sec_edgar_downloader` come as `primary-document.html` and `full-submission.txt`, not PDFs. Text extraction can be done directly from HTML (BeautifulSoup) or plain text, eliminating the need for PDF parsing libraries. This simplifies the processing pipeline significantly.
+**Applies to:** SEC EDGAR document processing, RAG pipelines over financial filings
+
+### 2026-03-24 - sec_edgar_downloader fails silently on delisted/acquired tickers
+**Context:** Bulk downloading 10-K filings for 50 NASDAQ tech companies; ANSS (Ansys, acquired by Synopsys) and CHEGG (delisted) failed with "Ticker is invalid and cannot be mapped to a CIK"
+**Learning:** `sec_edgar_downloader` uses an internal ticker-to-CIK mapping that doesn't cover all tickers, especially recently delisted or acquired companies. The error is a `ValueError` that can be caught gracefully. When building bulk download scripts, always wrap individual ticker downloads in try/except and log failures separately rather than letting one bad ticker abort the entire batch. Expect ~2-5% failure rate on large ticker lists.
+**Applies to:** SEC EDGAR bulk download pipelines, financial data collection scripts
+
