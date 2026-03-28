@@ -98,3 +98,11 @@ Archivo `whatsapp_linkedin_links.json` en workspace contiene 7 posts de LinkedIn
 `C:/CLAUDE_CONTEXT/personal/workspace/whatsapp_linkedin_links.json`
 - 7 posts LinkedIn evaluados
 - Pendiente: marcar deleted_from_whatsapp = true cuando se completen las eliminaciones
+
+---
+
+## Instruccion importante para el agente que tome este proyecto
+
+**NO continuar con la eliminacion de mensajes de WhatsApp por ahora.** Esa tarea queda pausada hasta nueva instruccion del usuario. El archivo `whatsapp_linkedin_links.json` ya tiene los links evaluados y guardados - ese objetivo esta cumplido.
+
+Enfocarse en: disenar la arquitectura del proyecto, el backlog, y la estructura de carpetas. La eliminacion de mensajes se retomara en una sesion posterior cuando el usuario lo indique.

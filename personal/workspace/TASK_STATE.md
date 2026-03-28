@@ -1,21 +1,23 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-28 | **Sesion:** #18
+**Actualizacion:** 2026-03-28 | **Sesion:** #19
 
 ## Completado Esta Sesion
-**Overview:** Diagnostico WSL + Chrome memory + actualizacion alertas (Quimera, MCP Gateway) | Completado | Sesion corta
+**Overview:** Diagnostico Chrome + creacion proyecto whatsapp-automation + descubrimiento Drive MCP | Completado | Sesion corta
 
 **Pasos clave:**
-- Investigado motivo de WSL corriendo: no fue conclusivo, causas probables son Docker containers (Gateway, PA DB) o scripts pjr
-- Diagnosticado consumo de Chrome: 15 procesos, ~1.8 GB RAM. Google Maps (PID 25296) con 4167s CPU acumulado como principal sospechoso; sugerido chrome://settings/performance para detalle
-- Actualizadas alertas: Quimera (nueva, alta prioridad) y MCP Shared Gateway (alta prioridad marcada)
+- Investigado consumo Chrome: 15 procesos, ~1.8 GB. Google Maps (4167s CPU acumulado) como principal consumidor. Herramientas sugeridas: chrome://settings/performance y Shift+Esc
+- Revisada sesion interrumpida de WhatsApp automation (archivo 4d64fa54): Fase 1 con Playwright completada parcialmente (links extraidos, JSON generado, eliminacion interrumpida)
+- Creado proyecto `whatsapp-automation` (`pjr wa`): directorio, seed doc con contexto completo + instruccion de no continuar eliminacion, registrado en project-registry.json
+- Sesion paralela lanzada con sembrar-remoto.ps1 pasando SEED_DOCUMENT.md como fuente
+- Descubierto: google-drive MCP esta configurado en ~/.claude.json (v1.7.3) pero no se carga en esta sesion. Requiere reiniciar sesion para buscar carpeta "facturas genia"
 
-**Conceptos clave:** Chrome usa un proceso por pestaña/extension/servicio Worker. `chrome://settings/performance` y Shift+Esc son las herramientas nativas para diagnostico fino.
+**Conceptos clave:** Drive MCP = `@piotr-agier/google-drive-mcp`, funciona pero necesita sesion nueva. WhatsApp automation short code = `wa`.
 
 ## Proximos Pasos
-1. **[ALTA]** Activar MCP Shared Gateway en ~/.claude.json y validar E2E
-2. **[ALTA]** Continuar setup e2e Quimera (`pjr qm`)
-3. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
-4. Revisar hallazgos de OpenViking Research (ANALYSIS_OPENVIKING.md)
+1. **[PENDIENTE]** Reiniciar sesion Claude Code y buscar carpeta "facturas genia" en Google Drive
+2. **[ALTA]** Activar MCP Shared Gateway en ~/.claude.json y validar E2E
+3. **[ALTA]** Continuar setup e2e Quimera (`pjr qm`)
+4. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
 5. Analizar infografia Udemy "Top 100 Skills 2026"
 
 ## Decisiones Pendientes
