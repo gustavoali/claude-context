@@ -1,31 +1,26 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-28 | **Sesion:** #16
+**Actualizacion:** 2026-03-28 | **Sesion:** #17
 
 ## Completado Esta Sesion
-**Overview:** Mantenimiento ecosistema: sync DBs a LIBERTAD, diagnostico memoria MCP, nuevo proyecto mcp-shared-gateway | Completado | Sesion variada
+**Overview:** Gestion de alertas + lanzamiento sesiones paralelas (Quimera, Ecosystem Hub) | Completado | Sesion corta
 
 **Pasos clave:**
-- Diagnostico consumo RAM: 3 instancias Claude Code = 3.2 GB, MCP servers = ~1 GB (748 MB Node + 283 MB Python), VmmemWSL = 1.2 GB
-- WiFi sin IPv4 resuelto (DHCP renew, asignada 192.168.1.38)
-- Conectividad con LIBERTAD (192.168.1.35) establecida via puertos PG 5434/5435
-- Sincronizados 4 proyectos faltantes a LIBERTAD PA DB (project-management #363, quimera #364, screen-capture #365, anyoneai-llm-apps #366) + 8 metadata
-- Secuencias projects_id_seq y project_metadata_id_seq corregidas en LIBERTAD
-- Proyecto MCP Shared Gateway creado (semilla): investigacion para eliminar duplicacion MCP servers entre sesiones
-- MCP Shared Gateway registrado en: project-registry.json (short: msg), LIBERTAD PA DB (#367), ALERTS.md
-- Brotado en terminal paralela via pjr
-- Sprint Backlog DB: verificado vacio en ambos equipos (solo schema)
-- Projects exportado a CSV: C:/Users/gdali/Downloads/projects_export.csv
-- WSL apagado para liberar RAM
+- Repaso completo de estado real de todas las alertas del ecosistema (5 agentes de exploracion en paralelo)
+- Alertas actualizadas: Ecosystem Hub (77%->91%), Narrador (Stage 1 completo), English C1 (roadmap definido), Intive (contexto ampliado), capacitaciones (roadmaps definidos)
+- Alerta "Evaluar mover PostgreSQL a otra maquina" dada de baja por el usuario
+- MCP Shared Gateway: alerta actualizada (implementado, 63% ahorro medido)
+- Lanzada sesion paralela Quimera (`pjr qm`) para setup e2e
+- Lanzada sesion paralela Ecosystem Hub (`pjr eh`) para continuar EPIC-04
 - Resuelto sudoku 6x6
 
-**Conceptos clave:** psycopg2 como alternativa a psql cuando WSL esta apagado. Secuencias PG se dessincronizan al insertar con IDs explicitos. `@nano-step/shared-mcp-proxy` es match exacto para el problema de MCP duplicados.
+**Conceptos clave:** `pjr` es el comando correcto para sesiones paralelas (no orchestrator). ALERTS.md fue simplificado por el usuario durante la sesion.
 
 ## Proximos Pasos
-1. Completar sembrado de `investigacion/ai-dev-cost-model`
-2. Arrancar Sprint 1 de Quimera (Fase 1 MVP: Cuentos + Roasts)
-3. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
-4. Revisar hallazgos de OpenViking Research (ANALYSIS_OPENVIKING.md)
-5. Desarrollar MCP Shared Gateway (evaluar paquetes, PoC, medir ahorro)
+1. Activar MCP Shared Gateway en ~/.claude.json y validar E2E
+2. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
+3. Revisar hallazgos de OpenViking Research (ANALYSIS_OPENVIKING.md)
+4. Completar sembrado de `investigacion/ai-dev-cost-model`
+5. Analizar infografia Udemy "Top 100 Skills 2026"
 
 ## Decisiones Pendientes
 (ninguna)

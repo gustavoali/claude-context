@@ -129,3 +129,17 @@ Patrones y hallazgos de sesiones generales que no pertenecen a un proyecto espec
 **Learning:** `$Input` is an automatic variable in PowerShell that represents the pipeline input enumerator. Naming a `param([string]$Input)` in a function causes the parameter to be silently overridden by the automatic variable, returning an empty string instead of the bound argument. Renaming to any non-reserved name (e.g., `$Id`, `$Value`) fixes the issue immediately. Other PowerShell automatic variables to avoid as param names: `$Args`, `$PSItem` (`$_`), `$PSBoundParameters`, `$MyInvocation`, `$Error`, `$Host`, `$PID`, `$PSScriptRoot`, `$PSCommandPath`.
 **Applies to:** Any PowerShell function or script that defines parameters ÔÇö especially helper functions inside larger scripts. The bug is silent: no error, just wrong behavior, making it hard to diagnose without debug output.
 
+
+
+Based on my analysis of the transcript, I can identify two new reusable learnings:
+
+### 2026-03-28 - PostgreSQL sequences desync when inserting with explicit IDs
+**Context:** Syncing projects from local PA DB to LIBERTAD PA DB by inserting rows with explicit ID values. After insertion, subsequent `INSERT` without explicit ID failed because the sequence (`projects_id_seq`, `project_metadata_id_seq`) still pointed to a value lower than the max existing ID.
+**Learning:** When inserting rows into PostgreSQL with explicit IDs (bypassing the sequence via `INSERT INTO ... (id, ...) VALUES (N, ...)`), the associated sequence is NOT automatically updated. The next `INSERT` relying on `DEFAULT` or `nextval()` will generate a conflicting ID. Fix after bulk insert: `SELECT setval('sequence_name', (SELECT MAX(id) FROM table_name));` for each affected sequence. This applies to any migration, sync, or seed operation that copies rows with their original IDs.
+**Applies to:** Any PostgreSQL database sync, migration, or seed operation where rows are inserted with explicit primary key values
+
+### 2026-03-28 - GitHub Push Protection blocks entire push for secrets in ANY commit in the range
+**Context:** Push to GitHub was blocked by GH013 (Push Protection) because AWS keys existed in older commits (`anyoneai/final_project/CLAUDE.md`), even though the current session's commits had no secrets.
+**Learning:** GitHub Push Protection scans ALL commits being pushed, not just the latest one. If any commit in the push range contains a detected secret (even commits from weeks ago that were never pushed), the entire push is blocked. Two resolution paths: (1) **Quick:** Visit the `unblock-secret` URLs provided in the error and approve each secret individually (must approve ALL flagged secrets, not just some). (2) **Correct:** Remove secrets from the file, then use `git filter-repo` or `BFG Repo-Cleaner` to purge them from history. Note: each secret type (Access Key ID, Secret Access Key) requires separate approval even if they're in the same file. The approval must be done per-secret, not per-file.
+**Applies to:** Any git repository pushing to GitHub that has ever had secrets committed, even if the secrets are in old/historical commits
+
