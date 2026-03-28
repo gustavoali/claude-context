@@ -1,32 +1,32 @@
 # Estado - Quimera
-**Actualizacion:** 2026-03-23 | **Version:** 1.0.0
+**Actualizacion:** 2026-03-28 | **Version:** 1.0.0
 
-## Completado Esta Sesion (2026-03-21/23)
-Brotado completo + implementacion de las 4 fases en una sesion.
+## Completado Esta Sesion (2026-03-28)
+**Overview:** Infra setup: levantar entorno de desarrollo completo | Completado | Listo para testing e2e
 
-| Entregable | Detalle |
-|------------|---------|
-| Arquitectura | ARCHITECTURE_ANALYSIS.md (5 ADRs, modular monolith) |
-| Seguridad | SECURITY_ANALYSIS.md (STRIDE, OWASP, Ley 25.326) |
-| Backlog | 48 stories (QM-001..048), 14 epics, todas completadas |
-| Business | BUSINESS_STAKEHOLDER_DECISION.md (GO, score 4.0/5) |
-| Backend | FastAPI: 8 routers, 4 generators, 7 services, auth+IDOR |
-| Frontend | Next.js PWA: 6 paginas, mobile-first, SEO, service worker |
-| Tests | 372 backend tests pasando, ruff limpio |
-| CI | GitHub Actions (lint + test + pip-audit) |
-| Commits | 12 commits limpios, ~26,500 lineas |
+**Pasos clave:**
+- Docker compose up: PG (5436) + Redis (6379), ambos healthy
+- `.env` configurado con JWT_SECRET random + Groq API key (reutilizada de llm-router)
+- Alembic migration inicial generada y aplicada: 13 tablas creadas
+- Backend startup verificado: `/health` 200, `/docs` 200
+- 372/372 tests pasando sin regresiones
+- Test real con Groq API: roast argentino + cuento infantil generados OK, costo $0
+- Fix: `config.py` env_file path corregido `.env` -> `../.env` (relativo a backend/)
 
-Decisiones clave:
-- Multi-provider LLM con fallback (Claude/OpenAI/Groq) via httpx
-- Edge TTS gratis (es-AR-ElenaNeural) como default para audio
-- Parent account obligatoria <13, teens 14+ con consent
-- Double moderation (pre+post LLM) con blocklists por segmento
-- Stripe placeholder listo, MercadoPago implementado con HMAC
-- Account deletion hard-delete para compliance Ley 25.326
+**Conceptos clave:**
+- Groq API key gratuita reutilizada de `C:/investigacion/llm-router/.env`
+- Latencia Groq en free tier: 15-45s (vs 1.7s reportado en llm-landscape, posible cold start)
+- Encoding UTF-8 de respuestas Groq verificado correcto (artefactos eran del terminal Windows)
+
+## Sesion anterior (2026-03-21/23)
+Brotado completo + implementacion 4 fases. Backend 8 routers, 4 generators, 7 services. Frontend Next.js PWA. 372 tests. 12 commits, ~26,500 lineas.
 
 ## Proximos Pasos
-1. Levantar Docker (PG + Redis) y probar e2e real
-2. Configurar `.env` con API keys (Anthropic, OpenAI, MercadoPago)
-3. `alembic revision --autogenerate` + `alembic upgrade head`
+1. Levantar uvicorn + probar flujo e2e via API (register -> profile -> generar cuento/roast)
+2. Seed de subscription_plans en DB (necesarios para pagos)
+3. Probar frontend conectado al backend (npm run dev + uvicorn)
 4. Consultar abogado Ley 25.326 / AAIP (bloqueante pre-launch)
-5. Testing manual con contenido real (prompts, moderacion, imagenes)
+5. Testing manual con contenido real (moderacion, age-gate, prompt injection)
+
+## Decisiones Pendientes
+- Latencia Groq alta en free tier: evaluar si es aceptable para UX o si necesita provider pago para produccion
