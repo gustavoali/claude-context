@@ -7,8 +7,8 @@
 | Total historias | 13 |
 | Puntos totales | 34 |
 | Epics | 4 |
-| Completadas | 0 |
-| En progreso | 0 |
+| Completadas | 8 (21 pts) |
+| Pendientes | 5 (13 pts) |
 
 ## Vision
 Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante un gateway proxy compartido basado en `mcp-proxy` y HTTP nativo para servers Python. Objetivo: reducir >= 50% el consumo de RAM (~1 GB a ~500 MB) manteniendo funcionalidad completa, con lifecycle automatizado y setup reproducible.
@@ -16,10 +16,10 @@ Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante un
 ## Epics
 | Epic | Historias | Puntos | Status |
 |------|-----------|--------|--------|
-| EPIC-A: PoC | MSG-001, MSG-002, MSG-003 | 8 | Pendiente |
-| EPIC-B: Node.js Stateless | MSG-004, MSG-005 | 5 | Pendiente |
-| EPIC-C: Python HTTP | MSG-006, MSG-007, MSG-008 | 8 | Pendiente |
-| EPIC-D: Lifecycle y Produccion | MSG-009, MSG-010, MSG-011, MSG-012, MSG-013 | 13 | Pendiente |
+| EPIC-A: PoC | MSG-001, MSG-002, MSG-003 | 8 | Done |
+| EPIC-B: Node.js Stateless | MSG-004, MSG-005 | 5 | Done |
+| EPIC-C: Python HTTP | MSG-006, MSG-007, MSG-008 | 8 | Done (via mcp-proxy) |
+| EPIC-D: Lifecycle y Produccion | MSG-009, MSG-010, MSG-011, MSG-012, MSG-013 | 13 | 8 pts done, 5 pendientes |
 
 ## Pendientes (con detalle)
 
@@ -122,6 +122,14 @@ Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante un
 ## Completadas (indice)
 | ID | Titulo | Puntos | Fecha | Detalle |
 |----|--------|--------|-------|---------|
+| MSG-001 | Instalar y validar mcp-proxy con un server Node.js | 2 | 2026-03-28 | PoC OK, --stateless requerido |
+| MSG-002 | Conectar Claude Code al proxy via streamable HTTP | 3 | 2026-03-28 | Config validada, E2E pendiente restart |
+| MSG-003 | Medir baseline de memoria pre-gateway | 3 | 2026-03-28 | 5 sesiones, 3.2 GB total, 2.5 GB stateless |
+| MSG-004 | Configurar todos los servers Node.js stateless | 3 | 2026-03-28 | 3 servers + 3 Python via mcp-proxy |
+| MSG-005 | Actualizar ~/.claude.json con servers via proxy | 2 | 2026-03-28 | Documentado en docs/claude-json-config.md |
+| MSG-009 | Crear script Start-Gateway.ps1 | 3 | 2026-03-28 | 6 servers, PID file, logs |
+| MSG-010 | Crear scripts Stop y Status | 2 | 2026-03-28 | Kill recursivo, health check HTTP |
+| MSG-011 | Medicion final de ahorro de memoria | 3 | 2026-03-28 | 1.6 GB ahorro (63% stateless) |
 
 ## ID Registry
 | Rango | Estado |

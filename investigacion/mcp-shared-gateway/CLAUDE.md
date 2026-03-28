@@ -1,10 +1,10 @@
 # MCP Shared Gateway - Project Context
-**Version:** 0.2.0 | **Estado:** Brote (listo para desarrollar)
+**Version:** 0.3.0 | **Estado:** Implementado (pendiente activacion)
 **Ubicacion:** C:/investigacion/mcp-shared-gateway
 **Contexto:** C:/claude_context/investigacion/mcp-shared-gateway
 
 ## Proposito
-Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante un gateway/proxy compartido basado en `mcp-proxy` (punkpeye). Objetivo: reducir >= 50% el consumo de RAM (~1 GB a ~500 MB).
+Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante proxies mcp-proxy compartidos. **Resultado medido: ahorro de 1.6 GB (63% de stateless, 41% total) con 5 sesiones.**
 
 ## Stack
 - Node.js (mcp-proxy, named-server-config)
@@ -25,15 +25,29 @@ Eliminar la duplicacion de MCP servers entre sesiones de Claude Code mediante un
 | PowerShell lifecycle | `devops-engineer` |
 | Testing E2E | `test-engineer` |
 
+## Puertos
+| Puerto | Server |
+|--------|--------|
+| 9800 | project-admin |
+| 9801 | google-drive |
+| 9802 | youtube-transcript |
+| 9803 | youtube (Python) |
+| 9804 | narrador (Python) |
+| 9805 | llm-router (Python) |
+
 ## Comandos
 ```bash
-# Arrancar gateway (pendiente implementacion)
-pwsh scripts/Start-Gateway.ps1
+# Arrancar gateway (6 servers)
+pwsh C:/investigacion/mcp-shared-gateway/scripts/Start-Gateway.ps1
 # Parar gateway
-pwsh scripts/Stop-Gateway.ps1
-# Estado
-pwsh scripts/Get-GatewayStatus.ps1
+pwsh C:/investigacion/mcp-shared-gateway/scripts/Stop-Gateway.ps1
+# Estado y memoria
+pwsh C:/investigacion/mcp-shared-gateway/scripts/Get-GatewayStatus.ps1
 ```
+
+## Activacion
+Ver `docs/claude-json-config.md` para los cambios en `~/.claude.json`.
+Requiere: (1) arrancar gateway, (2) cambiar servers a type:http, (3) reiniciar sesiones.
 
 ## Documentacion
 @C:/claude_context/investigacion/mcp-shared-gateway/SEED_DOCUMENT.md

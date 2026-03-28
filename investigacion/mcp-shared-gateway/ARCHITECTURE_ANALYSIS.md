@@ -3,10 +3,15 @@
 
 ## Resumen Ejecutivo
 
-Reducir ~1 GB de RAM eliminando la duplicacion de MCP servers entre sesiones
-de Claude Code. La solucion usa `mcp-proxy` (punkpeye) con named servers para
-exponer todos los MCP servers stdio como endpoints SSE/HTTP en un unico
-proceso, y configura Claude Code para conectarse via HTTP en lugar de stdio.
+Reducir ~1.8 GB de RAM (73% de stateless, 48% total) eliminando la duplicacion
+de MCP servers entre sesiones de Claude Code. La solucion usa `mcp-proxy`
+(punkpeye) en modo stateless, un proceso por server, exponiendo cada MCP
+server stdio como endpoint HTTP en su propio puerto. Python servers corren
+HTTP nativo via FastMCP. Claude Code se conecta con `type: "http"`.
+
+**CORRECCION POST-PoC:** `--named-server-config` NO existe en mcp-proxy v6.4.4.
+El proxy es 1:1 (un comando stdio, un endpoint HTTP). Se usa un mcp-proxy
+por server Node.js stateless (3 instancias, puertos 9800-9802).
 
 ## Diagrama de Componentes
 
@@ -353,7 +358,7 @@ Cada Python server entry tiene: name, command, args, cwd, port, transport.
 
 | ID | Riesgo/TD | Severidad | Mitigacion |
 |----|-----------|-----------|------------|
-| R-001 | mcp-proxy no soporta named servers con streamable HTTP | Alta | [VERIFICAR] Probar antes de implementar. Fallback: SSE |
+| R-001 | `--named-server-config` NO EXISTE en mcp-proxy v6.4.4 | RESUELTA | Usar 1 mcp-proxy por server (1:1). Probado en PoC: funciona |
 | R-002 | Python servers FastMCP: verificar que `run(transport="http")` funciona estable | Media | Probar con un server aislado primero |
 | R-003 | Windows path handling en servers.json (backslashes) | Media | Usar forward slashes en JSON, probar |
 | R-004 | Claude Code reconexion: si gateway cae, todas las tools caen | Alta | Auto-restart agresivo (<5s). Stateful servers no afectados |
