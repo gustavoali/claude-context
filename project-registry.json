@@ -2,7 +2,7 @@
   "_meta": {
     "version": "1.2",
     "description": "Central project registry. Used by PowerShell 'proyecto' command. Will sync with Project Admin DB.",
-    "updated": "2026-03-23"
+    "updated": "2026-03-28"
   },
   "projects": {
     "anthropic-academy": {
@@ -411,5 +411,13 @@
       "context": "C:/claude_context/investigacion/OpenViking",
       "category": "investigacion"
     }
+  },
+  "whatsapp-automation": {
+    "name": "WhatsApp Automation",
+    "short": "wa",
+    "path": "C:/personal/whatsapp-automation",
+    "context": "C:/claude_context/personal/whatsapp-automation",
+    "category": "personal",
+    "description": "Automatizacion de WhatsApp personal: lectura de chats, extraccion de links, envio de mensajes individuales via Playwright + posible MCP"
   }
 }
