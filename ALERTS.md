@@ -4,6 +4,7 @@
 ## Alertas Activas
 | Fecha | Tipo | Mensaje | Accion |
 |-------|------|---------|--------|
+| 2026-03-27 | recordatorio | MCP Shared Gateway (`pj msg`): proyecto sembrado. Investigar eliminacion de duplicacion de MCP servers entre sesiones (~1 GB desperdiciado). Paquetes existentes: `@nano-step/shared-mcp-proxy`, `mcp-proxy`. Seed doc completo con hallazgos. Contexto: `C:/claude_context/investigacion/mcp-shared-gateway/` | Brotar proyecto: evaluar paquetes, PoC con 1 server, medir ahorro real. Registrar en PA DB (requiere WSL) |
 | 2026-03-24 | recordatorio | Ecosystem Hub (`pj eh`): 77% completo (17/22 stories, epics 1-2 done). Pendiente: Epic 3 Ideas UI (EH-015/016/017) + Epic 4 Polish (sync, E2E, docs). Continuar implementacion | Sesion dedicada: EH-015 transicion idea->proyecto (5 pts, mas compleja), luego EH-016/017 |
 | 2026-03-25 | recordatorio | AWS DVA-C02: roadmap definido (3 fases + exam prep, ~7 sem). Account setup en progreso (AWS-001 parcial: IAM user creado, faltan keys+billing). Contexto: `C:/claude_context/personal/aws-serverless-training/` | Retomar AWS-001: asignar AdministratorAccess, crear access key, configurar CLI, billing alert $5 |
 | 2026-03-25 | recordatorio | Anthropic Academy: roadmap definido (13 cursos, 5 fases, ~42h, gratis). 0/13 completados. Contexto: `C:/claude_context/capacitacion/anthropic-academy/` | Iniciar Fase 1: Claude 101 + Claude Code in Action (~4h) |

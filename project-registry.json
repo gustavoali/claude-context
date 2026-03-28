@@ -397,6 +397,13 @@
       "context": "C:/claude_context/anyoneai/final_project",
       "category": "capacitacion"
     },
+    "mcp-shared-gateway": {
+      "name": "MCP Shared Gateway",
+      "short": "msg",
+      "path": "C:/investigacion/mcp-shared-gateway",
+      "context": "C:/claude_context/investigacion/mcp-shared-gateway",
+      "category": "investigacion"
+    },
     "openviking": {
       "name": "OpenViking Research",
       "short": "ov",

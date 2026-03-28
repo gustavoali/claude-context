@@ -1,29 +1,31 @@
 # Estado - Workspace Global
-**Actualizacion:** 2026-03-27 | **Sesion:** #15
+**Actualizacion:** 2026-03-28 | **Sesion:** #16
 
 ## Completado Esta Sesion
-**Overview:** Busqueda laboral Andrea Traverzaro: postulaciones masivas a puestos de cajera en CABA/GBA | 10 postulaciones/CV enviados | 3 pendientes manuales
+**Overview:** Mantenimiento ecosistema: sync DBs a LIBERTAD, diagnostico memoria MCP, nuevo proyecto mcp-shared-gateway | Completado | Sesion variada
 
 **Pasos clave:**
-- Registrada en Randstad (perfil 55%, 2 postulaciones exitosas cajera CABA + GBA Oeste)
-- CV enviado a Carrefour (Pandape), Vital CABA, Suministra (registro completo)
-- CV cargado via HiringRoom en Pigmento, Farmacias Central Oeste, Grupo Abans
-- Registrada en Asoko Tempo con CV
-- Borrador email para Changomas creado en Gmail
-- Datos completos de Andrea guardados en memory (user_andrea_datos.md)
-- Screenshots de confirmaciones en C:/images_andrea/ (8 capturas)
-- Registro completo en C:/images_andrea/REGISTRO_POSTULACIONES.md
+- Diagnostico consumo RAM: 3 instancias Claude Code = 3.2 GB, MCP servers = ~1 GB (748 MB Node + 283 MB Python), VmmemWSL = 1.2 GB
+- WiFi sin IPv4 resuelto (DHCP renew, asignada 192.168.1.38)
+- Conectividad con LIBERTAD (192.168.1.35) establecida via puertos PG 5434/5435
+- Sincronizados 4 proyectos faltantes a LIBERTAD PA DB (project-management #363, quimera #364, screen-capture #365, anyoneai-llm-apps #366) + 8 metadata
+- Secuencias projects_id_seq y project_metadata_id_seq corregidas en LIBERTAD
+- Proyecto MCP Shared Gateway creado (semilla): investigacion para eliminar duplicacion MCP servers entre sesiones
+- MCP Shared Gateway registrado en: project-registry.json (short: msg), LIBERTAD PA DB (#367), ALERTS.md
+- Brotado en terminal paralela via pjr
+- Sprint Backlog DB: verificado vacio en ambos equipos (solo schema)
+- Projects exportado a CSV: C:/Users/gdali/Downloads/projects_export.csv
+- WSL apagado para liberar RAM
+- Resuelto sudoku 6x6
 
-**Conceptos clave:** HiringRoom React selects se manejan con `.custom-hr-select__control` + keyboard.type(). Randstad tiene bugs de persistencia en CV/educacion/idiomas. Carrefour requiere verificacion email post-envio.
-
-**Pendiente:** 3 portales requieren interaccion manual de Andrea (Cencosud chatbot, Dia via Computrabajo, Farmacity via Bumeran)
+**Conceptos clave:** psycopg2 como alternativa a psql cuando WSL esta apagado. Secuencias PG se dessincronizan al insertar con IDs explicitos. `@nano-step/shared-mcp-proxy` es match exacto para el problema de MCP duplicados.
 
 ## Proximos Pasos
 1. Completar sembrado de `investigacion/ai-dev-cost-model`
-2. Registrar quimera + project-management en PA DB (requiere WSL)
-3. Arrancar Sprint 1 de Quimera (Fase 1 MVP: Cuentos + Roasts)
-4. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
-5. Revisar hallazgos de OpenViking Research (ANALYSIS_OPENVIKING.md)
+2. Arrancar Sprint 1 de Quimera (Fase 1 MVP: Cuentos + Roasts)
+3. Continuar AnyoneAI Sprint 4 (6 fases pendientes)
+4. Revisar hallazgos de OpenViking Research (ANALYSIS_OPENVIKING.md)
+5. Desarrollar MCP Shared Gateway (evaluar paquetes, PoC, medir ahorro)
 
 ## Decisiones Pendientes
 (ninguna)
@@ -33,3 +35,5 @@
 - [2026-03-09] Agregar historia al backlog YouTube MCP para exponer cookies export como tool MCP
 - [2026-03-17] Considerar incorporar patron ECC "session save/resume" como mejora a /close-session
 - [2026-03-17] Evaluar AgentShield para proyectos con MCP servers publicos
+- [2026-03-28] Sincronizar PA DB local con LIBERTAD periodicamente (considerar script automatico)
+- [2026-03-28] Registrar mcp-shared-gateway en PA DB local cuando WSL este disponible (ID puede diferir del 367 de LIBERTAD)
