@@ -32,6 +32,10 @@
 - Key: AKIA2JHUK4EGBVSQ5RUW
 - Secret: 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
 
+## Equipo
+- **Trello:** https://trello.com/b/WuSgKbrQ/financial-advisor-chatbot
+- **GitHub Team:** github.com/Elloisa/Financial_advisor_chatbot
+
 ## Entregable
 - Nombre: FinAdvisor_Gustavo_Ali.zip
 - Max: 100 MB, sin datos ni modelos
